@@ -6780,14 +6780,16 @@ async function shortenLink(fullUrl){
    Candidate submits → saved to Supabase → admin sees instantly.
 ═══════════════════════════════════════════ */
 const SUPA_TABLE='candidates';
-// Default Supabase config — anon key is public by design
-// Loaded at startup so candidate devices can push results without any setup
+// Load Supabase config at startup
+// Priority: 1) User-set config in Settings, 2) Default config embedded in app
 (function(){
   try{
-    if(!localStorage.getItem('ybs_sync_cfg')){
+    const existing=JSON.parse(localStorage.getItem('ybs_sync_cfg')||'null');
+    // Always ensure config exists — use existing if valid, else use default
+    if(!existing||!existing.url||!existing.key){
       localStorage.setItem('ybs_sync_cfg',JSON.stringify({
-        url:'https://ygvwdixzntggyqcziyzz.supabase.co',
-        key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlndndkaXh6bnRnZ3lxY3ppeXp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTA5MjQsImV4cCI6MjA5MjA4NjkyNH0.NzpX4Bl8AWKCxC4OutF2UKJO4NC6-hAtGdlhvAITj7s'
+        url:'https://aiounaysuoiicauhwowl.supabase.co',
+        key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpb3VuYXlzdW9paWNhdWh3b3dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MjY2MDEsImV4cCI6MjA5MjUwMjYwMX0.Zmf8-m_dojz7kZj_RCDBNsjQl-9eWvyCWbMMG6Zz0Nw'
       }));
     }
   }catch(e){}
@@ -6835,12 +6837,21 @@ async function syncPushCandidate(record){
       status:record.status||'Invited',
       updated_at:new Date().toISOString()
     };
-    await fetch(_supaUrl(SUPA_TABLE),{
+    const resp=await fetch(_supaUrl(SUPA_TABLE),{
       method:'POST',
       headers:{..._supaHeaders(),'Prefer':'resolution=merge-duplicates,return=minimal'},
       body:JSON.stringify(row)
     });
-  }catch(e){console.warn('Sync push failed:',e);}
+    if(!resp.ok){
+      const err=await resp.text();
+      console.error('Sync push failed:',resp.status,err);
+      // If key is invalid, clear config so it reloads from default next time
+      if(resp.status===401){
+        console.warn('API key rejected — clearing config to reload default');
+        localStorage.removeItem('ybs_sync_cfg');
+      }
+    }
+  }catch(e){console.warn('Sync push error:',e);}
 }
 
 // Pull all records from Supabase and merge into local
