@@ -3391,16 +3391,17 @@ const B5_QUESTIONS=[
   {type:'fc',a:"I am known as someone who challenges and drives change.",b:"I am known as someone who is reliable and consistent.",traitA:"DISCDominance",traitB:"DISCSteadiness"},
 
   // ═══════════════════════════════════════════════════════════
+
   // BLOCK 3: SCENARIOS (8 situations)
-  // ═══════════════════════════════════════════════════════════
   {type:'scenario',situation:"You are coordinating a client shoot scheduled for tomorrow. At 5pm you discover the venue has double-booked the space. The client is expecting confirmation tonight.",options:["Send the client a brief message saying everything is under control, then spend the evening resolving it.","Call the client immediately, explain the situation honestly, and outline two backup options you are already exploring.","Contact your manager and wait for their guidance before reaching out to the client.","Email the venue a strongly worded complaint and copy the client to show you are taking action."],best:1,trait:"Accountability"},
   {type:'scenario',situation:"A colleague asks for your honest opinion on their work before they send it to a client. You can see several problems that could reflect badly on the studio.",options:["Tell them it looks great to avoid an awkward conversation before a deadline.","Point out the specific issues clearly but constructively, and offer to help fix them before it goes out.","Send them a long list of everything wrong in detail without filtering for what is actually critical.","Mention one small issue only so as not to overwhelm them."],best:1,trait:"CommunicationQuality"},
-  {type:'scenario',situation:"You notice that the way session bookings are logged creates confusion — different team members record things differently, causing occasional double-bookings. You are not responsible for this process.",options:["Document the inconsistency with a specific example and raise it with your manager as a suggested improvement.","Fix it yourself quietly by standardising the approach without telling anyone.","Mention it casually to a colleague and leave it at that.","Continue working around it — raising process issues is not your responsibility."],best:0,trait:"Initiative"},
-  {type:'scenario',situation:"A client arrives for their appointment clearly unhappy about the wait time on a previous visit. They are not shouting but are cold and distant.",options:["Act professionally and complete the session as normal — they will get over it.","Acknowledge directly that you understand their frustration, apologise for the previous experience, and ask if there is anything you can do to make today better.","Apologise repeatedly throughout the session to show you care.","Report the situation to your manager before starting so they are aware."],best:1,trait:"Agreeableness"},
-  {type:'scenario',situation:"You are given a new responsibility that was not in your original role. You have not been trained on it and your manager is travelling this week.",options:["Attempt it independently and submit the work as if you were fully confident — you do not want to appear incapable.","Message your manager with a specific question about the part you are unsure of, proceed with what you can, and flag clearly what needs their review.","Wait until your manager returns before doing anything — working outside your training creates risk.","Ask a colleague to do it for you and present it as your own work."],best:1,trait:"ProblemSolving"},
-  {type:'scenario',situation:"Two weeks into a busy period, a team member tells you privately that they are struggling to keep up and are worried about making mistakes. They ask you not to mention it to the manager.",options:["Respect their confidence completely and say nothing to anyone.","Encourage them to speak to the manager yourself, and offer to help them prepare what to say.","Tell the manager immediately because the business risk outweighs the confidence.",  "Offer to cover some of their tasks quietly without the manager knowing."],best:1,trait:"ConflictStyle"},
-  {type:'scenario',situation:"You have just completed a project and your manager gives you feedback that contradicts what a senior colleague told you last week. Both cannot be right.",options:["Follow your manager's feedback since they have authority, without raising the contradiction.","Thank your manager, then ask a clarifying question: explain the conflicting guidance you received and ask which approach they would recommend going forward.","Go back to the colleague and tell them the manager disagreed with them.","Ignore both and do it the way you think is best."],best:1,trait:"FeedbackReceptivity"},
-  {type:'scenario',situation:"You are preparing an important client proposal and realise you are missing key information that would usually take two days to obtain. The proposal is due tomorrow.",options:["Submit the proposal with the information gap clearly noted and explain what is missing and why.","Make reasonable assumptions based on what you know, note them explicitly in the document, and flag them to your manager before submitting.","Ask for a deadline extension without explaining the specific reason.","Submit the proposal as if the information is complete to avoid looking unprepared."],best:1,trait:"ProblemSolving"},
+  {type:'scenario',situation:"You notice that the way session bookings are logged creates confusion causing occasional double-bookings. You are not responsible for this process.",options:["Document the inconsistency with a specific example and raise it with your manager as a suggested improvement.","Fix it yourself quietly by standardising the approach without telling anyone.","Mention it casually to a colleague and leave it at that.","Continue working around it — raising process issues is not your responsibility."],best:0,trait:"Initiative"},
+  {type:'scenario',situation:"A client arrives clearly unhappy about the wait time on a previous visit. They are not shouting but are cold and distant.",options:["Act professionally and complete the session as normal — they will get over it.","Acknowledge directly that you understand their frustration, apologise for the previous experience, and ask if there is anything you can do to make today better.","Apologise repeatedly throughout the session to show you care.","Report the situation to your manager before starting so they are aware."],best:1,trait:"Agreeableness"},
+  {type:'scenario',situation:"You are given a new responsibility you have not been trained on. Your manager is travelling this week.",options:["Attempt it independently and submit as if fully confident — you do not want to appear incapable.","Message your manager with a specific question about the part you are unsure of, proceed with what you can, and flag what needs their review.","Wait until your manager returns before doing anything.","Ask a colleague to do it for you and present it as your own work."],best:1,trait:"ProblemSolving"},
+  {type:'scenario',situation:"Two weeks into a busy period, a team member tells you privately they are struggling and worried about making mistakes. They ask you not to mention it to the manager.",options:["Respect their confidence completely and say nothing to anyone.","Encourage them to speak to the manager yourself, and offer to help them prepare what to say.","Tell the manager immediately because the business risk outweighs the confidence.","Offer to cover some of their tasks quietly without the manager knowing."],best:1,trait:"ConflictStyle"},
+  {type:'scenario',situation:"Your manager gives you feedback that contradicts what a senior colleague told you last week. Both cannot be right.",options:["Follow your manager's feedback since they have authority, without raising the contradiction.","Thank your manager, then ask a clarifying question — explain the conflicting guidance and ask which approach they recommend going forward.","Go back to the colleague and tell them the manager disagreed with them.","Ignore both and do it the way you think is best."],best:1,trait:"FeedbackReceptivity"},
+  {type:'scenario',situation:"You are preparing an important client proposal and realise you are missing key information. The proposal is due tomorrow.",options:["Submit with the information gap clearly noted and explain what is missing and why.","Make reasonable assumptions, note them explicitly, and flag them to your manager before submitting.","Ask for a deadline extension without explaining the specific reason.","Submit as if the information is complete to avoid looking unprepared."],best:1,trait:"ProblemSolving"},
+
 ];
 
 
@@ -5200,7 +5201,6 @@ function renderB5Question(containerId,idx,total,answers,prefix){
       +'<div class="b5-circle">B</div><div><div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Option B</div>'+q.b+'</div></div>';
 
   } else if(q.type==='scenario'){
-    // Situation
     prompt='<div style="font-size:15px;font-weight:500;line-height:1.65;color:var(--text);margin-bottom:18px;">'+q.situation+'</div>'
       +'<div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">What would you do?</div>';
     const prev=answers['sc_'+idx];
@@ -5209,7 +5209,6 @@ function renderB5Question(containerId,idx,total,answers,prefix){
       return '<div class="b5-choice'+(prev===i?' picked':'')+'" data-pick="'+i+'">'
         +'<div class="b5-circle">'+letter+'</div><span style="padding-top:3px;">'+opt+'</span></div>';
     }).join('');
-
   } else {
     // Agree / disagree
     prompt='<div style="font-size:15px;font-weight:500;line-height:1.65;color:var(--text);margin-bottom:20px;">'+q.q+'</div>';
@@ -5417,6 +5416,7 @@ function renderDemo(){
         if(q.type==='agree'||!q.type){if(demoState.b5Answers[i]===undefined)return i;}
         else if(q.type==='fc'){if(demoState.b5Answers['fc_'+i]===undefined)return i;}
         else if(q.type==='scenario'){if(demoState.b5Answers['sc_'+i]===undefined)return i;}
+
       }
       return B5_QUESTIONS.length;
     })();
@@ -6275,10 +6275,19 @@ function cvRender(){
         if(q.type==='agree'||!q.type){if(cvState.b5Answers[i]===undefined)return i;}
         else if(q.type==='fc'){if(cvState.b5Answers['fc_'+i]===undefined)return i;}
         else if(q.type==='scenario'){if(cvState.b5Answers['sc_'+i]===undefined)return i;}
+
       }
       return B5_QUESTIONS.length; // all answered
     })();
-    renderB5Question('cv-body',Math.min(_resumeIdx,B5_QUESTIONS.length-1),B5_QUESTIONS.length,cvState.b5Answers,'cv');
+    if(_resumeIdx>=B5_QUESTIONS.length){
+      // All questions answered — advance to next step
+      cvRecordTime('personality');
+      const _steps=cvGetActiveSteps().filter(function(s){return s!==0&&s!==1&&s!==5;});
+      cvState.step=_steps.length>0?_steps[0]:4;
+      cvState.cogIdx=0;cvSave();cvRender();
+    } else {
+      renderB5Question('cv-body',_resumeIdx,B5_QUESTIONS.length,cvState.b5Answers,'cv');
+    }
   }
   else if(s===2)cvCognitive();
   else if(s===3)cvTypingTest();
@@ -6712,12 +6721,8 @@ function cvDone(){
       }
     });
   }
-  // Scenario (SJT) score
   const _scQs=B5_QUESTIONS.filter(function(q){return q.type==='scenario';});
-  const _scCorrect=_scQs.filter(function(q){
-    const i=B5_QUESTIONS.indexOf(q);
-    return cvState.b5Answers['sc_'+i]===q.best;
-  }).length;
+  const _scCorrect=_scQs.filter(function(q){const i=B5_QUESTIONS.indexOf(q);return cvState.b5Answers['sc_'+i]===q.best;}).length;
   const _sjtScore=_scQs.length>0?Math.round(_scCorrect/_scQs.length*100):null;
   const _cogCorrect=COG_QUESTIONS.filter(function(q,i){return cvState.cogAnswers[i]===q.ans;}).length;
   const cogPct=COG_QUESTIONS.length>0&&Object.keys(cvState.cogAnswers||{}).length>0?Math.round(_cogCorrect/COG_QUESTIONS.length*100):null;
