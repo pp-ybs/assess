@@ -6,6 +6,9 @@
 <title>Assess YBS — Pre-Employment Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+.b5-opt:hover{border-color:var(--accent)!important;background:var(--accent-s,#eef2ff)!important;}
+.b5-opt:hover .b5-dot{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;}
+
 :root{
   --bg:#f1f3f6;
   --surface:#ffffff;
@@ -1006,8 +1009,8 @@ body.candidate-mode .topbar { display:none!important; }
 <div id="page-interview" class="content page" style="display:none;">
   <!-- Tab bar -->
   <div style="display:flex;gap:2px;margin-bottom:20px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:3px;width:fit-content;">
-    <button class="int-tab" id="intTab-setup" onclick="switchIntTab('setup')" style="padding:6px 18px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);">Setup</button>
-    <button class="int-tab active" id="intTab-profiles" onclick="switchIntTab('profiles')" style="padding:6px 18px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);">Candidates</button>
+    <button class="int-tab" id="intTab-setup" onclick="switchIntTab('setup')" style="padding:6px 18px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;background:transparent;color:var(--text-2);box-shadow:none;">New Interview</button>
+    <button class="int-tab active" id="intTab-profiles" onclick="switchIntTab('profiles')" style="padding:6px 18px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);">Candidates</button>
     <button class="int-tab" id="intTab-questions" onclick="switchIntTab('questions')" style="padding:6px 18px;border-radius:6px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:'Geist',sans-serif;background:transparent;color:var(--text-2);" id="intTab-questions">Questions</button>
   </div>
 
@@ -1132,7 +1135,7 @@ body.candidate-mode .topbar { display:none!important; }
         
         <div class="settings-row">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:600px;margin-bottom:16px;">
-            <div style="grid-column:1/-1;"><label>Company name</label><input type="text" id="set-company" value="YBS Corp"/></div>
+            <div style="grid-column:1/-1;"><label>Company name</label><input type="text" id="set-company" value="You+ Baby Studio"/></div>
             <div style="grid-column:1/-1;"><label>HR email (shown to candidates for sending results)</label><input type="email" id="set-hr-email" placeholder="hr@yourcompany.com" oninput="try{localStorage.setItem('ybs_hr_email',this.value);}catch(e){}"/></div>
             <div><label>HR contact email</label><input type="email" id="set-email" value="hr@company.com"/></div>
             <div><label>Default invite expiry</label><select id="set-expiry"><option value="3">3 days</option><option value="7" selected>7 days</option><option value="14">14 days</option></select></div>
@@ -1631,7 +1634,7 @@ body.candidate-mode .topbar { display:none!important; }
         <svg viewBox="0 0 20 20" fill="none" style="width:12px;height:12px;"><path d="M10 3L4 16" stroke="white" stroke-width="2.2" stroke-linecap="round"/><path d="M10 3L16 16" stroke="white" stroke-width="2.2" stroke-linecap="round"/><path d="M6.5 12.5h7" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
       </div>
       <span style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.1px;">Assess YBS</span>
-      <span style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;margin-left:2px;">Video Interview</span>
+      <span style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;margin-left:2px;">AI Interview</span>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <span id="civ-status-bar" style="font-size:12px;color:var(--text-3);font-family:'Geist',sans-serif;"></span>
@@ -1642,9 +1645,9 @@ body.candidate-mode .topbar { display:none!important; }
   <!-- Welcome screen -->
   <div id="civ-welcome" style="display:flex;align-items:center;justify-content:center;height:calc(100vh - 52px);padding:24px;background:var(--bg);">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 40px;max-width:500px;width:100%;box-shadow:var(--sh-md);">
-      <div style="font-size:11px;font-family:'Geist',sans-serif;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;">Video Interview</div>
+      <div style="font-size:11px;font-family:'Geist',sans-serif;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;">AI Interview</div>
       <div style="font-size:26px;font-weight:700;color:var(--text);line-height:1.15;letter-spacing:-.4px;margin-bottom:10px;">Welcome to your<br>interview.</div>
-      <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:24px;">An AI interviewer will guide you through a series of questions. Speak clearly and take your time answering.</div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:24px;">An AI interviewer will ask you questions about your experience and skills. Speak your answers aloud or type them.</div>
       <!-- Checklist -->
       <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:24px;display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);">
@@ -1672,58 +1675,71 @@ body.candidate-mode .topbar { display:none!important; }
     </div>
   </div>
 
-  <!-- Live interview screen -->
-  <div id="civ-live" style="display:none;height:calc(100vh - 52px);overflow:hidden;">
-    <div style="display:grid;grid-template-columns:1fr 340px;height:100%;">
-      <!-- Camera panel -->
-      <div style="background:#0a0e16;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-        <!-- Video — un-mirrored for interviewer (they see what camera sees) -->
-        <video id="civ-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);"></video>
-        <!-- Camera off placeholder -->
-        <div id="civ-cam-off" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#0a0e16;">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          </div>
-          <button onclick="enableCIVCamera()" style="padding:10px 22px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;">Enable Camera</button>
+  <!-- Live interview screen — AI-first, full screen chat with small camera pip -->
+  <div id="civ-live" style="display:none;height:calc(100vh - 52px);overflow:hidden;position:relative;background:var(--bg);">
+    <!-- Progress bar top -->
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);z-index:10;">
+      <div id="civ-progress" style="height:100%;background:var(--accent);width:0%;transition:width .5s;"></div>
+    </div>
+
+    <!-- Main AI chat area — full screen -->
+    <div style="display:flex;flex-direction:column;height:100%;max-width:680px;margin:0 auto;padding:0 16px;">
+      <!-- AI header -->
+      <div style="padding:16px 0 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2L3 7v5c0 4.5 3.8 8.7 9 10 5.2-1.3 9-5.5 9-10V7L12 2z"/></svg>
         </div>
-        <!-- Question overlay -->
-        <div id="civ-q-overlay" style="position:absolute;bottom:0;left:0;right:0;padding:18px 22px 20px;background:linear-gradient(transparent,rgba(0,0,0,.88));display:none;pointer-events:none;">
-          <div style="font-size:11px;font-family:'Geist',sans-serif;color:rgba(255,255,255,.45);letter-spacing:.1em;margin-bottom:6px;" id="civ-q-label">QUESTION 1</div>
-          <div style="font-size:16px;font-weight:600;line-height:1.45;color:#fff;" id="civ-q-text"></div>
-        </div>
-        <!-- Top progress -->
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);pointer-events:none;">
-          <div id="civ-progress" style="height:100%;background:var(--accent);width:0%;transition:width .5s;"></div>
-        </div>
-        <!-- Control buttons overlay — bottom right -->
-        <!-- Recording indicator -->
-        <div id="civ-rec-indicator" style="position:absolute;top:14px;left:14px;display:none;align-items:center;gap:6px;background:rgba(0,0,0,.5);padding:5px 11px;border-radius:99px;pointer-events:none;">
-          <div style="width:7px;height:7px;border-radius:50%;background:#ff4444;animation:pulse 1.4s infinite;flex-shrink:0;"></div>
-          <span style="font-size:11px;color:#fff;font-family:'Geist',sans-serif;letter-spacing:.05em;">REC</span>
-        </div>
-        <!-- End button (asks confirmation) -->
-        <div style="position:absolute;bottom:72px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:10;">
-          <button id="civ-end-btn" onclick="civConfirmEnd()" title="End interview early" style="width:40px;height:40px;border-radius:50%;background:rgba(192,54,43,.9);border:none;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-      </div>
-      <!-- AI panel -->
-      <div style="display:flex;flex-direction:column;background:var(--surface);border-left:1px solid var(--border);">
-        <div style="padding:14px 16px;border-bottom:1px solid var(--border);background:var(--surface-2);">
+        <div>
           <div style="font-size:13px;font-weight:700;color:var(--text);">AI Interviewer</div>
-          <div style="font-size:11px;color:var(--text-3);margin-top:2px;" id="civ-ai-status">Ready</div>
+          <div style="font-size:11px;color:var(--text-3);" id="civ-ai-status">Ready</div>
         </div>
-        <div id="civ-chat" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;"></div>
-        <div style="padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-direction:column;">
-          <div id="civ-answer-area" style="display:none;flex-direction:column;gap:8px;">
-            <textarea id="civ-answer-input" placeholder="Type your answer here… then press Send" rows="3" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:'Geist',sans-serif;color:var(--text);background:var(--bg);resize:none;outline:none;transition:border-color .13s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();civSendAnswer();}"></textarea>
-            <button onclick="civSendAnswer()" style="width:100%;height:36px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;">Send answer →</button>
+        <div id="civ-q-label" style="margin-left:auto;font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;background:var(--surface-2);border:1px solid var(--border);padding:3px 10px;border-radius:99px;">QUESTION 1</div>
+      </div>
+
+      <!-- Chat messages -->
+      <div id="civ-chat" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:8px 0 16px;"></div>
+
+      <!-- Answer area -->
+      <div style="padding:12px 0 16px;border-top:1px solid var(--border);flex-shrink:0;">
+        <div id="civ-answer-area" style="display:none;flex-direction:column;gap:8px;">
+          <!-- Voice button — primary -->
+          <button id="civ-voice-btn" onclick="civToggleVoice()" style="width:100%;height:48px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+            Hold to speak
+          </button>
+          <!-- Type answer fallback -->
+          <div style="display:flex;gap:8px;align-items:flex-end;">
+            <textarea id="civ-answer-input" placeholder="Or type your answer here…" rows="2" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-family:'Geist',sans-serif;color:var(--text);background:var(--surface);resize:none;outline:none;transition:border-color .13s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();civSendAnswer();}"></textarea>
+            <button onclick="civSendAnswer()" style="height:60px;padding:0 16px;background:var(--text);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap;">Send →</button>
           </div>
-          <button id="civ-submit-btn" onclick="civSubmitInterview()" style="width:100%;height:38px;background:var(--green-s);border:1px solid var(--green-b);border-radius:var(--r);color:var(--green);font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;display:none;">Submit interview ✓</button>
         </div>
+        <button id="civ-submit-btn" onclick="civSubmitInterview()" style="width:100%;height:44px;background:var(--green-s);border:1px solid var(--green-b);border-radius:var(--r);color:var(--green);font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;display:none;">✓ Submit interview</button>
       </div>
     </div>
+
+    <!-- Small camera pip — bottom right corner -->
+    <div id="civ-cam-pip" style="position:absolute;bottom:90px;right:16px;width:120px;height:90px;border-radius:10px;overflow:hidden;background:#0a0e16;border:2px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:20;">
+      <video id="civ-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1);"></video>
+      <div id="civ-cam-off" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;cursor:pointer;" onclick="enableCIVCamera()" title="Enable camera">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"><polygon points="23,7 16,12 23,17 23,7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <span style="font-size:9px;color:rgba(255,255,255,.3);font-family:'Geist',sans-serif;">Tap to enable</span>
+      </div>
+    </div>
+
+    <!-- Recording indicator -->
+    <div id="civ-rec-indicator" style="position:absolute;top:14px;right:14px;display:none;align-items:center;gap:6px;background:rgba(220,38,38,.9);padding:5px 11px;border-radius:99px;z-index:20;">
+      <div style="width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite;flex-shrink:0;"></div>
+      <span style="font-size:11px;color:#fff;font-family:'Geist',sans-serif;font-weight:600;">Speaking…</span>
+    </div>
+
+    <!-- End button -->
+    <button id="civ-end-btn" onclick="civConfirmEnd()" title="End interview early" style="position:absolute;bottom:96px;right:148px;width:36px;height:36px;border-radius:50%;background:rgba(192,54,43,.85);border:none;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:20;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Hidden q-text for JS compatibility -->
+    <span id="civ-q-text" style="display:none;"></span>
+    <span id="civ-q-overlay" style="display:none;"></span>
   </div>
 
   <!-- Done screen -->
@@ -1884,10 +1900,12 @@ body.candidate-mode .topbar { display:none!important; }
 /* ═══════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════ */
-const TRAITS=['Openness','Conscientiousness','Extraversion','Agreeableness','Neuroticism'];
+const TRAITS=['HonestyHumility','Neuroticism','Extraversion','Agreeableness','Conscientiousness','Openness'];
 const WB_TRAITS=['Collaboration','Accountability','Adaptability','ConflictStyle','StressResilience','FeedbackReceptivity'];
 const JOB_TRAITS=['ProblemSolving','LongTermCommitment','DataDriven','Initiative','CommunicationQuality'];
-const ALL_TRAITS=[...TRAITS,...WB_TRAITS,...JOB_TRAITS];
+const DISC_TRAITS=['DISCDominance','DISCSteadiness'];
+const DARK_TRAITS=['DarkSide'];
+const ALL_TRAITS=[...TRAITS,...WB_TRAITS,...JOB_TRAITS,...DISC_TRAITS,...DARK_TRAITS];
 const TRAIT_COLORS=['#c8a84b','#0e6b5e','#5a3ea1','#4a7c59','#b53a3a'];
 const WB_DESC={Collaboration:'Teamwork and cooperative orientation',Accountability:'Ownership and reliable follow-through',Adaptability:'Flexibility and response to change',ConflictStyle:'How disagreements are handled',StressResilience:'Performance under pressure',FeedbackReceptivity:'Openness to critique and learning'};
 
@@ -1903,14 +1921,9 @@ let modules=[
 
 ];
 
-let positions=[
-  {id:1,title:'Software Engineer',dept:'Engineering',location:'Remote',type:'Full-time',minOverall:70,minCog:75,minPers:55,minWpm:50,modules:{big5:true,cognitive:true,typing:true,video:false},desc:''},
-  {id:2,title:'Product Manager',dept:'Product',location:'Seoul',type:'Full-time',minOverall:65,minCog:65,minPers:60,minWpm:45,modules:{big5:true,cognitive:true,typing:false,video:true},desc:''},
-  {id:3,title:'Designer',dept:'Design',location:'Remote',type:'Full-time',minOverall:60,minCog:55,minPers:60,minWpm:40,modules:{big5:true,cognitive:false,typing:false,video:false},desc:''},
-  {id:4,title:'Data Analyst',dept:'Analytics',location:'Seoul',type:'Full-time',minOverall:72,minCog:80,minPers:50,minWpm:55,modules:{big5:true,cognitive:true,typing:true,video:false},desc:''},
-  {id:5,title:'Marketing Lead',dept:'Marketing',location:'Seoul',type:'Full-time',minOverall:60,minCog:58,minPers:65,minWpm:45,modules:{big5:true,cognitive:true,typing:false,video:false},desc:''},
-];
-let nextPosId=6;
+// Positions loaded from localStorage/Supabase — no hardcoded defaults
+let positions=[];
+let nextPosId=1;
 let activePosFilter='all';
 let candSortDir='desc'; // desc = newest first
 function fmtDate(d){
@@ -2204,7 +2217,7 @@ function showPage(id,el){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if(el)el.classList.add('active');
   else document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
-  const titles={dashboard:'Dashboard',stats:'Statistics',enps:'eNPS Surveys',candidates:'Candidates',invite:'Invite Candidates',results:'Assessment Results',interview:'Video Interview',demo:'Preview Assessment',settings:'Settings'};
+  const titles={dashboard:'Dashboard',stats:'Statistics',enps:'eNPS Surveys',candidates:'Candidates',invite:'Invite Candidates',results:'Assessment Results',interview:'AI Interview',demo:'Preview Assessment',settings:'Settings'};
 
   document.getElementById('pageTitle').textContent=titles[id]||id;
 
@@ -2278,7 +2291,7 @@ function avColor(i){return AV_COLORS[i%AV_COLORS.length];}
 function ini(n){if(!n||typeof n!=='string')return'??';return n.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'??';}
 function overallScore(s){
   if(!s)return null;
-  // Only include modules that actually have data
+  const excludeFromOverall=['DISCDominance','DISCSteadiness','DarkSide'];
   let totalWeight=0,weightedSum=0;
   // Personality: present if any big5 trait is non-null and non-zero
   const hasPersonality=s.big5&&Object.values(s.big5).some(v=>v!==null&&v!==undefined&&v!==0);
@@ -2625,7 +2638,16 @@ function sendInvite(){
   const _ts=String(_mn.getHours()).padStart(2,'0')+':'+String(_mn.getMinutes()).padStart(2,'0');
   const invitedAt=today+' '+_ts;
   const tok='tok-'+Math.random().toString(36).slice(2,10);
-  const link=window.location.href.split('?')[0].split('#')[0]+'?assess='+tok;
+  // Build module code from position settings
+  const _pos=positions.find(p=>p.title===role)||null;
+  const _mods=_pos?_pos.modules:{big5:true,cognitive:true,typing:true,video:false};
+  const _modParts=[];
+  if(_mods.big5!==false)_modParts.push('b');
+  if(_mods.cognitive!==false)_modParts.push('c');
+  if(_mods.typing!==false)_modParts.push('t');
+  if(_mods.video)_modParts.push('v');
+  const modCode=_modParts.join('');
+  const link=window.location.href.split('?')[0].split('#')[0]+'?assess='+tok+(modCode?'&m='+modCode:'')+(role?'&role='+encodeURIComponent(role):'');
   const co=document.getElementById('set-company')?.value||'Assess YBS';
   // Detect selected modules
   const selMods=[];
@@ -2706,9 +2728,12 @@ function downloadReport(id){
     +'</div>';}
 
   // All trait rows
-  const b5Rows=TRAITS.map((t,ti)=>bar(t==='Neuroticism'?'Emotional Stability':t, t==='Neuroticism'?100-b5[t]:b5[t])).join('');
-  const wbRows=WB_TRAITS.map(t=>bar(t,b5[t]||0)).join('');
+  const traitLabels={HonestyHumility:'Integrity (H-H)',Neuroticism:'Emotionality',Extraversion:'Extraversion',Agreeableness:'Agreeableness',Conscientiousness:'Conscientiousness',Openness:'Openness',DISCDominance:'DISC: Dominance',DISCSteadiness:'DISC: Steadiness',DarkSide:'Dark Side Risk'};
+  const b5Rows=TRAITS.map(t=>bar(traitLabels[t]||t, t==='Neuroticism'?b5[t]:b5[t]||0)).join('');
+  const wbRows=WB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]||0)).join('');
   const jobRows=JOB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]||0)).join('');
+  const discRows=DISC_TRAITS.map(t=>bar(traitLabels[t]||t,b5[t]||0)).join('');
+  const darkRow=DARK_TRAITS.map(t=>bar('Under-Pressure Consistency',b5[t]||0)).join('');
 
   // Red flags — prominently displayed
   const redFlags=(insights.itemFlags||[]).filter(f=>f.severity==='red');
@@ -2730,7 +2755,11 @@ function downloadReport(id){
   }
 
   // Full trait narratives for portrait section
-  const traitNarLines=Object.entries(insights.traitNarrative||{}).map(([t,txt])=>'<div style="margin-bottom:7px;"><strong style="font-size:11px;color:#2d3748;">'+t+':</strong> <span style="font-size:11px;color:#4a5568;">'+txt+'</span></div>').join('');
+  const traitNarLines=Object.entries(insights.traitNarrative||{}).map(([t,txt])=>{
+    const isRed=txt.includes('RED FLAG');
+    return '<div style="margin-bottom:9px;padding:8px 10px;background:'+(isRed?'#fff5f5':'#f9fafb')+';border-left:3px solid '+(isRed?'#e53e3e':'#e2e8f0')+';border-radius:0 4px 4px 0;">'
+      +'<span style="font-size:11px;color:#1a202c;line-height:1.6;">'+txt+'</span></div>';
+  }).join('');
   const jobNarLines=Object.entries(insights.jobNarrative||{}).map(([t,txt])=>'<div style="margin-bottom:6px;"><strong style="font-size:11px;color:#2d3748;">'+(lmap[t]||t)+':</strong> <span style="font-size:11px;color:#4a5568;">'+txt+'</span></div>').join('');
 
   const allFlags=[...redFlags,...amberFlags,...greenFlags].map(flagBlock).join('');
@@ -2739,63 +2768,73 @@ function downloadReport(id){
   const hasFlags=allFlags||roleFlagLines;
   const vcColor=vc.dot||'#333';const vcBg=vc.bg||'#f7f7f7';
 
-  const win=window.open('','_blank','width=860,height=720');
-  win.document.write('<!DOCTYPE html><html><head><title>Assessment Report — '+c.name+'</title>'
-  +'<style>'
-  +'*{margin:0;padding:0;box-sizing:border-box;}'
-  +'body{font-family:"Segoe UI",Arial,sans-serif;font-size:11px;color:#1a202c;background:#fff;padding:24px 28px;max-width:780px;margin:0 auto;}'
-  +'@media print{body{padding:10px 14px;}@page{margin:10mm;}}'
-  +'.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #1a202c;}'
-  +'h1{font-size:19px;font-weight:700;letter-spacing:-.3px;margin-bottom:2px;color:#1a202c;}'
-  +'h2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#718096;margin:14px 0 7px;border-bottom:1px solid #e2e8f0;padding-bottom:3px;}'
-  +'.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px;}'
-  +'.score-box{text-align:center;padding:9px 5px;border:1px solid #e2e8f0;border-radius:6px;}'
-  +'.score-val{font-size:20px;font-weight:700;line-height:1;}'
-  +'.score-lbl{font-size:10px;color:#a0aec0;margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}'
-  +'.col2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}'
-  +'.verdict{display:inline-block;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;background:'+vcBg+';color:'+vcColor+';}'
-  +'.footer{margin-top:16px;padding-top:8px;border-top:1px solid #e2e8f0;font-size:10px;color:#a0aec0;display:flex;justify-content:space-between;}'
-  +'</style></head><body>'
+  // Generate AI flags for the report
+  const _aiFlagsPromise=generateAIFlags(c);
+  
+  const sjtScoreHtml=s.sjt!==null&&s.sjt!==undefined
+    ?'<div class="score-box"><div class="score-val" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="score-lbl">Situations</div></div>'
+    :'';
 
-  +'<div class="header">'
-  +'<div><h1>'+c.name+'</h1>'
-  +'<div style="font-size:11px;color:#718096;margin-top:3px;">'+c.role+' &middot; '+c.email+(co?' &middot; '+co:'')+'</div>'
-  +'<div style="margin-top:5px;"><span class="verdict">'+c.verdict+'</span>'+(c.gender?' <span style="font-size:10px;color:#a0aec0;margin-left:6px;">'+c.gender+'</span>':'')+(c.age?' <span style="font-size:10px;color:#a0aec0;margin-left:4px;">'+c.age+' yrs</span>':'')+'</div>'
-  +'</div>'
-  +'<div style="text-align:right;">'
-  +'<div style="font-size:10px;color:#a0aec0;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Assessed</div>'
-  +'<div style="font-size:11px;color:#4a5568;">'+(c.invited||'—')+'</div>'
-  +'</div></div>'
+  _aiFlagsPromise.then(aiResult=>{
+    const aiSection=aiResult?`
+      <div class="section">
+        <div class="section-title ai-title">🤖 AI Analysis</div>
+        ${aiResult.summary?`<div style="background:#f0f4ff;border-left:3px solid #4f46e5;padding:10px 12px;border-radius:0 6px 6px 0;margin-bottom:12px;font-size:11px;color:#2d3748;line-height:1.6;"><strong>Summary:</strong> ${aiResult.summary}</div>`:''}
+        ${(aiResult.flags||[]).map(f=>{
+          const col=f.severity==='red'?'#dc2626':f.severity==='green'?'#16a34a':'#d97706';
+          const bg=f.severity==='red'?'#fef2f2':f.severity==='green'?'#f0fdf4':'#fffbeb';
+          const label=f.severity==='red'?'🔴 Red flag':f.severity==='green'?'🟢 Strength':'🟡 Watch point';
+          return `<div style="padding:9px 11px;background:${bg};border-left:3px solid ${col};border-radius:0 5px 5px 0;margin-bottom:7px;">
+            <div style="font-size:10px;font-weight:700;color:${col};margin-bottom:2px;">${label} · ${f.category}</div>
+            <div style="font-size:11px;font-weight:600;color:#1a202c;margin-bottom:3px;">${f.title}</div>
+            <div style="font-size:11px;color:#4a5568;line-height:1.55;">${f.detail}</div>
+          </div>`;
+        }).join('')}
+      </div>`:'<div class="section"><div class="section-title ai-title">🤖 AI Analysis</div><div style="font-size:11px;color:#a0aec0;">Set your Anthropic API key in Settings to enable AI analysis.</div></div>';
 
-  +'<div class="scores">'
-  +'<div class="score-box"><div class="score-val" style="color:'+sc(overall)+';">'+overall+'%</div><div class="score-lbl">Overall</div></div>'
-  +(hasCog&&iqPts?'<div class="score-box"><div class="score-val" style="color:'+sc(s.cognitive??50)+';">'+iqPts+'</div><div class="score-lbl">Est. IQ</div></div>':'')
-  +'<div class="score-box"><div class="score-val" style="color:#354764;">'+(s.typing?.accuracy||0)+'%</div><div class="score-lbl">Accuracy</div></div>'
-  +'<div class="score-box"><div class="score-val" style="color:#354764;">'+(s.typing?.wpm||0)+'</div><div class="score-lbl">WPM</div></div>'
-  +'</div>'
+    const win=window.open('','_blank','width=920,height=900');
+    const _meta=[c.role,c.email,c.gender,c.age?c.age+' yrs':null,c.country].filter(Boolean).join(' &middot; ');
+    const _hdr='<div class="header"><div><div class="h-company">'+co+' &mdash; Candidate Assessment Report</div><div class="h-name">'+c.name+'</div><div class="h-meta">'+_meta+'<br>Assessed: '+(c.invited||'&mdash;')+'</div></div><div class="h-right"><div class="overall-num" style="color:'+sc(overall)+';">'+overall+'%</div><div class="overall-lbl">Overall score</div><div style="font-size:11px;color:#888;margin-top:3px;">'+(overall>=70?'Strong profile':overall>=50?'Moderate profile':'Needs attention')+'</div></div></div>';
 
-  +'<div class="col2">'
-  +'<div>'
-  +'<h2>Candidate portrait</h2>'
-  +'<div style="font-size:11px;font-weight:600;color:#2d3748;line-height:1.65;margin-bottom:10px;padding:8px 10px;background:#f7f8fa;border-radius:4px;">'+insights.archetype+'</div>'
-  +'<div style="font-size:11px;color:#4a5568;line-height:1.7;">'+traitNarLines+'</div>'
-  +'</div>'
-  +'<div>'
-  +'<h2>Personality</h2>'+b5Rows
-  +'<h2 style="margin-top:10px;">Workplace behaviour</h2>'+wbRows
-  +'<h2 style="margin-top:10px;">Job-fit dimensions</h2>'+jobRows
-  +'</div>'
-  +'</div>'
+    const _profile='<div class="section"><div class="section-title accent">Candidate Profile</div><div class="archetype">'+insights.archetype+'</div>'+traitNarLines+'</div>';
+    const _scores='<div class="cols"><div><div class="section"><div class="section-title">HEXACO Personality</div>'+b5Rows+'</div><div class="section"><div class="section-title">Workplace Behaviour</div>'+wbRows+'</div></div><div><div class="section"><div class="section-title">Job-Fit Dimensions</div>'+jobRows+'</div><div class="section"><div class="section-title">DISC &amp; Under Pressure</div>'+discRows+darkRow+'</div></div></div>';
+    const _jobfit='<div class="section"><div class="section-title">Job-Fit Analysis</div>'+jobNarLines+'</div>';
+    const _flags=hasFlags?'<div class="section"><div class="section-title danger">Risk Signals &amp; Strengths</div>'+allFlags+'<div style="margin-top:6px;">'+roleFlagLines+'</div></div>':'';
+    const _footer='<div class="footer"><span>'+co+' &mdash; Confidential. For internal HR use only.</span><span>'+fmtDateShort()+'</span></div>';
+    const reportCSS='*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Segoe UI",system-ui,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.5;}@media print{@page{margin:16mm;size:A4;}}.header{background:#f7f8fa;border-bottom:2px solid #222;padding:28px 36px 24px;display:flex;justify-content:space-between;align-items:flex-start;}.h-company{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#888;margin-bottom:6px;}.h-name{font-size:26px;font-weight:700;letter-spacing:-.5px;color:#111;margin-bottom:4px;}.h-meta{font-size:11.5px;color:#555;line-height:1.8;}.h-right{text-align:right;flex-shrink:0;padding-left:20px;}.overall-num{font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1;}.overall-lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}.strip{display:flex;border-bottom:1px solid #eee;}.strip-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid #eee;}.strip-item:last-child{border-right:none;}.s-num{font-size:20px;font-weight:700;margin-bottom:3px;}.s-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#999;}.body{padding:28px 36px;}.section{margin-bottom:24px;}.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#999;border-bottom:1.5px solid #f0f0f0;padding-bottom:6px;margin-bottom:12px;}.section-title.red{border-color:#fca5a5;color:#dc2626;}.section-title.green{border-color:#86efac;color:#16a34a;}.section-title.blue{border-color:#93c5fd;color:#1d4ed8;}.cols2{display:grid;grid-template-columns:1fr 1fr;gap:28px;}.archetype{background:#f8f8f8;border-left:4px solid #111;padding:12px 16px;font-size:13px;font-weight:600;line-height:1.6;margin-bottom:14px;border-radius:0 5px 5px 0;}.nar{margin-bottom:8px;padding:9px 12px;border-radius:0 5px 5px 0;border-left:3px solid #e5e5e5;background:#fafafa;font-size:12px;color:#333;line-height:1.6;}.nar.bad{border-color:#ef4444;background:#fff5f5;}.nar.good{border-color:#22c55e;background:#f0fdf4;}.bar{display:flex;align-items:center;gap:8px;margin-bottom:7px;}.bar-name{font-size:11px;color:#444;width:160px;flex-shrink:0;}.bar-track{flex:1;height:6px;background:#f0f0f0;border-radius:99px;overflow:hidden;}.bar-fill{height:100%;border-radius:99px;}.bar-val{font-size:11px;font-weight:700;width:34px;text-align:right;color:#111;flex-shrink:0;}.flag{padding:10px 12px;border-radius:0 5px 5px 0;margin-bottom:7px;border-left:4px solid;}.flag-red{background:#fff5f5;border-color:#ef4444;}.flag-amber{background:#fffbeb;border-color:#f59e0b;}.flag-green{background:#f0fdf4;border-color:#22c55e;}.flag-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}.flag-title{font-size:12.5px;font-weight:700;margin-bottom:3px;}.flag-detail{font-size:11.5px;color:#444;line-height:1.55;}.ai-box{background:#f0f4ff;border-left:4px solid #4f46e5;padding:12px 14px;font-size:12px;color:#2d3a6b;line-height:1.65;margin-bottom:12px;border-radius:0 5px 5px 0;}.footer{margin-top:32px;padding-top:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:10px;color:#bbb;}';
 
-  +'<h2>Job-fit analysis</h2>'
-  +'<div>'+jobNarLines+'</div>'
+    // Build score strip — only modules actually taken
+    let _stripItems='';
+    if(hasCog&&iqPts)_stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.cognitive||50)+';">'+iqPts+'</div><div class="s-lbl">Est. IQ</div></div>';
+    if(s.sjt!=null)_stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="s-lbl">Situations</div></div>';
+    if(hasTypingDl&&s.typing&&s.typing.wpm)_stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.wpm+'</div><div class="s-lbl">Typing WPM</div></div>';
+    if(hasTypingDl&&s.typing&&s.typing.accuracy)_stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.accuracy+'%</div><div class="s-lbl">Typing Acc.</div></div>';
+    const _strip=_stripItems?'<div class="strip">'+_stripItems+'</div>':'';
 
-  +(hasFlags?'<h2 style="color:#c53030;border-color:#feb2b2;">Risk signals & strengths</h2><div>'+allFlags+'</div>'+(roleFlagLines?'<div style="margin-top:8px;">'+roleFlagLines+'</div>':''):'')
+    // Score bars — no DISC
+    const _barColor=(v)=>v>=70?'#22c55e':v>=45?'#94a3b8':'#ef4444';
+    const _bar=(label,val)=>val===null||val===undefined?'':'<div class="bar"><div class="bar-name">'+label+'</div><div class="bar-track"><div class="bar-fill" style="width:'+val+'%;background:'+_barColor(val)+';"></div></div><div class="bar-val">'+val+'</div></div>';
+    const _hexacoRows=_bar('Honesty & Integrity',b5&&b5.HonestyHumility)+_bar('Emotional Stability',b5&&b5.Neuroticism?100-b5.Neuroticism:null)+_bar('Extraversion',b5&&b5.Extraversion)+_bar('Agreeableness',b5&&b5.Agreeableness)+_bar('Conscientiousness',b5&&b5.Conscientiousness)+_bar('Openness',b5&&b5.Openness);
+    const _workRows=_bar('Collaboration',b5&&b5.Collaboration)+_bar('Accountability',b5&&b5.Accountability)+_bar('Adaptability',b5&&b5.Adaptability)+_bar('Conflict Style',b5&&b5.ConflictStyle)+_bar('Stress Resilience',b5&&b5.StressResilience)+_bar('Feedback Receptivity',b5&&b5.FeedbackReceptivity);
+    const _jobRows=_bar('Problem Solving',b5&&b5.ProblemSolving)+_bar('Initiative',b5&&b5.Initiative)+_bar('Communication',b5&&b5.CommunicationQuality)+_bar('Long-term Commitment',b5&&b5.LongTermCommitment)+_bar('Data-Driven',b5&&b5.DataDriven);
+    const _darkRow=_bar('Consistency Under Pressure',b5&&b5.DarkSide);
 
-  +'<div class="footer"><span>Assess YBS &mdash; Confidential</span><span>'+fmtDateShort()+'</span></div>'
-  +'<script>window.onload=function(){window.print();}<\/script>'
-  +'</body></html>');
-  win.document.close();
+    win.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Report '+c.name+'</title><style>'+reportCSS+'</style></head><body>'
+    +'<div class="header"><div><div class="h-company">'+co+' &mdash; Pre-Employment Assessment Report</div><div class="h-name">'+c.name+'</div><div class="h-meta">'+[c.role,c.email,c.gender?c.gender+(c.age?' '+c.age+' yrs':''):''].filter(Boolean).join(' &middot; ')+'<br>Assessed: '+(c.invited||'&mdash;')+'</div></div><div class="h-right"><div class="overall-num" style="color:'+sc(overall)+';">'+overall+'%</div><div class="overall-lbl">Overall score</div><div style="font-size:11px;color:#888;margin-top:3px;">'+(overall>=70?'Strong profile':overall>=50?'Moderate profile':'Needs attention')+'</div></div></div>'
+    +_strip
+    +'<div class="body">'
+    +aiSection
+    +'<div class="section"><div class="section-title blue">Candidate Profile</div><div class="archetype">'+insights.archetype+'</div>'+traitNarLines+'</div>'
+    +'<div class="cols2">'
+    +'<div><div class="section"><div class="section-title">Personality (HEXACO)</div>'+_hexacoRows+'</div><div class="section"><div class="section-title">Workplace Behaviour</div>'+_workRows+'</div></div>'
+    +'<div><div class="section"><div class="section-title">Job-Fit Dimensions</div>'+_jobRows+'</div><div class="section"><div class="section-title">Integrity & Work Ethic</div>'+_bar('Honesty & Integrity',b5&&b5.HonestyHumility)+_bar('Consistency Under Pressure',b5&&b5.DarkSide)+'</div></div>'
+    +'</div>'
+    +'<div class="section"><div class="section-title">Job-Fit Analysis</div>'+jobNarLines+'</div>'
+    +(hasFlags?'<div class="section"><div class="section-title red">Risk Signals & Strengths</div>'+allFlags+'<div style="margin-top:6px;">'+roleFlagLines+'</div></div>':'')
+    +'<div class="footer"><span>'+co+' &mdash; Confidential</span><span>'+fmtDateShort()+'</span></div></div>'
+    +'<script>window.onload=function(){window.print();};<\/script></body></html>');
+    win.document.close();
+  });
 }
 function goToAssessments(){const el=document.querySelector('[data-page="assessments"]');showPage('assessments',el);}
 function renderDash(){
@@ -3065,6 +3104,7 @@ function persistCandidates(){
 }
 function persistPositions(){
   try{localStorage.setItem('ybs_positions',JSON.stringify(positions));localStorage.setItem('ybs_next_pos_id',String(nextPosId));}catch(e){}
+  // Always push to Supabase so positions survive across devices and refreshes
   syncSaveConfig('positions',positions).catch(()=>{});
 }
 
@@ -3178,30 +3218,32 @@ function renderCandidates(){
     .filter(c=>!c.interviewOnly&&(!rF||c.role===rF)&&(!sF||c.status===sF))
     .sort((a,b)=>parseCandDate(b.invited)-parseCandDate(a.invited));
   const grid=document.getElementById('candGrid');if(!grid)return;
-  grid.innerHTML=`<div class="card" style="padding:0;overflow:hidden;"><table>
-    <thead><tr><th>Candidate</th><th>Info</th><th>Position</th><th>Overall</th><th>Est. IQ</th><th>Status</th><th>Verdict</th></tr></thead>
-    <tbody>${filtered.map((c,i)=>{
-      const s=overallScore(c.score);const vc=VERDICT_CFG[c.verdict]||VERDICT_CFG['Pending'];
-      const iq=c.score?cogPctToIQ(c.score.cognitive):null;
-      const info=[c.gender,c.age?c.age+'y':null,c.country].filter(Boolean).join(' · ')||'—';
-      const eff=cvEffectiveStatus(c);
-      const rcStatus=c.status||'Invited';
-      const statusBadge=rcStatus==='Completed'?'<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--green-s);color:var(--green);border:1px solid var(--green-b);font-weight:600;">Done</span>'
-        :rcStatus==='In Progress'?'<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b);font-weight:600;">In progress</span>'
-        :rcStatus==='Link Opened'?'<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--blue-s);color:var(--blue);border:1px solid var(--blue-b);font-weight:600;">Opened</span>'
-        :'<span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);font-weight:500;">Invited</span>';
-      const daysNote=eff.missedDeadline?'<div style="font-size:10px;color:var(--red);margin-top:2px;">⚑ missed deadline</div>':'';
-      return '<tr style="cursor:pointer;" onclick="openReport('+c.id+')">'
-        +'<td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:'+avColor(i)+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">'+ini(c.name)+'</div><div><div style="font-weight:500;font-size:13px;">'+c.name+'</div><div style="font-size:11px;color:var(--text-3);">'+c.email+'</div></div></div></td>'
-        +'<td style="font-size:12px;color:var(--text-2);">'+info+'</td>'
-        +'<td style="font-size:12px;color:var(--text-2);">'+c.role+'</td>'
-        +'<td style="font-size:12px;color:'+(s?scoreColor(s):'var(--text-3)')+';">'+(s?s+'%':'—')+'</td>'
-        +'<td style="font-size:12px;color:'+(iq?'var(--green)':'var(--text-3)')+';">'+(iq||'—')+'</td>'
-        +'<td>'+statusBadge+daysNote+'</td>'
-        +'<td><span class="badge '+vc.cls+'">'+vc.label+'</span></td>'
-        +'</tr>';
-    }).join('')||'<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-3);">No candidates</td></tr>'}
-    </tbody></table></div>`;
+  const candCards=filtered.map((c,i)=>{
+    const s=overallScore(c.score);const vc=VERDICT_CFG[c.verdict]||VERDICT_CFG['Pending'];
+    const iq=c.score?cogPctToIQ(c.score.cognitive):null;
+    const sjt=c.score?c.score.sjt:null;
+    const info=[c.gender,c.age?c.age+' yrs':null,c.country].filter(Boolean).join(' · ');
+    const eff=cvEffectiveStatus(c);
+    const rcStatus=c.status||'Invited';
+    const sColor=s?scoreColor(s):'var(--text-3)';
+    let statusHtml='';
+    if(rcStatus==='Completed')statusHtml='<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:var(--green-s);color:var(--green);border:1px solid var(--green-b);font-weight:600;">Completed</span>';
+    else if(rcStatus==='In Progress')statusHtml='<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:var(--amber-s);color:var(--amber);border:1px solid var(--amber-b);font-weight:600;">In Progress</span>';
+    else if(rcStatus==='Link Opened')statusHtml='<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:var(--blue-s);color:var(--blue);border:1px solid var(--blue-b);font-weight:600;">Opened</span>';
+    else statusHtml='<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border);font-weight:500;">Invited</span>';
+    if(eff.missedDeadline)statusHtml+='<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:var(--red-s);color:var(--red);border:1px solid var(--red-b);margin-left:6px;">Missed</span>';
+    const av='<div style="width:46px;height:46px;border-radius:50%;background:'+avColor(i)+';display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;">'+ini(c.name)+'</div>';
+    const nameRow='<div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;">'+c.name+'</div><div style="font-size:12px;color:var(--text-3);">'+c.role+(info?' · '+info:'')+(c.email?' · '+c.email:'')+'</div></div>';
+    const topRow='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">'+av+nameRow+'<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">'+statusHtml+'</div></div>';
+    let scoreBoxes='';
+    if(s!==null)scoreBoxes+='<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:64px;"><div style="font-size:20px;font-weight:700;color:'+sColor+';">'+s+'%</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px;">Overall</div></div>';
+    if(iq)scoreBoxes+='<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:64px;"><div style="font-size:20px;font-weight:700;color:var(--green);">'+iq+'</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px;">Est. IQ</div></div>';
+    if(sjt!=null)scoreBoxes+='<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:64px;"><div style="font-size:20px;font-weight:700;color:'+scoreColor(sjt)+';">'+sjt+'%</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px;">Situations</div></div>';
+    if(c.score&&c.score.typing&&c.score.typing.wpm)scoreBoxes+='<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:64px;"><div style="font-size:20px;font-weight:700;color:var(--text);">'+c.score.typing.wpm+'</div><div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-top:1px;">WPM</div></div>';
+    const scoreRow='<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+scoreBoxes+'<div style="margin-left:auto;"><span class="badge '+vc.cls+'">'+vc.label+'</span></div></div>';
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;cursor:pointer;" onclick="openReport('+c.id+')">'+topRow+scoreRow+'</div>';
+  }).join('');
+  grid.innerHTML='<div style="display:flex;flex-direction:column;gap:10px;">'+(candCards||'<div style="text-align:center;padding:48px;color:var(--text-3);font-size:14px;">No candidates found</div>')+'</div>';
 }
 
 /* ═══════════════════════════════════════════
@@ -3209,113 +3251,188 @@ function renderCandidates(){
    Uses indirect situational language, no obvious "right" answer
 ═══════════════════════════════════════════ */
 const B5_QUESTIONS=[
-  // ── OPENNESS (6) — genuine curiosity, imagination, experience-seeking ──
-  {q:"I find myself daydreaming about ideas and possibilities that may never happen.",trait:"Openness",rev:false},
-  {q:"I am more comfortable with familiar routines than exploring unknown territory.",trait:"Openness",rev:true},
-  {q:"When I encounter an unfamiliar concept, my first instinct is curiosity rather than discomfort.",trait:"Openness",rev:false},
-  {q:"I rarely find myself drawn to poetry, abstract art, or music without a clear structure.",trait:"Openness",rev:true},
-  {q:"I enjoy thinking about hypothetical scenarios even when they have no practical use.",trait:"Openness",rev:false},
-  {q:"I tend to see the world in shades of grey rather than black and white.",trait:"Openness",rev:false},
-  // ── CONSCIENTIOUSNESS (6) — discipline, order, self-regulation ──
-  {q:"I keep my personal space organised without being reminded.",trait:"Conscientiousness",rev:false},
-  {q:"I find it hard to resist temptations even when they interfere with my goals.",trait:"Conscientiousness",rev:true},
-  {q:"I am the kind of person who makes a list and sticks to it.",trait:"Conscientiousness",rev:false},
-  {q:"I often act on impulse and think through consequences afterwards.",trait:"Conscientiousness",rev:true},
-  {q:"I take pride in finishing what I start, even when my enthusiasm has faded.",trait:"Conscientiousness",rev:false},
-  {q:"I tend to procrastinate on tasks that feel difficult or unpleasant.",trait:"Conscientiousness",rev:true},
-  // ── EXTRAVERSION (6) — sociability, assertiveness, energy from others ──
-  {q:"Being around a lot of people gives me energy rather than draining me.",trait:"Extraversion",rev:false},
-  {q:"I feel most comfortable in one-on-one conversations rather than group settings.",trait:"Extraversion",rev:true},
-  {q:"I find it natural to introduce myself to people I have never met.",trait:"Extraversion",rev:false},
-  {q:"After spending a full day with other people, I need time alone to recharge.",trait:"Extraversion",rev:true},
-  {q:"I enjoy being the centre of attention in social situations.",trait:"Extraversion",rev:false},
-  {q:"I prefer a quiet evening at home over going out and socialising.",trait:"Extraversion",rev:true},
-  // ── AGREEABLENESS (6) — warmth, trust, care for others ──
-  {q:"I genuinely enjoy helping other people, even when there is nothing in it for me.",trait:"Agreeableness",rev:false},
-  {q:"I find it easy to see the best in people, even those who have let me down.",trait:"Agreeableness",rev:false},
-  {q:"I put my own interests first when they conflict with what others want.",trait:"Agreeableness",rev:true},
-  {q:"When someone is in distress, I feel a strong urge to comfort them.",trait:"Agreeableness",rev:false},
-  {q:"I am sometimes described as cold or difficult to read by people close to me.",trait:"Agreeableness",rev:true},
-  {q:"I believe most people have good intentions, even when their actions seem questionable.",trait:"Agreeableness",rev:false},
-  // ── NEUROTICISM (6) — emotional stability, anxiety, mood variability ──
-  {q:"I often feel anxious even when there is no clear reason for it.",trait:"Neuroticism",rev:false},
-  {q:"My mood is generally stable and not easily affected by minor events.",trait:"Neuroticism",rev:true},
-  {q:"I tend to worry about things that are outside my control.",trait:"Neuroticism",rev:false},
-  {q:"I rarely feel overwhelmed, even when juggling many responsibilities.",trait:"Neuroticism",rev:true},
-  {q:"Small frustrations can sometimes make me feel disproportionately upset.",trait:"Neuroticism",rev:false},
-  {q:"I bounce back quickly after setbacks or disappointments.",trait:"Neuroticism",rev:true},
-  // ── COLLABORATION (5) ──
-  {q:"I find shared work energising even when it is slower than doing things alone.",trait:"Collaboration",rev:false},
-  {q:"I often feel that group decisions water down the quality of individual ideas.",trait:"Collaboration",rev:true},
-  {q:"I proactively keep teammates informed even when no one has explicitly asked me to.",trait:"Collaboration",rev:false},
-  {q:"I prefer taking ownership of a task end-to-end rather than splitting it with others.",trait:"Collaboration",rev:true},
-  {q:"When a team succeeds, I feel proud even if my personal contribution was small.",trait:"Collaboration",rev:false},
-  // ── ACCOUNTABILITY (5) ──
-  {q:"When a project fails, my first instinct is to understand what I could have done differently.",trait:"Accountability",rev:false},
-  {q:"I find it uncomfortable to admit a mistake in front of others.",trait:"Accountability",rev:true},
-  {q:"I follow through on promises even when circumstances make it easier not to.",trait:"Accountability",rev:false},
-  {q:"I tend to flag delays or problems early, before they become bigger issues.",trait:"Accountability",rev:false},
-  {q:"I sometimes blame circumstances rather than examining my own role when things go wrong.",trait:"Accountability",rev:true},
-  // ── ADAPTABILITY (5) ──
-  {q:"When my plan is disrupted, I naturally look for alternative paths rather than feeling stuck.",trait:"Adaptability",rev:false},
-  {q:"Sudden changes to how work is done tend to reduce my productivity for longer than they should.",trait:"Adaptability",rev:true},
-  {q:"I adjust my approach based on the situation rather than relying on a single style.",trait:"Adaptability",rev:false},
-  {q:"I thrive most when my work environment is stable and predictable.",trait:"Adaptability",rev:true},
-  {q:"I have deliberately changed my habits based on what I learned was not working.",trait:"Adaptability",rev:false},
-  // ── CONFLICT STYLE (5) ──
-  {q:"When I disagree with a colleague, I address it directly rather than going around them.",trait:"ConflictStyle",rev:false},
-  {q:"I avoid voicing disagreement in meetings even when I think the group is making a mistake.",trait:"ConflictStyle",rev:true},
-  {q:"I can separate my feelings from a professional dispute and stay focused on the issue.",trait:"ConflictStyle",rev:false},
-  {q:"I sometimes let resentment build rather than addressing the source of tension.",trait:"ConflictStyle",rev:true},
-  {q:"I find productive disagreement energising rather than uncomfortable.",trait:"ConflictStyle",rev:false},
-  // ── STRESS RESILIENCE (5) ──
-  {q:"Under sustained pressure, my effectiveness stays relatively consistent.",trait:"StressResilience",rev:false},
-  {q:"I find it hard to switch off from work-related stress outside of working hours.",trait:"StressResilience",rev:true},
-  {q:"I can stay focused and make clear decisions even when the stakes are high.",trait:"StressResilience",rev:false},
-  {q:"When multiple things go wrong at once, I find it hard to keep perspective.",trait:"StressResilience",rev:true},
-  {q:"I recover quickly from high-pressure episodes and return to my baseline.",trait:"StressResilience",rev:false},
-  // ── FEEDBACK RECEPTIVITY (5) ──
-  {q:"I actively seek feedback on my work, including from people who might be critical.",trait:"FeedbackReceptivity",rev:false},
-  {q:"When someone criticises my work, I tend to feel defensive at first.",trait:"FeedbackReceptivity",rev:true},
-  {q:"I treat critical feedback as useful data rather than a personal attack.",trait:"FeedbackReceptivity",rev:false},
-  {q:"I find it hard to implement feedback when I disagree with the person giving it.",trait:"FeedbackReceptivity",rev:true},
-  {q:"I have significantly changed how I work based on feedback I received.",trait:"FeedbackReceptivity",rev:false},
-  // ── PROBLEM SOLVING (6) ──
-  {q:"When faced with a difficult problem, I break it into smaller parts before trying to solve it.",trait:"ProblemSolving",rev:false},
-  {q:"I find it frustrating when problems do not have clear, definitive answers.",trait:"ProblemSolving",rev:true},
-  {q:"I enjoy working through complex challenges even when the path forward is unclear.",trait:"ProblemSolving",rev:false},
-  {q:"When I am stuck, I tend to keep trying the same approach rather than stepping back.",trait:"ProblemSolving",rev:true},
-  {q:"I often generate multiple possible solutions before committing to one.",trait:"ProblemSolving",rev:false},
-  {q:"I am comfortable making a decision with incomplete information when needed.",trait:"ProblemSolving",rev:false},
-  // ── LONG-TERM COMMITMENT (6) ──
-  {q:"I prefer mastering a role deeply over moving quickly to the next opportunity.",trait:"LongTermCommitment",rev:false},
-  {q:"I often feel the urge to move on before I have fully developed in my current role.",trait:"LongTermCommitment",rev:true},
-  {q:"I invest effort in building relationships at work even if they take time to develop.",trait:"LongTermCommitment",rev:false},
-  {q:"I get restless when I have been in the same role for more than a year or two.",trait:"LongTermCommitment",rev:true},
-  {q:"I am motivated by growing with an organisation rather than just moving through it.",trait:"LongTermCommitment",rev:false},
-  {q:"I see my career as a series of short sprints rather than a sustained long-term journey.",trait:"LongTermCommitment",rev:true},
-  // ── DATA DRIVEN (6) ──
-  {q:"Before drawing a conclusion, I look for evidence or data to support it.",trait:"DataDriven",rev:false},
-  {q:"I trust my gut more than data when making decisions under pressure.",trait:"DataDriven",rev:true},
-  {q:"I regularly check whether the outcomes of my decisions matched my expectations.",trait:"DataDriven",rev:false},
-  {q:"I find interpreting charts, tables, or statistics straightforward and useful.",trait:"DataDriven",rev:false},
-  {q:"I am sceptical of conclusions that are not supported by measurable evidence.",trait:"DataDriven",rev:false},
-  {q:"I find data analysis tedious and prefer to rely on experience instead.",trait:"DataDriven",rev:true},
-  // ── INITIATIVE (6) ──
-  {q:"I often spot improvements to processes or systems without being asked.",trait:"Initiative",rev:false},
-  {q:"I wait for clear direction before acting on something that has not been assigned to me.",trait:"Initiative",rev:true},
-  {q:"I have proposed and followed through on a project outside my job description.",trait:"Initiative",rev:false},
-  {q:"I prefer to stay within my defined responsibilities to avoid overstepping.",trait:"Initiative",rev:true},
-  {q:"When I see a gap, I take action to fill it rather than waiting for someone else.",trait:"Initiative",rev:false},
-  {q:"I am energised by the opportunity to build something from nothing.",trait:"Initiative",rev:false},
-  // ── COMMUNICATION QUALITY (6) ──
-  {q:"I tailor how I explain things to the background of the person I am speaking with.",trait:"CommunicationQuality",rev:false},
-  {q:"I often receive feedback that my explanations are hard to follow.",trait:"CommunicationQuality",rev:true},
-  {q:"I write concisely and edit out unnecessary detail before sending messages.",trait:"CommunicationQuality",rev:false},
-  {q:"I find it difficult to summarise complex topics without losing important detail.",trait:"CommunicationQuality",rev:true},
-  {q:"I structure my communication clearly before speaking or writing.",trait:"CommunicationQuality",rev:false},
-  {q:"I prefer to share my full thought process rather than lead with a clear conclusion.",trait:"CommunicationQuality",rev:true},
-]
+  // BLOCK 1: AGREE / DISAGREE (113 questions)
+  {type:'agree',q:"I always try to be honest, even when it is not what people want to hear.",trait:"HonestyHumility",rev:false},
+  {type:'agree',q:"Sometimes it is necessary to exaggerate a little to make a good impression.",trait:"HonestyHumility",rev:true},
+  {type:'agree',q:"I would feel uncomfortable taking credit for something I only partly did.",trait:"HonestyHumility",rev:false},
+  {type:'agree',q:"I behave the same way whether or not someone is watching me.",trait:"HonestyHumility",rev:false},
+  {type:'agree',q:"A small lie is acceptable if it avoids unnecessary conflict.",trait:"HonestyHumility",rev:true},
+  {type:'agree',q:"I sometimes say what people want to hear rather than what I truly think.",trait:"HonestyHumility",rev:true},
+  {type:'agree',q:"I would report a mistake I made even if no one else would have noticed.",trait:"HonestyHumility",rev:false},
+  {type:'agree',q:"I have used flattery or kind words to get something I wanted.",trait:"HonestyHumility",rev:true},
+  {type:'agree',q:"I tend to worry about things even when there is no real reason to.",trait:"Neuroticism",rev:false},
+  {type:'agree',q:"I recover quickly after a difficult or stressful day.",trait:"Neuroticism",rev:true},
+  {type:'agree',q:"Small problems can put me in a bad mood for a long time.",trait:"Neuroticism",rev:false},
+  {type:'agree',q:"I stay calm in situations that make other people anxious.",trait:"Neuroticism",rev:true},
+  {type:'agree',q:"I find it easy to put work problems out of my mind after working hours.",trait:"Neuroticism",rev:true},
+  {type:'agree',q:"I notice physical signs of stress in difficult situations.",trait:"Neuroticism",rev:false},
+  {type:'agree',q:"I often feel nervous before important events, even if I have prepared well.",trait:"Neuroticism",rev:false},
+  {type:'agree',q:"When things go wrong unexpectedly, I usually adjust without becoming too upset.",trait:"Neuroticism",rev:true},
+  {type:'agree',q:"I find it easy to introduce myself to people I have never met.",trait:"Extraversion",rev:false},
+  {type:'agree',q:"After spending a long time with others, I need time alone to feel like myself again.",trait:"Extraversion",rev:true},
+  {type:'agree',q:"I feel comfortable speaking up in group discussions.",trait:"Extraversion",rev:false},
+  {type:'agree',q:"I am energised by being around other people.",trait:"Extraversion",rev:false},
+  {type:'agree',q:"I prefer working on my own rather than as part of a team.",trait:"Extraversion",rev:true},
+  {type:'agree',q:"I enjoy social events and find it easy to mingle.",trait:"Extraversion",rev:false},
+  {type:'agree',q:"I prefer to respond to messages rather than make spontaneous phone calls.",trait:"Extraversion",rev:true},
+  {type:'agree',q:"I often find myself naturally taking the lead in group situations.",trait:"Extraversion",rev:false},
+  {type:'agree',q:"I genuinely enjoy helping others, even when there is nothing in it for me.",trait:"Agreeableness",rev:false},
+  {type:'agree',q:"I can become quite critical of others when I think they are wrong.",trait:"Agreeableness",rev:true},
+  {type:'agree',q:"I tend to give people the benefit of the doubt.",trait:"Agreeableness",rev:false},
+  {type:'agree',q:"I find it hard to be patient with people who work more slowly than me.",trait:"Agreeableness",rev:true},
+  {type:'agree',q:"I try to see the other person's point of view before I respond.",trait:"Agreeableness",rev:false},
+  {type:'agree',q:"I sometimes hold a grudge longer than I probably should.",trait:"Agreeableness",rev:true},
+  {type:'agree',q:"When someone is going through a hard time, I feel a genuine urge to support them.",trait:"Agreeableness",rev:false},
+  {type:'agree',q:"I would rather be respected for my results than liked for my personality.",trait:"Agreeableness",rev:true},
+  {type:'agree',q:"I usually plan my work before I start.",trait:"Conscientiousness",rev:false},
+  {type:'agree',q:"I sometimes begin tasks without thinking through the consequences first.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I finish what I start, even when I have lost interest in it.",trait:"Conscientiousness",rev:false},
+  {type:'agree',q:"I tend to leave things until the deadline is very close.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I check my work carefully before calling it done.",trait:"Conscientiousness",rev:false},
+  {type:'agree',q:"I keep my workspace organised without being reminded.",trait:"Conscientiousness",rev:false},
+  {type:'agree',q:"I find it hard to maintain a routine for more than a few weeks.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I follow through on commitments even when circumstances make it inconvenient.",trait:"Conscientiousness",rev:false},
+  {type:'agree',q:"I enjoy thinking about ideas that have no immediate practical use.",trait:"Openness",rev:false},
+  {type:'agree',q:"I prefer tried and tested methods over new and experimental ones.",trait:"Openness",rev:true},
+  {type:'agree',q:"I regularly seek out new knowledge outside of my area of work.",trait:"Openness",rev:false},
+  {type:'agree',q:"I prefer clear, concrete tasks over open-ended or ambiguous ones.",trait:"Openness",rev:true},
+  {type:'agree',q:"I find it energising when a conversation moves into unfamiliar territory.",trait:"Openness",rev:false},
+  {type:'agree',q:"I am drawn to creative solutions even when a simpler approach would work.",trait:"Openness",rev:false},
+  {type:'agree',q:"I trust what has worked before more than untested new ideas.",trait:"Openness",rev:true},
+  {type:'agree',q:"I find myself curious about how things work, even outside my expertise.",trait:"Openness",rev:false},
+  {type:'agree',q:"I let my team know what I am working on without being asked.",trait:"Collaboration",rev:false},
+  {type:'agree',q:"I prefer to own a task entirely rather than share it with others.",trait:"Collaboration",rev:true},
+  {type:'agree',q:"I feel proud when the team succeeds, even if my contribution was small.",trait:"Collaboration",rev:false},
+  {type:'agree',q:"I share useful information with colleagues even when they have not asked for it.",trait:"Collaboration",rev:false},
+  {type:'agree',q:"I find that working with others usually slows things down.",trait:"Collaboration",rev:true},
+  {type:'agree',q:"I adapt how I communicate based on the person I am working with.",trait:"Collaboration",rev:false},
+  {type:'agree',q:"When a project fails, I first ask what I could have done better.",trait:"Accountability",rev:false},
+  {type:'agree',q:"When things go wrong, I tend to look at external causes first.",trait:"Accountability",rev:true},
+  {type:'agree',q:"I tell my manager early when I think a deadline is at risk.",trait:"Accountability",rev:false},
+  {type:'agree',q:"I feel personally responsible for the outcomes of work I am involved in.",trait:"Accountability",rev:false},
+  {type:'agree',q:"I sometimes avoid giving updates because I know difficult questions will follow.",trait:"Accountability",rev:true},
+  {type:'agree',q:"I hold myself to the same standards I expect from others.",trait:"Accountability",rev:false},
+  {type:'agree',q:"When plans change suddenly, I find a new way forward quickly.",trait:"Adaptability",rev:false},
+  {type:'agree',q:"Once I commit to a plan, I find it hard to change direction.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I can switch priorities mid-task without losing focus.",trait:"Adaptability",rev:false},
+  {type:'agree',q:"I find frequent changes in how things are done more disruptive than exciting.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I see unexpected changes at work as a chance to find a better approach.",trait:"Adaptability",rev:false},
+  {type:'agree',q:"I find it difficult to let go of a plan I have already invested time in.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"If I disagree with a decision at work, I say so directly.",trait:"ConflictStyle",rev:false},
+  {type:'agree',q:"I prefer to let small tensions settle on their own.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I address problems with colleagues directly rather than going around them.",trait:"ConflictStyle",rev:false},
+  {type:'agree',q:"I sometimes stay quiet in meetings even when I think the group is making a mistake.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I think honest disagreement is a sign of a healthy team.",trait:"ConflictStyle",rev:false},
+  {type:'agree',q:"I find confrontation uncomfortable enough that I often avoid it.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I work well even when I have a very tight deadline.",trait:"StressResilience",rev:false},
+  {type:'agree',q:"A bad day at work affects my mood well into the evening.",trait:"StressResilience",rev:true},
+  {type:'agree',q:"When several things go wrong at once, I stay focused and keep working.",trait:"StressResilience",rev:false},
+  {type:'agree',q:"I find it hard to stop thinking about work problems outside of working hours.",trait:"StressResilience",rev:true},
+  {type:'agree',q:"I remain composed when I receive unexpected bad news.",trait:"StressResilience",rev:false},
+  {type:'agree',q:"Under sustained pressure, my effectiveness stays consistent.",trait:"StressResilience",rev:false},
+  {type:'agree',q:"I ask for feedback on my work, including from people who may criticise it.",trait:"FeedbackReceptivity",rev:false},
+  {type:'agree',q:"I have made real changes to how I work based on feedback someone gave me.",trait:"FeedbackReceptivity",rev:false},
+  {type:'agree',q:"When someone criticises my work, I tend to feel defensive at first.",trait:"FeedbackReceptivity",rev:true},
+  {type:'agree',q:"I find it hard to act on feedback from someone I do not respect.",trait:"FeedbackReceptivity",rev:true},
+  {type:'agree',q:"I treat critical feedback as useful information rather than a personal attack.",trait:"FeedbackReceptivity",rev:false},
+  {type:'agree',q:"I ask clarifying questions to make sure I have understood feedback before acting on it.",trait:"FeedbackReceptivity",rev:false},
+  {type:'agree',q:"When I face a hard problem, I break it into smaller steps.",trait:"ProblemSolving",rev:false},
+  {type:'agree',q:"I tend to stick with the first solution that seems to work.",trait:"ProblemSolving",rev:true},
+  {type:'agree',q:"I look for the real cause of a problem, not just the obvious one.",trait:"ProblemSolving",rev:false},
+  {type:'agree',q:"I find it energising to work on a problem that has no clear answer.",trait:"ProblemSolving",rev:false},
+  {type:'agree',q:"I think of several possible solutions before choosing one.",trait:"ProblemSolving",rev:false},
+  {type:'agree',q:"I often spot things that need fixing at work before anyone asks me to.",trait:"Initiative",rev:false},
+  {type:'agree',q:"I prefer to focus on what I was asked to do rather than take on extras.",trait:"Initiative",rev:true},
+  {type:'agree',q:"When I see something that needs to be done, I do it without waiting.",trait:"Initiative",rev:false},
+  {type:'agree',q:"I have started a project or improvement at work without being told to.",trait:"Initiative",rev:false},
+  {type:'agree',q:"I wait for clear instructions before starting something I have not done before.",trait:"Initiative",rev:true},
+  {type:'agree',q:"I change how I explain something based on who I am talking to.",trait:"CommunicationQuality",rev:false},
+  {type:'agree',q:"I make sure the other person understood me before moving on.",trait:"CommunicationQuality",rev:false},
+  {type:'agree',q:"I prefer to include all the details rather than simplify my message.",trait:"CommunicationQuality",rev:true},
+  {type:'agree',q:"I write concisely and remove unnecessary detail before sending a message.",trait:"CommunicationQuality",rev:false},
+  {type:'agree',q:"People sometimes tell me my explanations are hard to follow.",trait:"CommunicationQuality",rev:true},
+  {type:'agree',q:"I would rather develop deeply in one role than jump to new ones quickly.",trait:"LongTermCommitment",rev:false},
+  {type:'agree',q:"I like switching to new roles or companies every few years.",trait:"LongTermCommitment",rev:true},
+  {type:'agree',q:"I invest in building relationships at work even when it takes time.",trait:"LongTermCommitment",rev:false},
+  {type:'agree',q:"I get restless when I have been in the same position for too long.",trait:"LongTermCommitment",rev:true},
+  {type:'agree',q:"I see staying loyal to a company as genuinely worthwhile.",trait:"LongTermCommitment",rev:false},
+  {type:'agree',q:"I look for data or evidence before I reach a conclusion.",trait:"DataDriven",rev:false},
+  {type:'agree',q:"Under pressure, I go with my gut rather than looking at the data.",trait:"DataDriven",rev:true},
+  {type:'agree',q:"I check whether my decisions produced the results I expected.",trait:"DataDriven",rev:false},
+  {type:'agree',q:"I track my own results to understand where I can improve.",trait:"DataDriven",rev:false},
+  {type:'agree',q:"I find it tedious to analyse data when experience can give the answer faster.",trait:"DataDriven",rev:true},
+  {type:'agree',q:"My effort and quality stay the same whether my manager is nearby or not.",trait:"DarkSide",rev:false},
+  {type:'agree',q:"When I am very busy, my attention to quality sometimes drops.",trait:"DarkSide",rev:true},
+  {type:'agree',q:"I have taken a shortcut at work when I knew no one would check.",trait:"DarkSide",rev:true},
+  {type:'agree',q:"I behave consistently whether or not I think I am being evaluated.",trait:"DarkSide",rev:false},
+
+    // BLOCK 2: FORCED CHOICE (20 pairs)
+  // Pick the option that is more like you — both are positive
+  // ═══════════════════════════════════════════════════════════
+  {type:'fc',a:"I prefer to make a quick decision and adjust later.",b:"I prefer to think it through carefully before committing.",traitA:"DISCDominance",traitB:"Conscientiousness"},
+  {type:'fc',a:"I enjoy taking charge when a group needs direction.",b:"I am happy to support whoever is leading.",traitA:"DISCDominance",traitB:"DISCSteadiness"},
+  {type:'fc',a:"I am more motivated when I can drive something forward independently.",b:"I am more motivated when I am working closely with others.",traitA:"Initiative",traitB:"Collaboration"},
+  {type:'fc',a:"I prefer a structured plan I can follow closely.",b:"I prefer to stay flexible and adjust as things develop.",traitA:"Conscientiousness",traitB:"Adaptability"},
+  {type:'fc',a:"I address tension at work directly — an honest conversation is better than silence.",b:"I try to smooth things over — keeping a good atmosphere matters.",traitA:"ConflictStyle",traitB:"Agreeableness"},
+  {type:'fc',a:"I get more satisfaction from mastering one role deeply.",b:"I get more satisfaction from learning new things and expanding my skills.",traitA:"LongTermCommitment",traitB:"Openness"},
+  {type:'fc',a:"I rely more on creative thinking when solving problems.",b:"I rely more on evidence and past results when solving problems.",traitA:"ProblemSolving",traitB:"DataDriven"},
+  {type:'fc',a:"Under pressure, I focus on keeping my performance steady.",b:"Under pressure, I find talking to others helps me recalibrate.",traitA:"StressResilience",traitB:"Extraversion"},
+  {type:'fc',a:"I prefer to identify a problem and fix it myself.",b:"I prefer to involve the team and solve it together.",traitA:"Initiative",traitB:"Collaboration"},
+  {type:'fc',a:"When I receive feedback, I reflect carefully before deciding what to change.",b:"When I receive feedback, I act on it quickly and adjust.",traitA:"FeedbackReceptivity",traitB:"Adaptability"},
+  {type:'fc',a:"I take time to structure my message carefully before communicating.",b:"I prefer to raise the issue immediately and work it out in conversation.",traitA:"CommunicationQuality",traitB:"Initiative"},
+  {type:'fc',a:"I trust the instincts and experience of the people I work with.",b:"I trust data and evidence more than individual opinions.",traitA:"Agreeableness",traitB:"DataDriven"},
+  {type:'fc',a:"I am most satisfied when I finish a task to a high standard.",b:"I am most satisfied when I find a creative or unexpected solution.",traitA:"Conscientiousness",traitB:"ProblemSolving"},
+  {type:'fc',a:"I prefer speaking up and influencing the direction of a project.",b:"I prefer doing my part well and letting results speak.",traitA:"Extraversion",traitB:"DISCSteadiness"},
+  {type:'fc',a:"When something fails, I focus on finding a better solution.",b:"When something fails, I focus on understanding my own role in what went wrong.",traitA:"ProblemSolving",traitB:"Accountability"},
+  {type:'fc',a:"Results matter more to me than the exact process used to achieve them.",b:"How you get to a result matters just as much as the result itself.",traitA:"DISCDominance",traitB:"HonestyHumility"},
+  {type:'fc',a:"I adapt quickly to new environments and see change as an opportunity.",b:"I invest deeply in what I am doing and build real expertise over time.",traitA:"Adaptability",traitB:"LongTermCommitment"},
+  {type:'fc',a:"I find it energising to challenge how things are done.",b:"I find it energising to do things reliably and well.",traitA:"DISCDominance",traitB:"DISCSteadiness"},
+  {type:'fc',a:"I will push back on a decision I disagree with, even if it creates friction.",b:"I tend to find a way to work within decisions made by the group.",traitA:"ConflictStyle",traitB:"Agreeableness"},
+  {type:'fc',a:"I am known as someone who challenges and drives change.",b:"I am known as someone who is reliable and consistent.",traitA:"DISCDominance",traitB:"DISCSteadiness"},
+
+  // ═══════════════════════════════════════════════════════════
+  // BLOCK 3: SCENARIOS (8 situations)
+  // ═══════════════════════════════════════════════════════════
+  {type:'scenario',situation:"You are coordinating a client shoot scheduled for tomorrow. At 5pm you discover the venue has double-booked the space. The client is expecting confirmation tonight.",options:["Send the client a brief message saying everything is under control, then spend the evening resolving it.","Call the client immediately, explain the situation honestly, and outline two backup options you are already exploring.","Contact your manager and wait for their guidance before reaching out to the client.","Email the venue a strongly worded complaint and copy the client to show you are taking action."],best:1,trait:"Accountability"},
+  {type:'scenario',situation:"A colleague asks for your honest opinion on their work before they send it to a client. You can see several problems that could reflect badly on the studio.",options:["Tell them it looks great to avoid an awkward conversation before a deadline.","Point out the specific issues clearly but constructively, and offer to help fix them before it goes out.","Send them a long list of everything wrong in detail without filtering for what is actually critical.","Mention one small issue only so as not to overwhelm them."],best:1,trait:"CommunicationQuality"},
+  {type:'scenario',situation:"You notice that the way session bookings are logged creates confusion — different team members record things differently, causing occasional double-bookings. You are not responsible for this process.",options:["Document the inconsistency with a specific example and raise it with your manager as a suggested improvement.","Fix it yourself quietly by standardising the approach without telling anyone.","Mention it casually to a colleague and leave it at that.","Continue working around it — raising process issues is not your responsibility."],best:0,trait:"Initiative"},
+  {type:'scenario',situation:"A client arrives for their appointment clearly unhappy about the wait time on a previous visit. They are not shouting but are cold and distant.",options:["Act professionally and complete the session as normal — they will get over it.","Acknowledge directly that you understand their frustration, apologise for the previous experience, and ask if there is anything you can do to make today better.","Apologise repeatedly throughout the session to show you care.","Report the situation to your manager before starting so they are aware."],best:1,trait:"Agreeableness"},
+  {type:'scenario',situation:"You are given a new responsibility that was not in your original role. You have not been trained on it and your manager is travelling this week.",options:["Attempt it independently and submit the work as if you were fully confident — you do not want to appear incapable.","Message your manager with a specific question about the part you are unsure of, proceed with what you can, and flag clearly what needs their review.","Wait until your manager returns before doing anything — working outside your training creates risk.","Ask a colleague to do it for you and present it as your own work."],best:1,trait:"ProblemSolving"},
+  {type:'scenario',situation:"Two weeks into a busy period, a team member tells you privately that they are struggling to keep up and are worried about making mistakes. They ask you not to mention it to the manager.",options:["Respect their confidence completely and say nothing to anyone.","Encourage them to speak to the manager yourself, and offer to help them prepare what to say.","Tell the manager immediately because the business risk outweighs the confidence.",  "Offer to cover some of their tasks quietly without the manager knowing."],best:1,trait:"ConflictStyle"},
+  {type:'scenario',situation:"You have just completed a project and your manager gives you feedback that contradicts what a senior colleague told you last week. Both cannot be right.",options:["Follow your manager's feedback since they have authority, without raising the contradiction.","Thank your manager, then ask a clarifying question: explain the conflicting guidance you received and ask which approach they would recommend going forward.","Go back to the colleague and tell them the manager disagreed with them.","Ignore both and do it the way you think is best."],best:1,trait:"FeedbackReceptivity"},
+  {type:'scenario',situation:"You are preparing an important client proposal and realise you are missing key information that would usually take two days to obtain. The proposal is due tomorrow.",options:["Submit the proposal with the information gap clearly noted and explain what is missing and why.","Make reasonable assumptions based on what you know, note them explicitly in the document, and flag them to your manager before submitting.","Ask for a deadline extension without explaining the specific reason.","Submit the proposal as if the information is complete to avoid looking unprepared."],best:1,trait:"ProblemSolving"},
+];
+
+
+// Computed counts for scoring
+
+const ROLE_COMPETENCIES={
+  'photographer':['problem_solving','initiative','client_handling','communication'],
+  'customer coordinator':['client_handling','communication','responsibility','adaptability'],
+  'coordinator':['client_handling','communication','responsibility','adaptability'],
+  'operations manager':['leadership','problem_solving','responsibility','communication'],
+  'operations':['leadership','problem_solving','responsibility','communication'],
+  'manager':['leadership','problem_solving','responsibility','communication'],
+  'admin':['detail','responsibility','communication','initiative'],
+  'assistant':['responsibility','communication','initiative','adaptability'],
+  'driver':['responsibility','client_handling','communication','adaptability'],
+  'studio':['responsibility','client_handling','initiative','adaptability'],
+  'default':['problem_solving','communication','responsibility','initiative'],
+};
+
+function getSJTScenarios(role){
+  const rl=(role||'').toLowerCase();
+  let competencies=ROLE_COMPETENCIES.default;
+  for(const[key,comps] of Object.entries(ROLE_COMPETENCIES)){
+    if(rl.includes(key)){competencies=comps;break;}
+  }
+  // Select scenarios matching the role's competencies, max 6
+  const matched=SJT_SCENARIOS.filter(s=>s.competencies.some(c=>competencies.includes(c)));
+  // Shuffle deterministically using role as seed, pick 6
+  const seed=rl.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const shuffled=[...matched].sort((a,b)=>{const h=(s)=>((seed*31+s.id.charCodeAt(0))%100);return h(a.id)-h(b.id);});
+  return shuffled.slice(0,6);
+}
 
 // 30 COGNITIVE QUESTIONS (expanded from 20)
 const COG_QUESTIONS=[
@@ -3380,6 +3497,23 @@ const TYPING_TEXT=TYPING_TEXTS[0]; // fallback for non-candidate contexts
    DEEP PERSONALITY ANALYSIS
    Analyses raw answers per item, not just aggregated scores
 ═══════════════════════════════════════════ */
+function computeFCScores(answers){
+  // FC answers stored as answers['fc_'+idx]
+  const counts={};const totals={};
+  B5_QUESTIONS.forEach((q,i)=>{
+    if(q.type!=='fc')return;
+    const choice=answers['fc_'+i];
+    [q.traitA,q.traitB].forEach(t=>{totals[t]=(totals[t]||0)+1;});
+    if(choice==='a')counts[q.traitA]=(counts[q.traitA]||0)+1;
+    else if(choice==='b')counts[q.traitB]=(counts[q.traitB]||0)+1;
+  });
+  const scores={};
+  Object.keys(totals).forEach(t=>{
+    scores[t]=totals[t]>0?Math.round((counts[t]||0)/totals[t]*100):null;
+  });
+  return scores;
+}
+
 function computeAllScores(answers){
   /*
    * PSYCHOMETRIC SCORING — how this works:
@@ -3422,7 +3556,7 @@ function computeAllScores(answers){
   const flags={};  // per-trait bias flags
 
   ALL_TRAITS.forEach(t=>{
-    const qs=B5_QUESTIONS.filter(q=>q.trait===t);
+    const qs=B5_QUESTIONS.filter(q=>q.trait===t&&(q.type==='agree'));
     if(!qs.length){scores[t]=null;reliability[t]=0;return;}
 
     // Extract raw values for this trait
@@ -3528,14 +3662,18 @@ function getScoreReliability(scores,trait){
 // Deep red-flag analysis based on INDIVIDUAL ANSWERS
 function analyseRedFlags(answers){
   const flags=[];
-  function score(idx){const q=B5_QUESTIONS[idx];const raw=answers[idx];if(raw===undefined||raw===null)return 3;const val=typeof raw==='string'?parseInt(raw):raw;return q.rev?6-val:val;}
+  function score(idx){const q=B5_QUESTIONS[idx];if(!q||q.type!=='agree')return 3;const raw=answers[idx];if(raw===undefined||raw===null)return 3;const val=typeof raw==='string'?parseInt(raw):raw;return q.rev?6-val:val;}
   // Check specific high-signal items
   // Extreme neuroticism indicators
   const neurItems=B5_QUESTIONS.map((q,i)=>q.trait==='Neuroticism'?i:null).filter(x=>x!==null);
   const neurScores=neurItems.map(i=>score(i));
+  const neurTotal=neurItems.length;
+  // High emotionality = low scores on forward items (anxiety, worry) OR high scores on reversed items
+  // score() already handles reversal so we check for HIGH scored direction = high emotionality
   const highNeur=neurScores.filter(s=>s>=4).length;
-  if(highNeur>=5)flags.push({severity:'red',category:'Emotional Stability',title:'Significant stress vulnerability pattern',detail:`Answered ${highNeur} of ${neurScores.length} emotional stability questions in a way consistent with high reactivity and difficulty recovering from pressure. May struggle under deadline-heavy or high-stakes environments. Pattern suggests a need for significant psychological safety provisions, regular check-ins, and structured workload management.`});
-  else if(highNeur>=3)flags.push({severity:'amber',category:'Emotional Stability',title:'Moderate stress sensitivity',detail:`${highNeur} responses suggest some stress reactivity. Common and manageable — consider clear expectations and structured feedback. Monitor during high-pressure phases.`});
+  const neurPct=neurTotal>0?Math.round(highNeur/neurTotal*100):0;
+  if(neurPct>=60)flags.push({severity:'red',category:'Emotional Stability',title:'High emotional reactivity - red flag',detail:`${highNeur} of ${neurTotal} responses indicate significant emotional sensitivity, anxiety under pressure, and difficulty recovering from setbacks. Score: low (high reactivity). This warrants honest conversation about workload and management support before hiring.`});
+  else if(neurPct>=40)flags.push({severity:'amber',category:'Emotional Stability',title:'Moderate emotional sensitivity',detail:`${highNeur} of ${neurTotal} responses suggest noticeable stress sensitivity. Manageable with clear expectations and a supportive environment.`});
   // Social isolation / low collaboration
   const collabItems=B5_QUESTIONS.map((q,i)=>q.trait==='Collaboration'?i:null).filter(x=>x!==null);
   const lowCollab=collabItems.filter(i=>score(i)<=2).length;
@@ -3565,6 +3703,46 @@ function analyseRedFlags(answers){
   if(highFeed>=4)flags.push({severity:'green',category:'Growth Mindset',title:'Excellent feedback receptivity',detail:'Demonstrates a strong learning orientation — actively seeks input, applies it quickly, and treats critical feedback as data rather than threat. Predicts faster skill development and easier management.'});
   const highCollab=collabItems.filter(i=>score(i)>=4).length;
   if(highCollab>=4)flags.push({severity:'green',category:'Collaboration',title:'Genuine team orientation',detail:'Strong consistent signals of collaborative working: proactive information sharing, comfort with joint ownership, and satisfaction from shared success rather than individual credit.'});
+  // Honesty-Humility flags
+  const hhItems=B5_QUESTIONS.map((q,i)=>q.trait==='HonestyHumility'?i:null).filter(x=>x!==null);
+  const lowHH=hhItems.filter(i=>score(i)<=2).length;
+  const highHH=hhItems.filter(i=>score(i)>=4).length;
+  if(lowHH>=4)flags.push({severity:'red',category:'Integrity & Trust',title:'Integrity concerns detected',detail:'Multiple responses suggest a pattern of bending rules, strategic flattery, or rationalising dishonest behaviour when personally beneficial. This is a significant signal for roles involving client trust, financial responsibility, or team culture. Recommend direct probing in interview with behavioural questions on ethics and past decisions.'});
+  else if(lowHH>=2)flags.push({severity:'amber',category:'Integrity & Trust',title:'Some integrity watch points',detail:'A few responses indicate pragmatic ethics — may rationalise rule-bending when outcomes seem justified. Worth exploring in interview, especially for roles involving trust or client relationships.'});
+  if(highHH>=6)flags.push({severity:'green',category:'Integrity & Trust',title:'Strong integrity signals',detail:'Consistently endorsed honest, transparent behaviour including willingness to report misconduct and avoid manipulation. High-value signal for trust-based roles — client-facing, financial, or leadership positions.'});
+
+  // SOCIAL DESIRABILITY DETECTION
+  // If someone scores 90+ on ALL positive traits simultaneously, it is statistically
+  // very unlikely to be genuine — it signals choosing "correct" answers
+  const allAnswered=Object.values(answers).filter(v=>v!==null&&v!==undefined);
+  const totalAnswered=allAnswered.length;
+  if(totalAnswered>20){
+    // Count how many answers are extreme positive (1 on reversed, 5 on forward)
+    const extremePos=B5_QUESTIONS.map((q,i)=>{
+      const raw=answers[i];if(raw===undefined||raw===null)return false;
+      const val=typeof raw==='string'?parseInt(raw):raw;
+      return q.rev?(val===1):(val===5);
+    }).filter(Boolean).length;
+    const extremePct=Math.round(extremePos/totalAnswered*100);
+    if(extremePct>55)flags.push({severity:'amber',category:'Validity',title:'Response pattern: validate in interview',detail:'Answer patterns suggest possible self-presentation bias. Scores should be cross-referenced with SJT performance and direct interview questions. Ask for specific past examples rather than hypothetical preferences.'});
+    if(extremePct>70)flags.push({severity:'red',category:'Validity',title:'Low result confidence - interview essential',detail:'Statistically unusual response pattern detected. Personality scores alone should not drive the hiring decision. Conduct a structured behavioural interview using STAR format before concluding.'});
+
+    // Cross-check: Dark Side vs Honesty-Humility contradiction
+    const dsItems=B5_QUESTIONS.map((q,i)=>q.trait==='DarkSide'?i:null).filter(x=>x!==null);
+    const dsScore_raw=dsItems.map(i=>score(i));
+    const dsPerfect=dsScore_raw.filter(s=>s>=5).length; // claiming perfect under-pressure behaviour
+    const hhPerfect=hhItems.filter(i=>score(i)>=5).length;
+    if(dsPerfect>=4&&hhPerfect>=6){
+      flags.push({severity:'red',category:'Validity Check',title:'Implausible perfection pattern',detail:'Candidate claims perfect integrity AND perfect under-pressure behaviour simultaneously across all relevant questions. Statistically this pattern is found in fewer than 2% of genuine respondents. Strong indicator of coached or socially desirable responding. Do not rely on personality scores alone — validate everything in interview.'});
+    }
+  }
+
+  // LOW SCORE FLAGS — score triggers regardless of cheat detection
+  const neurAllScores=neurItems.map(i=>score(i));
+  const lowNeur=neurAllScores.filter(s=>s<=2).length; // high emotionality = low scores on stability items
+  if(lowNeur>=5)flags.push({severity:'red',category:'Emotional Stability',title:'High emotional reactivity pattern',detail:`${lowNeur} of ${neurAllScores.length} responses indicate significant emotional sensitivity — anxiety, difficulty recovering from setbacks, and strong reactions to stress. This is not disqualifying but warrants discussion about workload, support structures, and management style.`});
+  else if(lowNeur>=3)flags.push({severity:'amber',category:'Emotional Stability',title:'Moderate emotional sensitivity',detail:'Some indicators of stress sensitivity. Manageable with clear expectations and a supportive manager. Monitor during high-pressure periods.'});
+
   return flags;
 }
 
@@ -3609,15 +3787,38 @@ function computeB5Insights(b5Scores,role,rawAnswers){
   if(N>70)roleFlags.push({t:'rose',m:'High neuroticism is the single strongest predictor of workplace stress response — plan for structured 1:1s.'});
   if(Acct>=80)roleFlags.push({t:'teal',m:'Accountability score in top range — strong ownership mentality.'});
   if(Feed>=75)roleFlags.push({t:'teal',m:'High feedback receptivity — will develop rapidly with a coaching manager.'});
-  // Archetype
+  // Archetype — derived from actual strongest and weakest dimensions
+  // Finds the 2-3 most distinctive scores (highest and lowest) and builds a specific profile
+  const _allDims={Openness:O,Conscientiousness:C,Extraversion:E,Agreeableness:A,
+    Neuroticism:N,Collaboration:Collab,Accountability:Acct,Adaptability:Adapt,
+    ConflictStyle:Conf,StressResilience:Stress,FeedbackReceptivity:Feed};
+  const _sorted=Object.entries(_allDims).sort((a,b)=>b[1]-a[1]);
+  const _top=_sorted.slice(0,3).map(x=>x[0]);
+  const _bot=_sorted.slice(-3).map(x=>x[0]);
+  const _has=(t)=>_top.includes(t);
+  const _low=(t)=>_bot.includes(t);
   let archetype='';
-  if(O>=70&&E>=65)archetype='The Visionary Communicator — creative, expressive, energising. Thrives where original thinking and people engagement are rewarded. Watch: can overcommit or resist grounding details.';
-  else if(C>=75&&N<=40)archetype='The Reliable Executor — disciplined, emotionally steady, highly dependable. Excels in high-accountability structured environments. Watch: may struggle with ambiguity or rapid pivots.';
-  else if(A>=70&&E>=65)archetype='The Collaborative Influencer — warm, persuasive, team-oriented. Builds trust naturally; best in cooperative or people-facing settings. Watch: may avoid necessary confrontation.';
-  else if(O>=65&&C>=65)archetype='The Systematic Innovator — combines curiosity with follow-through. Bridges creative problem-solving and practical delivery. Often high-potential.';
-  else if(E<45&&C>=65)archetype='The Deep-Focus Specialist — prefers independent work, delivers thorough output, thrives under clear briefs. Watch: may need encouragement to flag issues early.';
-  else if(N>65&&C>=60)archetype='The Conscientious Worrier — hardworking and detail-oriented but prone to over-analysis and stress under ambiguity. Performs best in stable, well-defined environments.';
-  else archetype='Balanced Profile — score distribution does not strongly align with a single archetype. Indicates adaptability across contexts; role fit depends heavily on specific task demands.';
+  // Build archetype from actual highest scores
+  if(_has('Extraversion')&&_has('Agreeableness')&&E>=60&&A>=60)
+    archetype='People-First Collaborator — naturally warm, socially confident, and team-oriented. Builds relationships quickly and thrives in client-facing or coordination roles. '+(_low('Conscientiousness')?'Watch: may need external structure to stay organised.':'Pairs strong people skills with solid reliability.');
+  else if(_has('Conscientiousness')&&_has('Accountability')&&C>=60&&Acct>=60)
+    archetype='Dependable Executor — organised, reliable, and takes ownership. Delivers consistently and flags risks early. '+(_low('Extraversion')?'Works best with clear briefs and independent accountability.':'Combines reliability with good team communication.');
+  else if(_has('Openness')&&_has('Initiative')&&O>=60)
+    archetype='Proactive Problem-Solver — curious, self-starting, and comfortable with ambiguity. Spots improvements without prompting. '+(_low('DISCSteadiness')||_low('Conscientiousness')?'Watch: may move fast at the expense of consistency.':'Balances innovation with follow-through.');
+  else if(_has('Extraversion')&&_has('ConflictStyle')&&E>=60)
+    archetype='Direct Communicator — speaks up, addresses issues head-on, and is comfortable in high-visibility situations. '+(_low('Agreeableness')?'Can be perceived as blunt — important in roles requiring client sensitivity.':'Combines directness with genuine warmth.');
+  else if(_has('Adaptability')&&_has('Openness'))
+    archetype='Flexible Learner — adapts quickly, embraces change, and actively seeks new knowledge. Strong fit for fast-moving or varied roles. '+(_low('Conscientiousness')?'Watch: may need help prioritising under pressure.':'Pairs adaptability with solid delivery.');
+  else if(_low('StressResilience')||N>65)
+    archetype='Detail-Driven with Stress Sensitivity — thorough and conscientious, but can be affected by pressure and uncertainty. Performs best with clear expectations, stable environment, and proactive management support.';
+  else if(_has('Conscientiousness')&&_low('Extraversion'))
+    archetype='Focused Independent — prefers working alone, concentrates deeply, and delivers thorough output. Ideal for specialist or analytical roles. May need encouragement to raise issues early.';
+  else{
+    // Build from actual numbers rather than labels
+    const _topName=_sorted[0][0];const _topVal=_sorted[0][1];
+    const _lowName=_sorted[_sorted.length-1][0];const _lowVal=_sorted[_sorted.length-1][1];
+    archetype='Individual Profile — strongest dimension: '+_topName+' ('+_topVal+'). Lowest dimension: '+_lowName+' ('+_lowVal+'). Role fit should be assessed based on specific job requirements.';
+  }
   // Job-fit trait narratives
   const PS=b5Scores.ProblemSolving||50,LTC=b5Scores.LongTermCommitment||50;
   const DD=b5Scores.DataDriven||50,INI=b5Scores.Initiative||50,CQ=b5Scores.CommunicationQuality||50;
@@ -3639,12 +3840,112 @@ function computeB5Insights(b5Scores,role,rawAnswers){
   if(CQ>=75)roleFlags.push({t:'teal',m:`Communication quality (${CQ}) — articulate and audience-aware. Asset in any role.`});
   else if(CQ<45)roleFlags.push({t:'gold',m:`Communication quality below threshold (${CQ}). May need coaching for clarity and stakeholder management.`});
   const itemFlags=rawAnswers?analyseRedFlags(rawAnswers):[];
-  return{traitNarrative,roleFlags,archetype,itemFlags,jobNarrative};
+  // HonestyHumility role signals
+  const HH=b5Scores.HonestyHumility||50;
+  if(HH>=75)roleFlags.push({t:'teal',m:`Integrity score high (${HH}) — strong signal for client-facing and trust-critical roles.`});
+  else if(HH<45)roleFlags.push({t:'rose',m:`Integrity score low (${HH}) — flag for roles involving client trust, financial responsibility, or team culture.`});
+  return{traitNarrative,roleFlags,archetype,itemFlags,jobNarrative,HH};
 }
 
 /* ═══════════════════════════════════════════
    REPORT MODAL — DEEP VERSION
 ═══════════════════════════════════════════ */
+async function generateAIFlags(candidate){
+  // Uses Claude to analyse candidate answers and generate specific flags
+  const apiKey=localStorage.getItem('ybs_apikey')||'';
+  if(!apiKey||!candidate.score||!candidate.rawAnswers)return null;
+  
+  const b5=candidate.score.big5||{};
+  const sjtScore=candidate.score.sjt;
+  const role=candidate.role||'';
+  const name=candidate.name||'Candidate';
+  
+  // Build a readable summary of the candidate's answer patterns
+  const answerPatterns=[];
+  if(candidate.rawAnswers){
+    B5_QUESTIONS.forEach((q,i)=>{
+      const raw=candidate.rawAnswers[i];
+      if(raw!==undefined&&raw!==null&&raw!==3){
+        const val=typeof raw==='string'?parseInt(raw):raw;
+        const dir=q.rev?(6-val):val;
+        if(dir<=2||dir>=4){
+          answerPatterns.push({
+            question:q.q,
+            trait:q.trait,
+            response:dir<=2?'strongly disagrees / low score':'strongly agrees / high score',
+            signal:dir<=2?'negative':'positive'
+          });
+        }
+      }
+    });
+  }
+  
+  // SJT results
+  const sjtResults=[];
+  if(candidate.sjtAnswers&&candidate.sjtScenarios){
+    candidate.sjtScenarios.forEach(sc=>{
+      const chosen=candidate.sjtAnswers[sc.id];
+      if(chosen!==undefined){
+        sjtResults.push({
+          scenario:sc.scenario.slice(0,100)+'...',
+          chosen:sc.options[chosen],
+          isOptimal:chosen===sc.best,
+          optimal:sc.options[sc.best]
+        });
+      }
+    });
+  }
+  
+  const prompt=`You are an occupational psychologist reviewing a pre-employment assessment for a ${role} candidate named ${name}.
+
+PERSONALITY SCORES (0-100):
+${Object.entries(b5).map(([k,v])=>`- ${k}: ${v}`).join('\n')}
+
+NOTABLE ANSWER PATTERNS (strong responses only):
+${answerPatterns.slice(0,20).map(p=>`- [${p.trait}] "${p.question}" → ${p.response}`).join('\n')}
+
+SITUATIONAL JUDGMENT: ${sjtScore!==null?sjtScore+'% correct ('+sjtResults.filter(r=>r.isOptimal).length+' of '+sjtResults.length+' optimal choices)':'Not completed'}
+${sjtResults.filter(r=>!r.isOptimal).slice(0,3).map(r=>`- Suboptimal: chose "${r.chosen.slice(0,60)}..." instead of "${r.optimal.slice(0,60)}..."`).join('\n')}
+
+Generate exactly 3-5 specific, actionable flags for this candidate for the ${role} role. Each flag must reference specific answer patterns, not just scores.
+
+Respond ONLY with valid JSON in this exact format:
+{
+  "flags": [
+    {
+      "severity": "red|amber|green",
+      "category": "short category name",
+      "title": "specific concise title",
+      "detail": "2-3 sentence specific observation referencing actual answer patterns, with hiring implication for ${role} role"
+    }
+  ],
+  "summary": "2-3 sentence executive summary of this candidate for a ${role} role"
+}`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!resp.ok)return null;
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'';
+    const match=text.match(/\{[\s\S]*\}/);
+    if(!match)return null;
+    return JSON.parse(match[0]);
+  }catch(e){console.warn('AI flags failed:',e);return null;}
+}
+
 function openReport(id){
   try{
   // Always refresh from localStorage first
@@ -4089,7 +4390,64 @@ let intState={active:false,qIdx:0,candId:null,seconds:0,timerInterval:null,camer
 // Interview profiles — persisted to localStorage
 let interviewProfiles=[];
 try{interviewProfiles=JSON.parse(localStorage.getItem('ybs_int_profiles')||'[]');}catch(e){}
-function saveIntProfiles(){try{localStorage.setItem('ybs_int_profiles',JSON.stringify(interviewProfiles));}catch(e){}}
+// Note: Supabase sync loads int_profiles via syncLoadAllConfig() on login
+function saveAndSendIntProfile(){
+  const name=(document.getElementById('intCandName')?.value||'').trim();
+  const email=(document.getElementById('intSendEmail')?.value||'').trim();
+  const role=(document.getElementById('intCandRole')?.value||'').trim();
+  const seniority=document.getElementById('intSeniority')?.value||'mid';
+  const skills=(document.getElementById('intSkills')?.value||'').trim();
+  const jd=(document.getElementById('intJD')?.value||'').trim();
+  const msg=document.getElementById('intSendMsg');
+  if(!name){if(msg){msg.style.color='var(--red)';msg.textContent='Name is required.';}return;}
+
+  const intTok='int-'+Math.random().toString(36).slice(2,10);
+  const now=new Date();
+  const created=now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const questions=INT_QUESTIONS.length>0?[...INT_QUESTIONS]:[
+    'Tell me about yourself and what attracted you to the '+role+' role.',
+    'Walk me through a project or achievement most relevant to this position.',
+    'Describe a challenging situation at work and how you resolved it.',
+    'How do you prioritise tasks when managing multiple competing deadlines?',
+    'What does effective collaboration look like to you in practice?',
+    'Tell me about a time you received difficult feedback. How did you respond?',
+    'Where do you see your career heading in the next 2-3 years?',
+  ];
+
+  const profile={id:Date.now(),name,email,role,seniority,skills,jd,questions,created,linkSent:!!email,completed:false,token:intTok,interviewOnly:true};
+  interviewProfiles.unshift(profile);
+  saveIntProfiles();
+
+  // Also add to candidates list so they appear in the candidates tab
+  const invitedAt=created;
+  const cand={id:Date.now()+1,name,email,role,status:'Invited',invited:invitedAt,score:null,verdict:'Pending',notes:'',_token:'assess-'+intTok,_interviewToken:intTok,modules:{video:true},interviewOnly:true};
+  candidates.unshift(cand);
+  persistCandidates();
+  syncPushCandidate(cand).catch(()=>{});
+
+  const intLink=window.location.href.split('?')[0].split('#')[0]+'?interview='+intTok;
+  const linkBox=document.getElementById('intLinkBox');
+  if(linkBox){linkBox.style.display='block';linkBox.textContent=intLink;}
+
+  if(email){
+    const co=document.getElementById('set-company')?.value||'Assess YBS';
+    const body='Hi '+name+',\n\nYou have been invited to an AI interview for the '+role+' role at '+co+'.\n\nClick the link below to begin:\n\n'+intLink+'\n\nPlease complete within 7 days.\n\nThank you,\n'+co+' Team';
+    const gmailUrl='https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email)+'&su='+encodeURIComponent('AI Interview Invitation - '+role+' | '+co)+'&body='+encodeURIComponent(body);
+    window.open(gmailUrl,'_blank');
+  }
+
+  if(msg){msg.style.color='var(--green)';msg.textContent=email?'✓ Profile saved & email opened':'✓ Profile saved';}
+  switchIntTab('profiles');
+  renderDash();
+}
+
+function saveIntProfiles(){
+  try{localStorage.setItem('ybs_int_profiles',JSON.stringify(interviewProfiles));}catch(e){}
+  // Also save to Supabase app_config so it persists across devices
+  if(syncEnabled()){
+    syncSaveConfig('int_profiles',interviewProfiles).catch(()=>{});
+  }
+}
 function deleteIntProfile(id){interviewProfiles=interviewProfiles.filter(p=>p.id!==id);saveIntProfiles();renderInterviewPage();}
 let _camStream=null;
 
@@ -4362,9 +4720,9 @@ function switchIntTab(tab){
     const btn=document.getElementById('intTab-'+t);
     if(panel)panel.style.display=t===tab?'block':'none';
     if(btn){
-      btn.style.background=t===tab?'var(--surface)':'transparent';
+      btn.style.background=t===tab?'var(--bg2,#fff)':'transparent';
       btn.style.color=t===tab?'var(--text)':'var(--text-2)';
-      btn.style.fontWeight=t===tab?'600':'500';
+      btn.style.fontWeight=t===tab?'600':'400';
       btn.style.boxShadow=t===tab?'0 1px 3px rgba(0,0,0,.08)':'none';
     }
   });
@@ -4785,53 +5143,227 @@ async function getAISuggestion(questionText,qIdx){
 /* ═══════════════════════════════════════════
    ASSESSMENT RENDERING — NO TRAIT LABELS
 ═══════════════════════════════════════════ */
+// Generate shuffled question order — seeded by token for consistency on resume
+function getB5Order(token){
+  // Questions are pre-interleaved in B5_QUESTIONS array by trait group
+  // No shuffle needed — return sequential order
+  // This avoids any potential infinite loop in trait-separation logic
+  return [...Array(B5_QUESTIONS.length).keys()];
+}
+
 function renderB5Question(containerId,idx,total,answers,prefix){
   const q=B5_QUESTIONS[idx];
-  const showLabel=(prefix==='demo');// only show in admin preview
-  const el=document.getElementById(containerId);if(!el)return;
-  el.innerHTML=`
-  <div style="max-width:680px;margin:0 auto;" class="${prefix==='cv'?'cv-card':'card'}">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      ${showLabel?`<span class="badge b-gold" style="font-size:11px;">${q.trait}</span>`:'<div></div>'}
-      <span style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;">${idx+1} / ${total}</span>
-    </div>
-    <div style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:4px;font-family:'Geist',sans-serif;"><span>${idx} answered</span><span>${Math.round(idx/total*100)}%</span></div>
-      <div class="pbar-wrap"><div class="pbar" style="width:${Math.round(idx/total*100)}%;background:var(--accent);"></div></div>
-    </div>
-    <div style="font-size:14px;font-weight:400;line-height:1.7;margin-bottom:26px;color:var(--text);">${q.q}</div>
-    <div style="display:flex;flex-direction:column;gap:9px;">
-      ${[1,2,3,4,5].map(v=>{
-        const labels=['','Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
-        return`<div onclick="b5Pick('${prefix}',${idx},${v},${total})" style="display:flex;align-items:center;gap:14px;padding:12px 18px;border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:14px;transition:all .13s;background:#fff;" id="b5o-${prefix}-${v}">
-          <div style="width:28px;height:28px;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;color:var(--text-3);">${v}</div>
-          <span style="color:var(--text-2);">${labels[v]}</span>
-        </div>`;
-      }).join('')}
-    </div>
-    ${idx>0?`<div style="margin-top:14px;"><button class="btn btn-ghost" onclick="b5Back('${prefix}',${idx})">← Back</button></div>`:''}
-  </div>`;
+  const el=document.getElementById(containerId);
+  if(!el||!q)return;
+  const pct=Math.round(idx/total*100);
+  const showLabel=(prefix==='demo');
+
+  // Inject CSS once
+  if(!document.getElementById('b5-css')){
+    const st=document.createElement('style');
+    st.id='b5-css';
+    st.textContent=[
+      '.b5-choice{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;',
+      'border:1.5px solid var(--border);border-radius:10px;cursor:pointer;',
+      'font-size:14px;line-height:1.6;color:var(--text);background:#fff;',
+      'transition:border-color .12s,background .12s;margin-bottom:8px;user-select:none;}',
+      '.b5-choice:hover{border-color:var(--accent);background:var(--accent-s,#eef2ff);}',
+      '.b5-choice:active{transform:scale(.99);}',
+      '.b5-choice.picked{border-color:var(--accent)!important;background:var(--accent-s,#eef2ff)!important;}',
+      '.b5-circle{width:30px;height:30px;border-radius:50%;background:var(--surface-2);',
+      'border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;',
+      'font-size:13px;font-weight:700;flex-shrink:0;color:var(--text-3);transition:all .12s;}',
+      '.b5-choice.picked .b5-circle,.b5-choice:hover .b5-circle{',
+      'background:var(--accent);border-color:var(--accent);color:#fff;}'
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+  // Progress bar
+  const pbar='<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:4px;">'
+    +(showLabel?'<span>'+q.trait+'</span>':'<span>Question '+(idx+1)+' of '+total+'</span>')
+    +'<span>'+pct+'%</span></div>'
+    +'<div style="height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:24px;">'
+    +'<div style="width:'+pct+'%;height:100%;background:var(--accent);border-radius:99px;"></div></div>';
+
+  // Build options based on type
+  let prompt='', opts='';
+
+  if(q.type==='fc'){
+    // Forced choice
+    prompt='<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:20px;">Which is more like you at work?</div>';
+    const pA=answers['fc_'+idx]==='a', pB=answers['fc_'+idx]==='b';
+    opts='<div class="b5-choice'+(pA?' picked':'')+'" data-pick="a">'
+      +'<div class="b5-circle">A</div><div><div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Option A</div>'+q.a+'</div></div>'
+      +'<div style="text-align:center;font-size:12px;color:var(--text-3);padding:4px 0 12px;">— or —</div>'
+      +'<div class="b5-choice'+(pB?' picked':'')+'" data-pick="b">'
+      +'<div class="b5-circle">B</div><div><div style="font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Option B</div>'+q.b+'</div></div>';
+
+  } else if(q.type==='scenario'){
+    // Situation
+    prompt='<div style="font-size:15px;font-weight:500;line-height:1.65;color:var(--text);margin-bottom:18px;">'+q.situation+'</div>'
+      +'<div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">What would you do?</div>';
+    const prev=answers['sc_'+idx];
+    opts=q.options.map(function(opt,i){
+      const letter=String.fromCharCode(65+i);
+      return '<div class="b5-choice'+(prev===i?' picked':'')+'" data-pick="'+i+'">'
+        +'<div class="b5-circle">'+letter+'</div><span style="padding-top:3px;">'+opt+'</span></div>';
+    }).join('');
+
+  } else {
+    // Agree / disagree
+    prompt='<div style="font-size:15px;font-weight:500;line-height:1.65;color:var(--text);margin-bottom:20px;">'+q.q+'</div>';
+    const labels=['','Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+    const prev=answers[idx];
+    opts=[1,2,3,4,5].map(function(v){
+      return '<div class="b5-choice'+(prev===v?' picked':'')+'" data-pick="'+v+'">'
+        +'<div class="b5-circle">'+v+'</div><span>'+labels[v]+'</span></div>';
+    }).join('');
+  }
+
+  const back=idx>0?'<div style="margin-top:16px;"><button id="b5-back-btn" class="btn btn-ghost">&#8592; Back</button></div>':'';
+
+  el.innerHTML='<div style="max-width:680px;margin:0 auto;" class="'+(prefix==='cv'?'cv-card':'card')+'">'
+    +pbar+prompt+opts+back+'</div>';
+
+  // Single event handler for ALL option types
+  el.querySelectorAll('.b5-choice[data-pick]').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      const pick=this.getAttribute('data-pick');
+      // Immediate visual feedback
+      el.querySelectorAll('.b5-choice').forEach(function(o){o.classList.remove('picked');});
+      this.classList.add('picked');
+      // Save answer
+      if(q.type==='fc'){
+        if(prefix==='demo')demoState.b5Answers['fc_'+idx]=pick;
+        else{cvState.b5Answers['fc_'+idx]=pick;cvSave();}
+      } else if(q.type==='scenario'){
+        const n=parseInt(pick);
+        if(prefix==='demo')demoState.b5Answers['sc_'+idx]=n;
+        else{cvState.b5Answers['sc_'+idx]=n;cvSave();}
+      } else {
+        const n=parseInt(pick);
+        if(prefix==='demo')demoState.b5Answers[idx]=n;
+        else{cvState.b5Answers[idx]=n;cvSave();}
+      }
+      // Advance after short delay
+      setTimeout(function(){
+        const next=idx+1;
+        if(next>=total){
+          if(prefix==='demo'){demoState.step=2;renderDemo();}
+          else{
+            cvRecordTime('personality');
+            const _steps=cvGetActiveSteps().filter(function(s){return s!==0&&s!==1&&s!==5;});
+            cvState.step=_steps.length>0?_steps[0]:4;
+            console.log('[b5] All done. Next step:',cvState.step,'Active:',cvGetActiveSteps());
+            cvState.cogIdx=0;cvSave();cvRender();
+          }
+        } else {
+          const ans=prefix==='demo'?demoState.b5Answers:cvState.b5Answers;
+          renderB5Question(containerId,next,total,ans,prefix);
+        }
+      },300);
+    });
+  });
+
+  if(document.getElementById('b5-back-btn')){
+    document.getElementById('b5-back-btn').addEventListener('click',function(){
+      if(idx>0){
+        const ans=prefix==='demo'?demoState.b5Answers:cvState.b5Answers;
+        renderB5Question(containerId,idx-1,total,ans,prefix);
+      }
+    });
+  }
 }
-function b5Pick(prefix,idx,val,total){
-  document.querySelectorAll(`[id^="b5o-${prefix}-"]`).forEach(o=>{o.style.borderColor='var(--border)';o.style.background='#fff';const d=o.querySelector('div');if(d){d.style.background='var(--surface-2)';d.style.color='var(--text-3)';}});
-  const sel=document.getElementById('b5o-'+prefix+'-'+val);
-  if(sel){sel.style.borderColor='var(--accent)';sel.style.background='var(--accent-s)';const d=sel.querySelector('div');if(d){d.style.background='var(--accent)';d.style.color='#fff';}}
-  if(prefix==='demo')demoState.b5Answers[idx]=val;else{cvState.b5Answers[idx]=val;cvSave();}
+
+
+// ── FORCED CHOICE RENDERER ────────────────────────────────────
+function renderFCQuestion(containerId,idx,answers,prefix){
+  const q=FC_QUESTIONS[idx];
+  const total=FC_QUESTIONS.length;
+  const el=document.getElementById(containerId);if(!el)return;
+  const prevAns=answers[idx];
+  const qNum=B5_QUESTIONS.length+idx+1;
+  const qTotal=B5_QUESTIONS.length+total;
+  const pct=Math.round((B5_QUESTIONS.length+idx)/qTotal*100);
+  const bdrA=prevAns==='a'?'var(--accent)':'var(--border)';
+  const bgA=prevAns==='a'?'var(--accent-s)':'#fff';
+  const bdrB=prevAns==='b'?'var(--accent)':'var(--border)';
+  const bgB=prevAns==='b'?'var(--accent-s)':'#fff';
+  el.innerHTML=
+    '<div style="max-width:680px;margin:0 auto;" class="'+(prefix==='cv'?'cv-card':'card')+'">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+    +'<span style="font-size:11px;color:var(--text-3);">Question '+qNum+' of '+qTotal+'</span>'
+    +'<span style="font-size:11px;color:var(--text-3);">'+pct+'%</span>'
+    +'</div>'
+    +'<div class="pbar-wrap" style="margin-bottom:20px;"><div class="pbar" style="width:'+pct+'%;background:var(--accent);"></div></div>'
+    +'<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:20px;">Which statement is more like you at work?</div>'
+    +'<div style="display:flex;flex-direction:column;gap:12px;">'
+    +'<div id="fc-opt-a" style="padding:20px 22px;border:2px solid '+bdrA+';border-radius:10px;cursor:pointer;font-size:15px;line-height:1.6;color:var(--text);background:'+bgA+';transition:all .15s;">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Option A</div>'
+    +q.a
+    +'</div>'
+    +'<div style="text-align:center;font-size:12px;color:var(--text-3);padding:8px 0;">— or —</div>'
+    +'<div id="fc-opt-b" style="padding:20px 22px;border:2px solid '+bdrB+';border-radius:10px;cursor:pointer;font-size:15px;line-height:1.6;color:var(--text);background:'+bgB+';transition:all .15s;">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Option B</div>'
+    +q.b
+    +'</div>'
+    +'</div>'
+    +(idx>0?'<div style="margin-top:14px;"><button id="fc-back-btn" class="btn btn-ghost">&#8592; Back</button></div>':'')
+    +'</div>';
+  // Attach events after render
+  document.getElementById('fc-opt-a').addEventListener('click',function(){fcPick(prefix,idx,'a');});
+  document.getElementById('fc-opt-b').addEventListener('click',function(){fcPick(prefix,idx,'b');});
+  if(idx>0){const bb=document.getElementById('fc-back-btn');if(bb)bb.addEventListener('click',function(){fcBack(prefix,idx);});}
+}
+
+function fcPick(prefix,idx,choice){
+  // Update visual highlight using correct IDs
+  const elA=document.getElementById('fc-opt-a');
+  const elB=document.getElementById('fc-opt-b');
+  if(elA){elA.style.borderColor='var(--border)';elA.style.background='#fff';}
+  if(elB){elB.style.borderColor='var(--border)';elB.style.background='#fff';}
+  const sel=document.getElementById('fc-opt-'+choice);
+  if(sel){sel.style.borderColor='var(--accent)';sel.style.background='var(--accent-s)';}
+  const answers=prefix==='cv'?cvState.fcAnswers:demoState.fcAnswers;
+  answers[idx]=choice;
+  if(prefix==='cv')cvSave();
   setTimeout(()=>{
     const next=idx+1;
-    if(next>=total){
+    if(next>=FC_QUESTIONS.length){
+      // FC done — show SJT (if big5 active and SJT not done) then move on
       if(prefix==='demo'){demoState.step=2;renderDemo();}
-      else{cvRecordTime('personality');cvState.step=cvNextStep(1);cvState.cogIdx=0;cvSave();cvRender();}
-    }else{
-      if(prefix==='demo')renderB5Question('demoBody',next,total,demoState.b5Answers,'demo');
-      else renderB5Question('cv-body',next,total,cvState.b5Answers,'cv');
+      else{
+        cvRecordTime('personality');
+        if(!cvState._sjtDone&&cvState.modules?.big5!==false){
+          cvState._sjtStarted=false;
+          cvState.step=5; // SJT step
+          cvSave();cvRender();
+        } else {
+          // Skip SJT — find next real step after personality
+          const _next=cvGetActiveSteps().filter(s=>s!==0&&s!==1&&s!==5);
+          cvState.step=_next.length>0?_next[0]:4;
+          cvState.cogIdx=0;cvSave();cvRender();
+        }
+      }
+    } else {
+      renderFCQuestion(prefix==='cv'?'cv-body':'demoBody',next,answers,prefix);
     }
-  },280);
+  },300);
 }
-function b5Back(prefix,idx){
-  const prev=idx-1;if(prev<0)return;const total=B5_QUESTIONS.length;
-  if(prefix==='demo')renderB5Question('demoBody',prev,total,demoState.b5Answers,'demo');
-  else renderB5Question('cv-body',prev,total,cvState.b5Answers,'cv');
+
+function fcBack(prefix,idx){
+  const prev=idx-1;
+  if(prev<0){
+    // Go back to last B5 question
+    const total=B5_QUESTIONS.length;
+    const answers=prefix==='cv'?cvState.b5Answers:demoState.b5Answers;
+    if(prefix==='demo')renderB5Question('demoBody',total-1,total,answers,'demo');
+    else renderB5Question('cv-body',total-1,total,answers,'cv');
+    return;
+  }
+  const answers=prefix==='cv'?cvState.fcAnswers:demoState.fcAnswers;
+  renderFCQuestion(prefix==='cv'?'cv-body':'demoBody',prev,answers,prefix);
 }
 
 // IQ timer
@@ -4878,7 +5410,18 @@ function renderDemo(){
     </div>
     <div id="demoBody"></div>`;
   if(s===0)renderDemoIntro();
-  else if(s===1)renderB5Question('demoBody',Object.keys(demoState.b5Answers).length,B5_QUESTIONS.length,demoState.b5Answers,'demo');
+  else if(s===1){
+    const _demoIdx=(function(){
+      for(let i=0;i<B5_QUESTIONS.length;i++){
+        const q=B5_QUESTIONS[i];
+        if(q.type==='agree'||!q.type){if(demoState.b5Answers[i]===undefined)return i;}
+        else if(q.type==='fc'){if(demoState.b5Answers['fc_'+i]===undefined)return i;}
+        else if(q.type==='scenario'){if(demoState.b5Answers['sc_'+i]===undefined)return i;}
+      }
+      return B5_QUESTIONS.length;
+    })();
+    renderB5Question('demoBody',Math.min(_demoIdx,B5_QUESTIONS.length-1),B5_QUESTIONS.length,demoState.b5Answers,'demo');
+  }
   else if(s===2)renderDemoCog();
   else if(s===3)renderDemoTyping();
   else renderDemoSubmit();
@@ -4926,35 +5469,88 @@ function renderDemoSubmit(){
 /* TYPING */
 let typingState={charIdx:0,started:false,startTime:null,errors:0,interval:null};
 function buildTypingHTML(pre,onInput,onCtrl,onSubmit){
-  return`<div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div style="font-size:16px;font-weight:700;">Typing Speed Test</div>
-    <div style="display:flex;gap:20px;align-items:baseline;">
-      <div><span style="font-family:'Geist',sans-serif;font-size:24px;color:var(--green);font-weight:700;" id="${pre}wpm">—</span><span style="font-size:11px;color:var(--text-3);margin-left:4px;text-transform:uppercase;">wpm</span></div>
-      <div><span style="font-family:'Geist',sans-serif;font-size:24px;color:var(--purple);font-weight:700;" id="${pre}acc">—</span><span style="font-size:11px;color:var(--text-3);margin-left:4px;text-transform:uppercase;">acc</span></div>
-      <div><span style="font-family:'Geist',sans-serif;font-size:13px;color:var(--text-3);" id="${pre}time">0s</span></div>
+  return`<div style="max-width:700px;margin:0 auto;">
+  <!-- Header with timer and stats -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="font-size:15px;font-weight:700;color:var(--text);">Typing Test</div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">WPM</div>
+        <div style="font-size:28px;font-weight:700;color:var(--green);font-family:'Geist',sans-serif;line-height:1;" id="${pre}wpm">—</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Accuracy</div>
+        <div style="font-size:28px;font-weight:700;color:var(--accent);font-family:'Geist',sans-serif;line-height:1;" id="${pre}acc">—</div>
+      </div>
+      <div style="text-align:center;min-width:60px;">
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Time</div>
+        <div style="font-size:28px;font-weight:700;color:var(--text);font-family:'Geist Mono','Geist',sans-serif;line-height:1;" id="${pre}time">60</div>
+      </div>
     </div>
   </div>
-  <div style="height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:14px;"><div id="${pre}prog" style="height:100%;background:var(--green);width:0%;transition:width .2s;border-radius:99px;"></div></div>
-  <div id="${pre}disp" onclick="document.getElementById('${pre}inp').focus()" style="padding:20px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r);font-family:'Geist',sans-serif;font-size:15px;line-height:2.4;word-break:break-word;cursor:text;min-height:80px;margin-bottom:4px;user-select:none;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-style:italic;">Click ▶ Start to begin</div>
-  <input id="${pre}inp" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:absolute;opacity:0;pointer-events:none;height:1px;width:1px;top:-9999px;" disabled oninput="${onInput}(event)"/>
-  <div style="display:flex;gap:8px;align-items:center;margin-top:14px;">
-    <button class="btn btn-primary" id="${pre}sb" onclick="${onCtrl}('start')">▶ Start</button>
-    <button class="btn btn-ghost" onclick="${onCtrl}('reset')">↺ Reset</button>
-    <div style="flex:1;font-size:12px;color:var(--text-3);" id="${pre}hint"></div>
-    <button class="btn btn-gold" id="${pre}nb" onclick="${onSubmit}()" disabled style="padding:0 26px;">Submit →</button>
-  </div></div>`;
+
+  <!-- Progress bar -->
+  <div style="height:3px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:20px;">
+    <div id="${pre}prog" style="height:100%;background:var(--green);width:0%;transition:width .15s;border-radius:99px;"></div>
+  </div>
+
+  <!-- Text display area — typing.com style -->
+  <div id="${pre}disp"
+    onclick="document.getElementById('${pre}inp').focus()"
+    style="padding:28px 28px 24px;background:var(--surface);border:2px solid var(--border);border-radius:12px;font-family:'Geist Mono','Courier New',monospace;font-size:18px;line-height:2.2;word-break:break-all;cursor:text;min-height:120px;margin-bottom:16px;user-select:none;position:relative;letter-spacing:.01em;">
+    <span style="color:var(--text-3);font-style:italic;font-family:'Geist',sans-serif;font-size:15px;">Click Start to begin the test</span>
+  </div>
+
+  <!-- Hidden real input -->
+  <input id="${pre}inp" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+    style="position:fixed;opacity:0;pointer-events:none;height:1px;width:1px;top:-9999px;" disabled
+    oninput="${onInput}(event)"
+    onkeydown="if(event.key==='Backspace'){event.preventDefault();const e2=new InputEvent('input',{bubbles:true,data:'\b'});event.target.value='\b';event.target.dispatchEvent(e2);}"/>
+
+  <!-- Controls -->
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="btn btn-primary" id="${pre}sb" onclick="${onCtrl}('start')" style="height:40px;padding:0 24px;font-size:14px;">▶ Start test</button>
+    <button class="btn btn-ghost" id="${pre}restart" onclick="${onCtrl}('reset')" style="height:40px;">↺ Restart</button>
+    <div style="flex:1;font-size:12px;color:var(--text-3);font-style:italic;" id="${pre}hint">1 minute · type the text above</div>
+    <button class="btn btn-gold" id="${pre}nb" onclick="${onSubmit}()" disabled style="height:40px;padding:0 26px;">Submit results →</button>
+  </div>
+
+  <!-- Results panel (hidden until done) -->
+  <div id="${pre}results" style="display:none;margin-top:20px;padding:20px;background:var(--green-s);border:1.5px solid var(--green-b);border-radius:12px;text-align:center;">
+    <div style="font-size:13px;color:var(--green);font-weight:700;margin-bottom:12px;">✓ Test complete!</div>
+    <div style="display:flex;justify-content:center;gap:32px;">
+      <div><div style="font-size:36px;font-weight:700;color:var(--text);font-family:'Geist',sans-serif;" id="${pre}r-wpm">0</div><div style="font-size:12px;color:var(--text-3);margin-top:2px;">Words per minute</div></div>
+      <div><div style="font-size:36px;font-weight:700;color:var(--text);font-family:'Geist',sans-serif;" id="${pre}r-acc">0%</div><div style="font-size:12px;color:var(--text-3);margin-top:2px;">Accuracy</div></div>
+    </div>
+  </div>
+  </div>`;
 }
 function initTypingDisplay(pre,errors,charIdx){
   const el=document.getElementById(pre+'disp');if(!el)return;
   const idx=charIdx!==undefined?charIdx:(pre==='t-'?typingState.charIdx:cvTyping.charIdx);
-  el.style.fontStyle='normal';el.style.display='block';
-  el.innerHTML=TYPING_TEXT.split('').map((ch,i)=>{
-    let bg='',col='var(--text-3)';
-    if(i<idx){col=errors[i]?'var(--red)':'var(--green)';bg=errors[i]?'rgba(181,58,58,.12)':'rgba(14,107,94,.06)';}
-    else if(i===idx){bg='var(--accent)';col='#fff';}
-    return'<span style="background:'+bg+';color:'+col+';border-radius:2px;transition:all .04s;">'+(ch===' '?'&nbsp;':ch)+'</span>';
+  const text=getTypingText();
+  el.style.fontStyle='normal';
+  // Build character spans — typing.com style
+  el.innerHTML=text.split('').map((ch,i)=>{
+    let col,extra='';
+    if(i<idx){
+      col=errors[i]?'#e53e3e':'#38a169'; // red or green
+      if(errors[i]&&ch===' ')extra='background:rgba(229,62,62,.2);border-radius:2px;';
+    } else if(i===idx){
+      col='var(--text)';
+      extra='border-bottom:2px solid var(--accent);'; // blinking cursor under current char
+    } else {
+      col='var(--text-3)';
+    }
+    const disp=ch===' '?'&nbsp;':ch==='<'?'&lt;':ch==='>'?'&gt;':ch;
+    return'<span style="color:'+col+';'+extra+'position:relative;">'+(i===idx?'<span style="position:absolute;bottom:-2px;left:0;width:100%;height:2px;background:var(--accent);animation:blink 1s step-end infinite;"></span>':'')+disp+'</span>';
   }).join('');
+  // Add blink animation if not present
+  if(!document.getElementById('blink-style')){
+    const s=document.createElement('style');s.id='blink-style';
+    s.textContent='@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}';
+    document.head.appendChild(s);
+  }
 }
 function updateTypingStats(pre,errors){
   if(!typingState.startTime)return;
@@ -4980,11 +5576,32 @@ function typingCtrl(action){
 function handleTyping(e){
   const inp=e.target,typed=inp.value;if(!typed.length)return;
   const ch=typed[typed.length-1];inp.value='';
-  if(!typingState.started){typingState.started=true;typingState.startTime=Date.now();typingState.interval=setInterval(()=>updateTypingStats('t-',demoState._typingErrors),250);}
-  const expected=TYPING_TEXT[typingState.charIdx];const wrong=ch!==expected;
+  if(!typingState.started){
+    typingState.started=true;typingState.startTime=Date.now();
+    typingState.interval=setInterval(()=>{
+      if(!typingState.startTime)return;
+      const el=(Date.now()-typingState.startTime)/1000;
+      const remaining=Math.max(0,TYPING_DURATION-Math.floor(el));
+      const wpm=el>0?Math.round((typingState.charIdx/5)/(el/60)):0;
+      const acc=Math.round(((typingState.charIdx-typingState.errors)/Math.max(typingState.charIdx,1))*100);
+      const w=document.getElementById('t-wpm'),a=document.getElementById('t-acc'),t=document.getElementById('t-time'),p=document.getElementById('t-prog');
+      if(w)w.textContent=wpm;if(a)a.textContent=acc+'%';
+      if(t){t.textContent=remaining;t.style.color=remaining<=10?'var(--red)':remaining<=20?'var(--amber)':'var(--text)';}
+      if(p)p.style.width=((TYPING_DURATION-remaining)/TYPING_DURATION*100)+'%';
+      demoState.typingWpm=wpm;demoState.typingAcc=acc;
+      if(remaining<=0){
+        clearInterval(typingState.interval);
+        const nb=document.getElementById('t-nb');if(nb)nb.disabled=false;
+        const h=document.getElementById('t-hint');if(h)h.textContent='Time is up!';
+        const res=document.getElementById('t-results');if(res){res.style.display='block';const rw=document.getElementById('t-r-wpm'),ra=document.getElementById('t-r-acc');if(rw)rw.textContent=wpm;if(ra)ra.textContent=acc+'%';}
+      }
+    },250);
+  }
+  const tt=getTypingText();if(typingState.charIdx>=tt.length)return;
+  const expected=tt[typingState.charIdx];const wrong=ch!==expected;
   demoState._typingErrors[typingState.charIdx]=wrong;if(wrong)typingState.errors++;typingState.charIdx++;
-  if(typingState.charIdx>=TYPING_TEXT.length){clearInterval(typingState.interval);const nb=document.getElementById('t-nb');if(nb)nb.disabled=false;const h=document.getElementById('t-hint');if(h)h.textContent='✓ Done — click Submit';}
-  initTypingDisplay('t-',demoState._typingErrors,typingState.charIdx);updateTypingStats('t-',demoState._typingErrors);
+  if(typingState.charIdx>=tt.length){clearInterval(typingState.interval);const nb=document.getElementById('t-nb');if(nb)nb.disabled=false;const h=document.getElementById('t-hint');if(h)h.textContent='✓ Done — click Submit';}
+  initTypingDisplay('t-',demoState._typingErrors,typingState.charIdx);
 }
 function submitTyping(){demoState.step=4;renderDemo();}
 
@@ -5048,12 +5665,14 @@ const CV_STEPS=['Welcome','Personality','Cognitive','Typing','Done'];
 // Returns the ordered list of step indices this candidate needs to complete
 // based on their modules. Step 0 (Welcome) and step 4 (Done) always present.
 function cvGetActiveSteps(){
-  const m=cvState.modules||{big5:true,cognitive:true,typing:true};
-  const steps=[0]; // always Welcome
+  // Only activate cognitive/typing if explicitly enabled in modules
+  // big5 is always on; cognitive and typing default to FALSE if not specified
+  const m=cvState.modules||{big5:true,cognitive:false,typing:false};
+  const steps=[0];
   if(m.big5!==false)steps.push(1);
-  if(m.cognitive!==false)steps.push(2);
-  if(m.typing!==false)steps.push(3);
-  steps.push(4); // always Done
+  if(m.cognitive===true)steps.push(2);
+  if(m.typing===true)steps.push(3);
+  steps.push(4);
   return steps;
 }
 // Returns next step index after current, skipping disabled modules
@@ -5135,7 +5754,7 @@ function initCandidateView(){
       const sv=JSON.parse(localStorage.getItem('vettiq_candidates')||'[]');
       const cr=sv.find(x=>x._token===assessToken);
       if(cr){
-        cvState.role=cr.role||'';
+        cvState.role=cr.role||params.get('role')||'';
         // Only use localStorage modules if URL had no module param
         if(!_modParam){
           const mArr=modsArray(cr.modules);
@@ -5165,8 +5784,10 @@ function initCandidateView(){
         +'</div>';
       // Show stepper in done state
       const _activeSteps2=cvGetActiveSteps();
-      document.getElementById('cv-stepper').innerHTML=_activeSteps2.map((stepIdx,pos)=>{
-        const lbl=CV_STEPS[stepIdx];
+      const _snMap={0:'Welcome',1:'Personality',2:'Cognitive',3:'Typing',4:'Done'};
+      const _doneSteps=_activeSteps2.filter(s=>s!==5); // hide SJT from display
+      document.getElementById('cv-stepper').innerHTML=_doneSteps.map((stepIdx,pos)=>{
+        const lbl=_snMap[stepIdx]||'Step';
         return(pos>0?'<div class="cv-step-line"></div>':'')+'<div class="cv-step"><div class="cv-step-dot done">✓</div><span class="cv-step-label" style="color:var(--green);">'+lbl+'</span></div>';
       }).join('');
       // AUTO-PUSH to Supabase if config is now available (candidate reopened with new link)
@@ -5252,6 +5873,56 @@ function startCIV(){
   civState.chatHistory=[];
   civAskQuestion();
 }
+let civVoiceActive=false;
+let civSpeechRecognition=null;
+
+function civToggleVoice(){
+  const btn=document.getElementById('civ-voice-btn');
+  const rec=document.getElementById('civ-rec-indicator');
+  if(civVoiceActive){
+    // Stop recording
+    if(civSpeechRecognition)civSpeechRecognition.stop();
+    return;
+  }
+  // Start voice recognition
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    // No speech recognition — focus textarea instead
+    const ta=document.getElementById('civ-answer-input');
+    if(ta){ta.focus();ta.placeholder='Speech not supported — please type your answer';}
+    return;
+  }
+  civSpeechRecognition=new SR();
+  civSpeechRecognition.continuous=true;
+  civSpeechRecognition.interimResults=true;
+  civSpeechRecognition.lang='en-US';
+  const ta=document.getElementById('civ-answer-input');
+  civSpeechRecognition.onstart=function(){
+    civVoiceActive=true;
+    if(btn){btn.style.background='var(--red)';btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg> Listening… (tap to stop)';}
+    if(rec)rec.style.display='flex';
+  };
+  civSpeechRecognition.onresult=function(e){
+    let transcript='';
+    for(let i=0;i<e.results.length;i++)transcript+=e.results[i][0].transcript;
+    if(ta)ta.value=transcript;
+  };
+  civSpeechRecognition.onend=function(){
+    civVoiceActive=false;
+    if(btn){btn.style.background='var(--accent)';btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg> Hold to speak';}
+    if(rec)rec.style.display='none';
+    // Auto-send if transcript not empty
+    const ta=document.getElementById('civ-answer-input');
+    if(ta&&ta.value.trim())civSendAnswer();
+  };
+  civSpeechRecognition.onerror=function(e){
+    civVoiceActive=false;
+    if(btn){btn.style.background='var(--accent)';btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg> Hold to speak';}
+    if(rec)rec.style.display='none';
+  };
+  civSpeechRecognition.start();
+}
+
 function enableCIVCamera(){
   navigator.mediaDevices.getUserMedia({video:true,audio:true}).then(stream=>{
     civState.camStream=stream;
@@ -5539,13 +6210,21 @@ function cvRenderWithResumeBanner(){
   let progressText='';
   if(cvState.step===1)progressText=b5Done+' of '+B5_QUESTIONS.length+' personality questions answered';
   else if(cvState.step===2)progressText=cogDone+' of '+COG_QUESTIONS.length+' cognitive questions answered';
+  else if(cvState.step===5)progressText='Personality complete — Situational questions remaining';
   else if(cvState.step===3)progressText='Personality & Cognitive complete — Typing test remaining';
   const body=document.getElementById('cv-body');
   if(!body){cvRender();return;}
   // Update stepper to show current step
-  document.getElementById('cv-stepper').innerHTML=CV_STEPS.map((lbl,i)=>{
-    const cls=i<cvState.step?'done':i===cvState.step?'active':'';
-    return(i>0?'<div class="cv-step-line"></div>':'')+'<div class="cv-step"><div class="cv-step-dot '+cls+'">'+(i<cvState.step?'✓':(i+1))+'</div><span class="cv-step-label" style="color:'+(i===cvState.step?'var(--text)':i<cvState.step?'var(--accent)':'var(--text-3)')+'">'+lbl+'</span></div>';
+  // Build stepper from actual active steps only
+  const _stepNameMap={0:'Welcome',1:'Personality',2:'Cognitive',3:'Typing',4:'Done'};
+  const _allActive=cvGetActiveSteps();
+  const _activeStepsList=_allActive.filter(s=>s!==5); // hide SJT from stepper display
+  const _displayStep=cvState.step===5?1:cvState.step; // SJT shows as Personality
+  const _curPos=_activeStepsList.indexOf(_displayStep);
+  document.getElementById('cv-stepper').innerHTML=_activeStepsList.map((stepIdx,i)=>{
+    const lbl=_stepNameMap[stepIdx]||('Step '+(i+1));
+    const cls=_curPos>i?'done':_curPos===i?'active':'';
+    return(i>0?'<div class="cv-step-line"></div>':'')+'<div class="cv-step"><div class="cv-step-dot '+cls+'">'+((_curPos>i)?'✓':(i+1))+'</div><span class="cv-step-label" style="color:'+(_curPos===i?'var(--text)':_curPos>i?'var(--accent)':'var(--text-3)')+'">'+lbl+'</span></div>';
   }).join('');
   body.innerHTML='<div class="cv-card" style="max-width:520px;margin:0 auto;text-align:center;">'
     +'<div style="width:56px;height:56px;border-radius:50%;background:var(--accent-s);border:1.5px solid var(--accent-b);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">'
@@ -5569,13 +6248,15 @@ function cvRenderWithResumeBanner(){
 }
 
 function cvRender(){
-  const _activeSteps=cvGetActiveSteps();
+  const _snLookup={0:'Welcome',1:'Personality',2:'Cognitive',3:'Typing',4:'Done'};
+  const _activeSteps=cvGetActiveSteps().filter(s=>s!==5); // hide SJT step from display
+  const _displayCur=cvState.step===5?1:cvState.step; // SJT shows as Personality
   document.getElementById('cv-stepper').innerHTML=_activeSteps.map((stepIdx,pos)=>{
-    const lbl=CV_STEPS[stepIdx];
-    const done=cvState.step>stepIdx;
-    const active=cvState.step===stepIdx;
+    const lbl=_snLookup[stepIdx]||('Step '+(pos+1));
+    const done=_activeSteps.indexOf(_displayCur)>pos;
+    const active=stepIdx===_displayCur;
     const cls=done?'done':active?'active':'';
-    return(pos>0?'<div class="cv-step-line"></div>':'')+'<div class="cv-step"><div class="cv-step-dot '+cls+'">'+(done?'✓':(pos+1))+'</div><span class="cv-step-label" style="color:'+(active?'var(--text)':done?'var(--green)':'var(--text-3)')+'">'+lbl+'</span></div>';
+    return(pos>0?'<div class="cv-step-line"></div>':'')+'<div class="cv-step"><div class="cv-step-dot '+cls+'">'+(done?'&#10003;':(pos+1))+'</div><span class="cv-step-label" style="color:'+(active?'var(--text)':done?'var(--green)':'var(--text-3)')+'">'+lbl+'</span></div>';
   }).join('');
   if(!cvState.sectionStart)cvState.sectionStart=Date.now();
   // Resolve step: if current step's module is disabled, jump to next active step
@@ -5584,8 +6265,21 @@ function cvRender(){
   if(cvState.step===2&&_mods.cognitive===false){cvState.step=cvNextStep(2);}
   if(cvState.step===3&&_mods.typing===false){cvState.step=cvNextStep(3);}
   const s=cvState.step;
+  console.log('[cvRender] step:',s);
   if(s===0)cvWelcome();
-  else if(s===1)renderB5Question('cv-body',Object.keys(cvState.b5Answers).length,B5_QUESTIONS.length,cvState.b5Answers,'cv');
+  else if(s===1){
+    // Find first unanswered question
+    const _resumeIdx=(function(){
+      for(let i=0;i<B5_QUESTIONS.length;i++){
+        const q=B5_QUESTIONS[i];
+        if(q.type==='agree'||!q.type){if(cvState.b5Answers[i]===undefined)return i;}
+        else if(q.type==='fc'){if(cvState.b5Answers['fc_'+i]===undefined)return i;}
+        else if(q.type==='scenario'){if(cvState.b5Answers['sc_'+i]===undefined)return i;}
+      }
+      return B5_QUESTIONS.length; // all answered
+    })();
+    renderB5Question('cv-body',Math.min(_resumeIdx,B5_QUESTIONS.length-1),B5_QUESTIONS.length,cvState.b5Answers,'cv');
+  }
   else if(s===2)cvCognitive();
   else if(s===3)cvTypingTest();
   else if(s===4)cvDone();
@@ -5708,54 +6402,330 @@ function cvStartAssessment(){
   }catch(e){}
   cvSave();cvRender();
 }
+function cvSJT(){
+  // Initialise SJT state
+  if(!cvState.sjtAnswers)cvState.sjtAnswers={};
+  if(!cvState._sjtScenarios){
+    cvState._sjtScenarios=getSJTScenarios(cvState.role||'');
+    cvSave();
+  }
+  const scenarios=cvState._sjtScenarios;
+  const answered=Object.keys(cvState.sjtAnswers).length;
+  const total=scenarios.length;
+
+  // Skip intro — go straight to first scenario
+  cvState._sjtStarted=true;
+
+  // Find next unanswered scenario
+  const nextIdx=scenarios.findIndex((s,i)=>cvState.sjtAnswers[s.id]===undefined);
+  if(nextIdx===-1){
+    cvState._sjtDone=true;
+    cvRecordTime('sjt');
+    const _afterSJT=cvGetActiveSteps().filter(s=>s!==5&&s!==1&&s!==0);
+    const _nextStep=_afterSJT.length>0?_afterSJT[0]:4;
+    cvState.step=_nextStep; // set BEFORE cvRender so it doesn't loop back to cvSJT
+    cvState.cogIdx=0;
+    cvSave();
+    cvRender(); // now step != 5 so cvSJT won't be called again
+    return;
+  }
+
+  const sc=scenarios[nextIdx];
+  const qNum=nextIdx+1;
+  const body=document.getElementById('cv-body');
+  body.innerHTML='';
+  const card=document.createElement('div');card.className='cv-card';
+  card.style.cssText='max-width:620px;margin:0 auto;';
+  // Build options HTML
+  const optsHtml=sc.options.map((opt,i)=>{
+    const letter=String.fromCharCode(65+i);
+    return '<div class="sjt-opt" data-idx="'+i+'" style="text-align:left;padding:14px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r,8px);cursor:pointer;font-size:14px;color:var(--text);line-height:1.5;transition:all .15s;margin-bottom:0;">'
+      +'<span style="font-weight:600;color:var(--accent);margin-right:8px;">'+letter+'.</span>'+opt+'</div>';
+  }).join('');
+  card.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
+    +'<div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;">Situation '+qNum+' of '+total+'</div>'
+    +'<div style="height:4px;flex:1;margin:0 12px;background:var(--border);border-radius:99px;overflow:hidden;"><div style="width:'+Math.round((nextIdx/total)*100)+'%;height:100%;background:var(--accent);border-radius:99px;"></div></div>'
+    +'</div>'
+    +'<div style="font-size:15px;font-weight:600;line-height:1.6;margin-bottom:20px;color:var(--text);">'+sc.scenario+'</div>'
+    +'<div style="font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">What would you do?</div>'
+    +'<div style="display:flex;flex-direction:column;gap:10px;" id="sjt-options">'+optsHtml+'</div>';
+  body.appendChild(card);
+  // Attach click events
+  card.querySelectorAll('.sjt-opt').forEach(function(btn){
+    btn.addEventListener('mouseenter',function(){this.style.borderColor='var(--accent)';this.style.background='var(--accent-s)';});
+    btn.addEventListener('mouseleave',function(){this.style.borderColor='var(--border)';this.style.background='var(--surface)';});
+    btn.addEventListener('click',function(){
+      cvSJTAnswer(sc.id,parseInt(this.getAttribute('data-idx')));
+    });
+  });
+}
+
+function cvSJTAnswer(scenarioId, optionIdx){
+  cvState.sjtAnswers[scenarioId]=optionIdx;
+  cvSave();
+  // Brief flash of selected answer then move to next
+  const opts=document.querySelectorAll('#sjt-options .sjt-opt');
+  opts.forEach(function(el){
+    el.style.pointerEvents='none'; // disable clicks
+    el.style.opacity='0.6';
+  });
+  const chosen=document.querySelector('#sjt-options .sjt-opt[data-idx="'+optionIdx+'"]');
+  if(chosen){chosen.style.borderColor='var(--accent)';chosen.style.background='var(--accent-s)';chosen.style.opacity='1';}
+  setTimeout(function(){cvSJT();},400);
+}
+
+function computeSJTScore(sjtAnswers,scenarios){
+  if(!sjtAnswers||!scenarios||!scenarios.length)return null;
+  const answered=scenarios.filter(s=>sjtAnswers[s.id]!==undefined);
+  if(!answered.length)return null;
+  const correct=answered.filter(s=>sjtAnswers[s.id]===s.best).length;
+  return Math.round((correct/answered.length)*100);
+}
+
 function cvCognitive(){
-  cvState.cogIdx=cvState.cogIdx||0;cvState.cogAnswers=cvState.cogAnswers||{};
+  // Show timer warning on first question only (use flag to avoid re-showing)
+  if(!cvState._cogStarted){
+    cvState.cogIdx=0;cvState.cogAnswers=cvState.cogAnswers||{};
+    const body=document.getElementById('cv-body');
+    body.innerHTML='';
+    const card=document.createElement('div');card.className='cv-card';
+    card.style.cssText='max-width:520px;margin:0 auto;';
+    card.innerHTML=`
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--amber-s,#fffbeb);border:2px solid var(--amber-b,#fde68a);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--amber,#b45309)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        </div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Logic &amp; Reasoning Test</div>
+        <div style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:20px;">This section is <strong>timed</strong>. You will have a limited time per question. Answer as quickly and accurately as you can.</div>
+      </div>
+      <div style="background:var(--surface-2,#f8fafc);border:1px solid var(--border);border-radius:var(--r-lg,12px);padding:16px 18px;margin-bottom:24px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber,#b45309)" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          Each question has a timer — answer before time runs out
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent,#4f46e5)" stroke-width="2" style="flex-shrink:0;"><path d="M12 2L3 7v5c0 4.5 3.8 8.7 9 10 5.2-1.3 9-5.5 9-10V7L12 2z"/></svg>
+          ${COG_QUESTIONS.length} questions total
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green,#16a34a)" stroke-width="2" style="flex-shrink:0;"><polyline points="20,6 9,17 4,12"/></svg>
+          Read each question carefully before answering
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red,#dc2626)" stroke-width="2" style="flex-shrink:0;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          You cannot go back once you answer
+        </div>
+      </div>
+      <button onclick="cvStartCognitive()" style="width:100%;height:46px;background:var(--accent,#4f46e5);border:none;border-radius:var(--r,8px);color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;">
+        Start logic test →
+      </button>`;
+    body.appendChild(card);
+    return;
+  }
+  cvState.cogAnswers=cvState.cogAnswers||{};
   renderCogQuestion('cv-body',cvState.cogIdx,COG_QUESTIONS.length,
     (qi,oi)=>{cvState.cogAnswers[qi]=oi;cvSave();},
     ()=>{cvState.cogIdx++;if(cvState.cogIdx>=COG_QUESTIONS.length){cvRecordTime('cognitive');cvState.step=cvNextStep(2);cvSave();cvRender();}else cvCognitive();},
     ()=>{cvState.cogAnswers[cvState.cogIdx]=-1;cvState.cogIdx++;if(cvState.cogIdx>=COG_QUESTIONS.length){cvRecordTime('cognitive');cvState.step=cvNextStep(2);cvSave();cvRender();}else{cvSave();cvCognitive();}}
   );
 }
+function cvStartCognitive(){
+  cvState._cogStarted=true;
+  cvState.cogIdx=0;
+  cvState.cogAnswers={};
+  cvRecordTime('cognitive_start');
+  cvSave();
+  cvCognitive();
+}
 function cvTypingTest(){
+  // Show device warning first (unless already confirmed)
+  if(!cvState._typingConfirmed){
+    const body=document.getElementById('cv-body');
+    body.innerHTML='';
+    const card=document.createElement('div');card.className='cv-card';
+    card.style.cssText='max-width:520px;margin:0 auto;';
+    card.innerHTML=`
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--blue-s,#eff6ff);border:2px solid var(--blue-b,#bfdbfe);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue,#2563eb)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Typing Test</div>
+        <div style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:4px;">This test requires a <strong>physical keyboard</strong>.</div>
+      </div>
+      <div style="background:var(--amber-s,#fffbeb);border:1.5px solid var(--amber-b,#fde68a);border-radius:var(--r-lg,12px);padding:16px 18px;margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--amber,#b45309);margin-bottom:6px;">⚠️ Using a phone or tablet?</div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.65;">The typing test is designed for a computer with a physical keyboard. On a mobile device results will not be accurate.<br><br>If you don't have access to a computer right now, you can <strong>skip this test</strong> and your other results will still be submitted. Please inform HR.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="cvState._typingConfirmed=true;cvSave();cvTypingTest();" style="width:100%;height:46px;background:var(--accent,#4f46e5);border:none;border-radius:var(--r,8px);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;">
+          I have a keyboard — start typing test →
+        </button>
+        <button onclick="cvSkipTyping()" style="width:100%;height:44px;background:var(--surface,#f8fafc);border:1.5px solid var(--border);border-radius:var(--r,8px);color:var(--text-2);font-size:14px;font-weight:500;cursor:pointer;font-family:'Geist',sans-serif;">
+          Skip typing test (no keyboard available)
+        </button>
+      </div>`;
+    body.appendChild(card);
+    return;
+  }
   cvTyping={charIdx:0,started:false,startTime:null,errors:0,interval:null};cvState._typingErrors={};
   const wrap=document.createElement('div');wrap.className='cv-card';
   wrap.innerHTML=buildTypingHTML('cv-t-','cvHandleTyping','cvTypingCtrl','cvSubmitTyping');
   const cv=document.getElementById('cv-body');cv.innerHTML='';cv.appendChild(wrap);
   cvInitTypingDisplay();
 }
+
+function cvSkipTyping(){
+  // Mark typing as skipped and move to done
+  cvState.typingWpm=0;cvState.typingAcc=0;cvState._typingSkipped=true;
+  cvRecordTime('typing');
+  cvState.step=cvNextStep(3);
+  cvSave();
+  // Show confirmation
+  const body=document.getElementById('cv-body');
+  body.innerHTML='';
+  const card=document.createElement('div');card.className='cv-card';
+  card.style.cssText='max-width:520px;margin:0 auto;text-align:center;';
+  card.innerHTML=`
+    <div style="width:52px;height:52px;border-radius:50%;background:var(--green-s,#f0fdf4);border:2px solid var(--green-b,#bbf7d0);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green,#16a34a)" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+    </div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Typing test skipped</div>
+    <div style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:20px;">Your other results have been saved. Please let HR know you skipped the typing test due to not having a keyboard.</div>
+    <button onclick="cvRender();" style="width:100%;height:44px;background:var(--accent,#4f46e5);border:none;border-radius:var(--r,8px);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;">
+      Submit remaining results →
+    </button>`;
+  body.appendChild(card);
+}
 function cvInitTypingDisplay(){
   initTypingDisplay('cv-t-',cvState._typingErrors||{},cvTyping.charIdx);
 }
 function cvTypingCtrl(action){
-  if(action==='start'){const inp=document.getElementById('cv-t-inp'),btn=document.getElementById('cv-t-sb');if(inp){inp.disabled=false;inp.style.pointerEvents='auto';setTimeout(()=>inp.focus(),80);}if(btn)btn.disabled=true;cvTyping={charIdx:0,started:false,startTime:null,errors:0,interval:null};cvState._typingErrors={};cvInitTypingDisplay();}
-  else{clearInterval(cvTyping.interval);cvTyping={charIdx:0,started:false,startTime:null,errors:0,interval:null};cvState._typingErrors={};cvTypingTest();}
+  if(action==='start'){
+    const inp=document.getElementById('cv-t-inp'),btn=document.getElementById('cv-t-sb');
+    if(inp){inp.disabled=false;inp.style.pointerEvents='auto';setTimeout(()=>inp.focus(),80);}
+    if(btn)btn.disabled=true;
+    cvTyping={charIdx:0,started:false,startTime:null,errors:0,interval:null,timeLeft:TYPING_DURATION};
+    cvState._typingErrors={};
+    const t=document.getElementById('cv-t-time');if(t){t.textContent=TYPING_DURATION;t.style.color='var(--text)';}
+    const p=document.getElementById('cv-t-prog');if(p)p.style.width='0%';
+    const res=document.getElementById('cv-t-results');if(res)res.style.display='none';
+    const restartBtn=document.getElementById('cv-t-restart');
+    const attempts=cvState._typingAttempts||0;
+    if(restartBtn)restartBtn.style.display=attempts>=2?'none':'inline-flex';
+    const h=document.getElementById('cv-t-hint');
+    if(h)h.textContent=attempts>=2?'Final attempt — type the text above':'Type the text above — 60 seconds'+(attempts===1?' (last restart)':'');
+    cvInitTypingDisplay();
+  } else if(action==='reset'){
+    cvState._typingAttempts=(cvState._typingAttempts||0)+1;
+    clearInterval(cvTyping.interval);
+    cvTyping={charIdx:0,started:false,startTime:null,errors:0,interval:null};
+    cvState._typingErrors={};
+    cvState.typingWpm=0;cvState.typingAcc=0;
+    // If max attempts reached, hide restart button
+    const restartBtn=document.getElementById('cv-t-restart');
+    if(restartBtn&&cvState._typingAttempts>=2)restartBtn.style.display='none';
+    cvTypingTest();
+  }
 }
+const TYPING_DURATION=60; // seconds, like typing.com
+
 function cvHandleTyping(e){
   const inp=e.target,typed=inp.value;if(!typed.length)return;
   const ch=typed[typed.length-1];inp.value='';
-  if(!cvTyping.started){cvTyping.started=true;cvTyping.startTime=Date.now();cvTyping.interval=setInterval(()=>{if(!cvTyping.startTime)return;const el=(Date.now()-cvTyping.startTime)/1000;const wpm=Math.round((cvTyping.charIdx/5)/(el/60));const acc=Math.round(((cvTyping.charIdx-cvTyping.errors)/Math.max(cvTyping.charIdx,1))*100);const _tt=getTypingText();const pct=Math.round(cvTyping.charIdx/_tt.length*100);const w=document.getElementById('cv-t-wpm'),a=document.getElementById('cv-t-acc'),t=document.getElementById('cv-t-time'),p=document.getElementById('cv-t-prog');if(w)w.textContent=wpm;if(a)a.textContent=acc+'%';if(t)t.textContent=Math.round(el)+'s';if(p)p.style.width=pct+'%';cvState.typingWpm=wpm;cvState.typingAcc=acc;},250);}
-  const _cvtt=getTypingText();const expected=_cvtt[cvTyping.charIdx];const wrong=ch!==expected;
+  // Handle backspace — allow correcting last character
+  if(ch===''||e.inputType==='deleteContentBackward'||typed===inp._lastVal?.slice(0,-1)){
+    if(cvTyping.charIdx>0){
+      cvTyping.charIdx--;
+      // Undo the error count if last char was wrong
+      if(cvState._typingErrors[cvTyping.charIdx]){cvTyping.errors--;delete cvState._typingErrors[cvTyping.charIdx];}
+      cvInitTypingDisplay();
+    }
+    return;
+  }
+  if(!cvTyping.started){
+    cvTyping.started=true;cvTyping.startTime=Date.now();
+    cvTyping.timeLeft=TYPING_DURATION;
+    cvTyping.interval=setInterval(()=>{
+      if(!cvTyping.startTime)return;
+      const el=(Date.now()-cvTyping.startTime)/1000;
+      const remaining=Math.max(0,TYPING_DURATION-Math.floor(el));
+      const wpm=el>0?Math.round((cvTyping.charIdx/5)/(el/60)):0;
+      const acc=Math.round(((cvTyping.charIdx-cvTyping.errors)/Math.max(cvTyping.charIdx,1))*100);
+      const pct=Math.round(cvTyping.charIdx/getTypingText().length*100);
+      const w=document.getElementById('cv-t-wpm'),a=document.getElementById('cv-t-acc'),t=document.getElementById('cv-t-time'),p=document.getElementById('cv-t-prog');
+      if(w)w.textContent=wpm;
+      if(a)a.textContent=acc+'%';
+      if(t){t.textContent=remaining;t.style.color=remaining<=10?'var(--red)':remaining<=20?'var(--amber)':'var(--text)';}
+      if(p)p.style.width=((TYPING_DURATION-remaining)/TYPING_DURATION*100)+'%';
+      cvState.typingWpm=wpm;cvState.typingAcc=acc;
+      // Time's up
+      if(remaining<=0){
+        clearInterval(cvTyping.interval);
+        const nb=document.getElementById('cv-t-nb');if(nb)nb.disabled=false;
+        const i2=document.getElementById('cv-t-inp');if(i2)i2.disabled=true;
+        const h=document.getElementById('cv-t-hint');if(h)h.textContent='Time is up! Click Submit.';
+        // Show results panel
+        const res=document.getElementById('cv-t-results');
+        if(res){res.style.display='block';const rw=document.getElementById('cv-t-r-wpm'),ra=document.getElementById('cv-t-r-acc');if(rw)rw.textContent=wpm;if(ra)ra.textContent=acc+'%';}
+        if(t)t.style.color='var(--red)';
+      }
+    },250);
+  }
+  const _cvtt=getTypingText();
+  if(cvTyping.charIdx>=_cvtt.length){return;} // already done
+  const expected=_cvtt[cvTyping.charIdx];const wrong=ch!==expected;
   cvState._typingErrors[cvTyping.charIdx]=wrong;if(wrong)cvTyping.errors++;cvTyping.charIdx++;
-  if(cvTyping.charIdx>=getTypingText().length){clearInterval(cvTyping.interval);const nb=document.getElementById('cv-t-nb');if(nb)nb.disabled=false;const i2=document.getElementById('cv-t-inp');if(i2)i2.disabled=true;const h=document.getElementById('cv-t-hint');if(h)h.textContent='Done! Click Submit.';}
+  if(cvTyping.charIdx>=_cvtt.length){
+    clearInterval(cvTyping.interval);
+    const nb=document.getElementById('cv-t-nb');if(nb)nb.disabled=false;
+    const i2=document.getElementById('cv-t-inp');if(i2)i2.disabled=true;
+    const h=document.getElementById('cv-t-hint');if(h)h.textContent='All done! Click Submit.';
+    const el=(Date.now()-cvTyping.startTime)/1000;
+    const wpm=Math.round((cvTyping.charIdx/5)/(el/60));const acc=Math.round(((cvTyping.charIdx-cvTyping.errors)/Math.max(cvTyping.charIdx,1))*100);
+    const res=document.getElementById('cv-t-results');
+    if(res){res.style.display='block';const rw=document.getElementById('cv-t-r-wpm'),ra=document.getElementById('cv-t-r-acc');if(rw)rw.textContent=wpm;if(ra)ra.textContent=acc+'%';}
+  }
   cvInitTypingDisplay();
 }
 function cvSubmitTyping(){
   cvRecordTime('typing');
-  function ps(str){if(!str)return 0;const m=str.match(/(\d+)m\s*0*(\d+)s/);return m?parseInt(m[1])*60+parseInt(m[2]):0;}
-  const tot=ps(cvState.timing.personality)+ps(cvState.timing.cognitive)+ps(cvState.timing.typing);
-  cvState.timing.total=Math.floor(tot/60)+'m '+String(tot%60).padStart(2,'0')+'s';
+  try{
+    function ps(str){if(!str)return 0;const m=str.match(/(\d+)m\s*0*(\d+)s/);return m?parseInt(m[1])*60+parseInt(m[2]):0;}
+    const t=cvState.timing||{};
+    const tot=ps(t.personality||'0m 0s')+ps(t.cognitive||'0m 0s')+ps(t.typing||'0m 0s');
+    cvState.timing.total=Math.floor(tot/60)+'m '+String(tot%60).padStart(2,'0')+'s';
+  }catch(e){}
   cvState.rawAnswers={...cvState.b5Answers};
   cvState.step=4;cvRender();
 }
 function cvDone(){
+  console.log('[cvDone] called, step:',cvState.step,'modules:',cvState.modules);
   // ── 1. Compute scores ──────────────────────────────────────────
   const allScores=computeAllScores(cvState.b5Answers||{});
-  const cogAnswers=cvState.cogAnswers||{};
-  const cogPct=Math.round(COG_QUESTIONS.filter((q,i)=>cogAnswers[i]===q.ans).length/COG_QUESTIONS.length*100);
+  // Merge FC scores (weighted 60%)
+  if(typeof computeFCScores==='function'){
+    const _fcSc=computeFCScores(cvState.b5Answers||{});
+    Object.keys(_fcSc).forEach(function(t){
+      if(_fcSc[t]!==null){
+        allScores[t]=allScores[t]!==undefined?Math.round(allScores[t]*0.4+_fcSc[t]*0.6):_fcSc[t];
+      }
+    });
+  }
+  // Scenario (SJT) score
+  const _scQs=B5_QUESTIONS.filter(function(q){return q.type==='scenario';});
+  const _scCorrect=_scQs.filter(function(q){
+    const i=B5_QUESTIONS.indexOf(q);
+    return cvState.b5Answers['sc_'+i]===q.best;
+  }).length;
+  const _sjtScore=_scQs.length>0?Math.round(_scCorrect/_scQs.length*100):null;
+  const _cogCorrect=COG_QUESTIONS.filter(function(q,i){return cvState.cogAnswers[i]===q.ans;}).length;
+  const cogPct=COG_QUESTIONS.length>0&&Object.keys(cvState.cogAnswers||{}).length>0?Math.round(_cogCorrect/COG_QUESTIONS.length*100):null;
   const scoreData={
     big5:{...allScores},
     cognitive:cogPct,
-    typing:{wpm:cvState.typingWpm||0,accuracy:cvState.typingAcc||0}
+    typing:{wpm:cvState.typingWpm||0,accuracy:cvState.typingAcc||0},
+    sjt:_sjtScore
   };
   const hadB5=Object.keys(cvState.b5Answers||{}).length>0;
   const hadCog=Object.keys(cogAnswers).length>0;
@@ -5776,7 +6746,10 @@ function cvDone(){
     email:cvState.email||'',
     gender:cvState.gender||'',
     age:cvState.age||'',
-    country:cvState.country||''
+    country:cvState.country||'',
+    rawAnswers:cvState.b5Answers||{},
+    sjtAnswers:cvState.sjtAnswers||{},
+    sjtScenarios:cvState._sjtScenarios||[]
   };
   if(liveIdx>=0){
     Object.assign(liveCands[liveIdx],record);
@@ -6729,9 +7702,22 @@ async function syncLoadConfig(key){
 async function syncLoadAllConfig(){
   if(!syncEnabled())return;
   try{
-    // Load positions
+    // Load positions from Supabase — this is the source of truth
     const pos=await syncLoadConfig('positions');
-    if(pos&&pos.length){positions=pos;nextPosId=Math.max(...pos.map(p=>p.id||0))+1;persistPositions();}
+    if(pos&&Array.isArray(pos)&&pos.length){
+      positions=pos;
+      nextPosId=Math.max(...pos.map(p=>p.id||0))+1;
+      // Save to localStorage as cache
+      try{localStorage.setItem('ybs_positions',JSON.stringify(positions));localStorage.setItem('ybs_next_pos_id',String(nextPosId));}catch(e){}
+      // Re-render dashboard to show updated positions
+      renderDash();
+    }
+    // Load int_profiles
+    const intProf=await syncLoadConfig('int_profiles');
+    if(intProf&&Array.isArray(intProf)){
+      interviewProfiles=intProf;
+      try{localStorage.setItem('ybs_int_profiles',JSON.stringify(interviewProfiles));}catch(e){}
+    }
     // Load company name
     const company=await syncLoadConfig('company');
     if(company){const el=document.getElementById('set-company');if(el)el.value=company;}
@@ -6799,18 +7785,25 @@ const SUPA_CONFIG_TABLE='app_config';
 function _supaRef(url){const m=(url||'').match(/https:\/\/([a-z0-9]+)\.supabase\.co/);return m?m[1]:'';}
 
 // Build a clean assess link — just token and modules, no credentials
-function buildAssessLink(tok, modCode){
+function buildAssessLink(tok, modCode, role){
   const base=window.location.href.split('?')[0].split('#')[0];
-  return base+'?assess='+tok+(modCode?'&m='+modCode:'');
+  return base+'?assess='+tok+(modCode?'&m='+modCode:'')+(role?'&role='+encodeURIComponent(role):'');
 }
 
 // Build assess link — same as buildAssessLink (shortener removed, was causing issues)
-function buildShortAssessLink(tok, modCode){
-  return Promise.resolve(buildAssessLink(tok, modCode));
+function buildShortAssessLink(tok, modCode, role){
+  return Promise.resolve(buildAssessLink(tok, modCode, role));
 }
 
+// Embedded Supabase config — always available regardless of localStorage
+const _EMBEDDED_SUPA={url:'https://aiounaysuoiicauhwowl.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpb3VuYXlzdW9paWNhdWh3b3dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MjY2MDEsImV4cCI6MjA5MjUwMjYwMX0.Zmf8-m_dojz7kZj_RCDBNsjQl-9eWvyCWbMMG6Zz0Nw'};
 function syncGetConfig(){
-  try{return JSON.parse(localStorage.getItem('ybs_sync_cfg')||'null');}catch(e){return null;}
+  try{
+    const stored=JSON.parse(localStorage.getItem('ybs_sync_cfg')||'null');
+    // Return stored config if valid, otherwise fall back to embedded
+    if(stored&&stored.url&&stored.key)return stored;
+  }catch(e){}
+  return _EMBEDDED_SUPA;
 }
 function syncEnabled(){
   const cfg=syncGetConfig();
@@ -6827,7 +7820,7 @@ function _supaUrl(path){
 
 // Push one candidate record to Supabase (upsert by token)
 async function syncPushCandidate(record){
-  if(!syncEnabled())return;
+  if(!syncEnabled()){console.warn('Supabase not configured — results saved locally only.');return;}
   try{
     const row={
       token:record._token||String(record.id),
@@ -6844,14 +7837,15 @@ async function syncPushCandidate(record){
     });
     if(!resp.ok){
       const err=await resp.text();
-      console.error('Sync push failed:',resp.status,err);
-      // If key is invalid, clear config so it reloads from default next time
+      console.error('Supabase push FAILED:',resp.status,err);
       if(resp.status===401){
-        console.warn('API key rejected — clearing config to reload default');
+        console.warn('API key rejected — check Settings > Cloud Sync');
         localStorage.removeItem('ybs_sync_cfg');
       }
+      return false;
     }
-  }catch(e){console.warn('Sync push error:',e);}
+    return true;
+  }catch(e){console.warn('Supabase push error:',e);return false;}
 }
 
 // Pull all records from Supabase and merge into local
@@ -7007,14 +8001,12 @@ if(!isCandidateView){
 
   try{
     const savedPos=JSON.parse(localStorage.getItem('ybs_positions')||'null');
-    if(savedPos!==null){
+    if(savedPos!==null&&savedPos.length>0){
       positions=savedPos;
       try{const ni=parseInt(localStorage.getItem('ybs_next_pos_id')||'0');if(ni>nextPosId)nextPosId=ni;}catch(e){}
-    } else {
-      // First run — persist default positions
-      persistPositions();
     }
-  }catch(e){persistPositions();}
+    // Supabase will load authoritative positions via syncLoadAllConfig()
+  }catch(e){}
   if(authed){
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-shell').style.display='flex';
@@ -7067,7 +8059,4 @@ if(!isCandidateView){
 }
 </script>
 </body>
-</html  const _mn=new Date();
-  const today=fmtDateShort();
-  const _ts=String(_mn.getHours()).padStart(2,'0')+':'+String(_mn.getMinutes()).padStart(2,'0');
-  const invitedAt=today+' '+_ts;>
+</html>
