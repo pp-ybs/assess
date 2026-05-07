@@ -6733,7 +6733,7 @@ function cvDone(){
     sjt:_sjtScore
   };
   const hadB5=Object.keys(cvState.b5Answers||{}).length>0;
-  const hadCog=Object.keys(cogAnswers).length>0;
+  const hadCog=Object.keys((cvState.cogAnswers||{})).length>0;
   const hadTyp=(cvState.typingWpm||0)>0||(cvState.typingAcc||0)>0;
 
   // ── 2. Save to localStorage ────────────────────────────────────
