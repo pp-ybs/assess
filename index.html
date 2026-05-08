@@ -1484,16 +1484,10 @@ function loadApiKeyIntoSettings(){
 ═══════════════════════════════════════════ */
 // Simple non-reversible hash for credential storage
 // Credentials are never stored in source — only a derived hash
-async function _ybsHash(s){
-  // Use SubtleCrypto SHA-256 — cryptographically secure, not reversible
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('vettiq_salt_2025::'+s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-// Sync version for login (returns promise)
-function _ybsHashSync(s){
-  // Fallback for sync contexts — keep old hash for localStorage compatibility check
-  let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}
-  return'ybs_'+Math.abs(h).toString(36)+'_'+s.length;
+function _ybsHash(s){
+  let h=5381;
+  for(let i=0;i<s.length;i++){h=((h<<5)+h)^s.charCodeAt(i);}
+  return'h'+Math.abs(h>>>0).toString(16).padStart(8,'0');
 }
 function _ybsGetCreds(){
   try{
@@ -1506,29 +1500,28 @@ function _ybsGetCreds(){
 let _loginAttempts=0;
 let _loginLockedUntil=0;
 
-async function doLogin(){
+function doLogin(){
   const username=(document.getElementById('login-email')?.value||'').trim().toLowerCase();
   const pass=document.getElementById('login-pass')?.value||'';
   const err=document.getElementById('login-err');
   if(!username||!pass){if(err)err.textContent='Please enter username and password.';return;}
 
-  // Brute force lockout
   const now=Date.now();
   if(_loginLockedUntil>now){
     const secs=Math.ceil((_loginLockedUntil-now)/1000);
     if(err)err.textContent=`Too many attempts. Try again in ${secs}s.`;return;
   }
 
-  const hashU=await _ybsHash(username);
-  const hashP=await _ybsHash(pass);
+  const hashU=_ybsHash(username);
+  const hashP=_ybsHash(pass);
 
   let stored=_ybsGetCreds();
-
-  // First run — seed default credentials
+  // Wipe old-format hashes (ybs_xxx) — incompatible with new hash
+  if(stored&&(!stored.u||!stored.u.startsWith('h'))){
+    stored=null;try{localStorage.removeItem('ybs_admin_creds');}catch(e){}
+  }
   if(!stored){
-    const defU=await _ybsHash('admin');
-    const defP=await _ybsHash('Assess@2025');
-    stored={u:defU,p:defP};
+    stored={u:_ybsHash('admin'),p:_ybsHash('Assess@2025')};
     try{localStorage.setItem('ybs_admin_creds',JSON.stringify(stored));}catch(e){}
   }
 
@@ -1537,16 +1530,16 @@ async function doLogin(){
     document.getElementById('login-screen').classList.add('hidden');
     const shell=document.getElementById('admin-shell');if(shell)shell.style.display='flex';
     try{localStorage.setItem('vettiq_auth','1');}catch(e){}
-    const _rp=localStorage.getItem('ybs_page')||'assessments';
-    showPage(['dashboard','assessments','interview','stats','settings'].includes(_rp)?_rp:'assessments',null);
+    const rp=localStorage.getItem('ybs_page')||'assessments';
+    showPage(['dashboard','assessments','interview','stats','settings'].includes(rp)?rp:'assessments',null);
   }else{
     _loginAttempts++;
     if(_loginAttempts>=5){
-      _loginLockedUntil=Date.now()+30000; // 30 second lockout
+      _loginLockedUntil=Date.now()+30000;
       _loginAttempts=0;
       if(err)err.textContent='Too many failed attempts. Locked for 30 seconds.';
     }else{
-      if(err)err.textContent=`Incorrect username or password. (${5-_loginAttempts} attempt${5-_loginAttempts===1?'':'s'} remaining)`;
+      if(err)err.textContent=`Incorrect username or password. (${5-_loginAttempts} attempt${5-_loginAttempts===1?'':'s'} left)`;
     }
     const inp=document.getElementById('login-pass');
     if(inp){inp.style.borderColor='rgba(248,113,113,.6)';setTimeout(()=>{inp.style.borderColor='';},2000);}
@@ -2330,9 +2323,10 @@ function renderDash(){
 
   // Sort by invited date (uses shared parseCandDate global)
   filtered.sort((a,b)=>candSortDir==='desc'?parseCandDate(b.invited)-parseCandDate(a.invited):parseCandDate(a.invited)-parseCandDate(b.invited));
-  document.getElementById('dashTableSub').textContent=filtered.length+' candidate'+(filtered.length!==1?'s':'')+'';
+  const _dts=document.getElementById('dashTableSub');if(_dts)_dts.textContent=filtered.length+' candidate'+(filtered.length!==1?'s':'')+'';
   const stMap={'Completed':['var(--green)','✓'],'In Progress':['var(--text-2)','◔'],'Invited':['var(--text-3)','○']};
-  document.getElementById('dashBody').innerHTML=filtered.length?filtered.map((c,i)=>{
+  const _db=document.getElementById('dashBody');if(!_db)return;
+  _db.innerHTML=filtered.length?filtered.map((c,i)=>{
     const cog=c.score?.cognitive||null;
     const checked=selectedCands.has(c.id);
     const _eff=cvEffectiveStatus(c);
@@ -2394,7 +2388,7 @@ function renderDash(){
       </td>
     </tr>`;
   }).join(''):`<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-3);">No candidates match filters.</td></tr>`;
-  document.getElementById('candCount').textContent=candidates.length;
+  const _cc=document.getElementById('candCount');if(_cc)_cc.textContent=candidates.length;
 }
 function toggleSelectAll(cb){
   document.querySelectorAll('#dashBody input[type=checkbox]').forEach(c=>c.checked=cb.checked);
@@ -7045,7 +7039,7 @@ function submitEnpsForm(token){
 
 
 
-async function saveCredentials(){
+function saveCredentials(){
   const newUser=(document.getElementById('set-new-user')?.value||'').trim().toLowerCase();
   const newPass=document.getElementById('set-new-pass')?.value||'';
   const confirmPass=document.getElementById('set-confirm-pass')?.value||'';
@@ -7054,19 +7048,20 @@ async function saveCredentials(){
   if(!newPass&&!newUser){showMsg('Enter a new username or password.',false);return;}
   if(newPass&&newPass.length<8){showMsg('Password must be at least 8 characters.',false);return;}
   if(newPass&&newPass!==confirmPass){showMsg('Passwords do not match.',false);return;}
-  const existing=_ybsGetCreds()||{u:'',p:''};
-  const updatedU=newUser?await _ybsHash(newUser):existing.u;
-  const updatedP=newPass?await _ybsHash(newPass):existing.p;
+  const existing=_ybsGetCreds()||{u:_ybsHash('admin'),p:_ybsHash('Assess@2025')};
+  const updatedU=newUser?_ybsHash(newUser):existing.u;
+  const updatedP=newPass?_ybsHash(newPass):existing.p;
   const credObj={u:updatedU,p:updatedP};
   try{localStorage.setItem('ybs_admin_creds',JSON.stringify(credObj));}catch(e){}
   ['set-new-user','set-new-pass','set-confirm-pass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const ver=Date.now().toString();
+  try{localStorage.setItem('ybs_creds_ver',ver);}catch(e){}
   if(syncEnabled()){
-    try{
-      await syncSaveConfig('admin_creds',credObj);
-      showMsg('Credentials updated and synced to all devices ✓',true);
-    }catch(e){showMsg('Saved locally. Connect Supabase to sync across devices.',true);}
+    syncSaveConfig('admin_creds',credObj).catch(()=>{});
+    syncSaveConfig('creds_ver',ver).catch(()=>{});
+    showMsg('Credentials saved. Other devices will be logged out shortly. ✓',true);
   }else{
-    showMsg('Saved locally — connect Supabase in Sync settings to apply on all devices.',true);
+    showMsg('Credentials saved locally. ✓',true);
   }
 }
 
@@ -7106,7 +7101,7 @@ async function syncLoadAllConfig(){
       // Save to localStorage as cache
       try{localStorage.setItem('ybs_positions',JSON.stringify(positions));localStorage.setItem('ybs_next_pos_id',String(nextPosId));}catch(e){}
       // Re-render dashboard to show updated positions
-      renderDash();
+      try{if(document.getElementById('dashBody'))renderDash();}catch(ex){}
     }
     // Load int_profiles
     const intProf=await syncLoadConfig('int_profiles');
