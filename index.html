@@ -2732,14 +2732,14 @@ const B5_QUESTIONS=[
   // ═══════════════════════════════════════════════════════════
 
   // BLOCK 3: SCENARIOS (8 situations)
-  {type:'scenario',situation:"You are coordinating a client shoot scheduled for tomorrow. At 5pm you discover the venue has double-booked the space. The client is expecting confirmation tonight.",options:["Send the client a brief message saying everything is under control, then spend the evening resolving it.","Call the client immediately, explain the situation honestly, and outline two backup options you are already exploring.","Contact your manager and wait for their guidance before reaching out to the client.","Email the venue a strongly worded complaint and copy the client to show you are taking action."],best:1,trait:"Accountability"},
-  {type:'scenario',situation:"A colleague asks for your honest opinion on their work before they send it to a client. You can see several problems that could reflect badly on the studio.",options:["Tell them it looks great to avoid an awkward conversation before a deadline.","Point out the specific issues clearly but constructively, and offer to help fix them before it goes out.","Send them a long list of everything wrong in detail without filtering for what is actually critical.","Mention one small issue only so as not to overwhelm them."],best:1,trait:"CommunicationQuality"},
-  {type:'scenario',situation:"You notice that the way session bookings are logged creates confusion causing occasional double-bookings. You are not responsible for this process.",options:["Document the inconsistency with a specific example and raise it with your manager as a suggested improvement.","Fix it yourself quietly by standardising the approach without telling anyone.","Mention it casually to a colleague and leave it at that.","Continue working around it — raising process issues is not your responsibility."],best:0,trait:"Initiative"},
-  {type:'scenario',situation:"A client arrives clearly unhappy about the wait time on a previous visit. They are not shouting but are cold and distant.",options:["Act professionally and complete the session as normal — they will get over it.","Acknowledge directly that you understand their frustration, apologise for the previous experience, and ask if there is anything you can do to make today better.","Apologise repeatedly throughout the session to show you care.","Report the situation to your manager before starting so they are aware."],best:1,trait:"Agreeableness"},
-  {type:'scenario',situation:"You are given a new responsibility you have not been trained on. Your manager is travelling this week.",options:["Attempt it independently and submit as if fully confident — you do not want to appear incapable.","Message your manager with a specific question about the part you are unsure of, proceed with what you can, and flag what needs their review.","Wait until your manager returns before doing anything.","Ask a colleague to do it for you and present it as your own work."],best:1,trait:"ProblemSolving"},
-  {type:'scenario',situation:"Two weeks into a busy period, a team member tells you privately they are struggling and worried about making mistakes. They ask you not to mention it to the manager.",options:["Respect their confidence completely and say nothing to anyone.","Encourage them to speak to the manager yourself, and offer to help them prepare what to say.","Tell the manager immediately because the business risk outweighs the confidence.","Offer to cover some of their tasks quietly without the manager knowing."],best:1,trait:"ConflictStyle"},
-  {type:'scenario',situation:"Your manager gives you feedback that contradicts what a senior colleague told you last week. Both cannot be right.",options:["Follow your manager's feedback since they have authority, without raising the contradiction.","Thank your manager, then ask a clarifying question — explain the conflicting guidance and ask which approach they recommend going forward.","Go back to the colleague and tell them the manager disagreed with them.","Ignore both and do it the way you think is best."],best:1,trait:"FeedbackReceptivity"},
-  {type:'scenario',situation:"You are preparing an important client proposal and realise you are missing key information. The proposal is due tomorrow.",options:["Submit with the information gap clearly noted and explain what is missing and why.","Make reasonable assumptions, note them explicitly, and flag them to your manager before submitting.","Ask for a deadline extension without explaining the specific reason.","Submit as if the information is complete to avoid looking unprepared."],best:1,trait:"ProblemSolving"},
+  {type:'scenario',situation:"You are coordinating a client shoot scheduled for tomorrow. At 5pm you discover the venue has double-booked the space. The client is expecting confirmation tonight.",options:["Call the client immediately, explain the situation honestly, and outline two backup options you are already exploring.","Send the client a brief message saying everything is under control, then spend the evening resolving it.","Email the venue a strongly worded complaint and copy the client to show you are taking action.","Contact your manager and wait for their guidance before reaching out to the client."],best:0,trait:"Accountability"},
+  {type:'scenario',situation:"A colleague asks for your honest opinion on their work before they send it to a client. You can see several problems that could reflect badly on the studio.",options:["Tell them it looks great to avoid an awkward conversation before a deadline.","Send them a long list of everything wrong in detail without filtering for what is actually critical.","Mention one small issue only so as not to overwhelm them.","Point out the specific issues clearly but constructively, and offer to help fix them before it goes out."],best:3,trait:"CommunicationQuality"},
+  {type:'scenario',situation:"You notice that the way session bookings are logged creates confusion causing occasional double-bookings. You are not responsible for this process.",options:["Continue working around it — raising process issues is not your responsibility.","Mention it casually to a colleague and leave it at that.","Document the inconsistency with a specific example and raise it with your manager as a suggested improvement.","Fix it yourself quietly by standardising the approach without telling anyone."],best:2,trait:"Initiative"},
+  {type:'scenario',situation:"A client arrives clearly unhappy about the wait time on a previous visit. They are not shouting but are cold and distant.",options:["Apologise repeatedly throughout the session to show you care.","Acknowledge directly that you understand their frustration, apologise for the previous experience, and ask if there is anything you can do to make today better.","Report the situation to your manager before starting so they are aware.","Act professionally and complete the session as normal — they will get over it."],best:1,trait:"Agreeableness"},
+  {type:'scenario',situation:"You are given a new responsibility you have not been trained on. Your manager is travelling this week.",options:["Wait until your manager returns before doing anything.","Ask a colleague to do it for you and present it as your own work.","Attempt it independently and submit as if fully confident — you do not want to appear incapable.","Message your manager with a specific question about the part you are unsure of, proceed with what you can, and flag what needs their review."],best:3,trait:"ProblemSolving"},
+  {type:'scenario',situation:"Two weeks into a busy period, a team member tells you privately they are struggling and worried about making mistakes. They ask you not to mention it to the manager.",options:["Tell the manager immediately because the business risk outweighs the confidence.","Offer to cover some of their tasks quietly without the manager knowing.","Respect their confidence completely and say nothing to anyone.","Encourage them to speak to the manager yourself, and offer to help them prepare what to say."],best:3,trait:"ConflictStyle"},
+  {type:'scenario',situation:"Your manager gives you feedback that contradicts what a senior colleague told you last week. Both cannot be right.",options:["Thank your manager, then ask a clarifying question — explain the conflicting guidance and ask which approach they recommend going forward.","Go back to the colleague and tell them the manager disagreed with them.","Follow your manager's feedback since they have authority, without raising the contradiction.","Ignore both and do it the way you think is best."],best:0,trait:"FeedbackReceptivity"},
+  {type:'scenario',situation:"You are preparing an important client proposal and realise you are missing key information. The proposal is due tomorrow.",options:["Submit as if the information is complete to avoid looking unprepared.","Make reasonable assumptions, note them explicitly, and flag them to your manager before submitting.","Ask for a deadline extension without explaining the specific reason.","Submit with the information gap clearly noted and explain what is missing and why."],best:1,trait:"ProblemSolving"},
 
 ];
 
@@ -2776,45 +2776,45 @@ function getSJTScenarios(role){
 
 // 30 COGNITIVE QUESTIONS (expanded from 20)
 const COG_QUESTIONS=[
-  // ── VERBAL REASONING (6) ──
-  {q:"Which word means the OPPOSITE of 'benevolent'?",opts:["Generous","Malevolent","Indifferent","Passive"],ans:1,type:"Verbal"},
-  {q:"Choose the word most similar in meaning to 'LUCID'.",opts:["Confused","Dimly lit","Clear and coherent","Mysterious"],ans:2,type:"Verbal"},
+  // ── VERBAL REASONING (6) ── correct: A, C, B, D, A, C
+  {q:"Which word means the OPPOSITE of 'benevolent'?",opts:["Malevolent","Generous","Indifferent","Passive"],ans:0,type:"Verbal"},
+  {q:"Choose the word most similar in meaning to 'LUCID'.",opts:["Confused","Mysterious","Clear and coherent","Dimly lit"],ans:2,type:"Verbal"},
   {q:"'Ephemeral' most nearly means:",opts:["Ancient","Short-lived","Mysterious","Recurring"],ans:1,type:"Verbal"},
-  {q:"Which sentence is grammatically and logically correct?",opts:["She insisted that he leaves immediately.","The data suggests the hypothesis are wrong.","Neither the manager nor the staff were informed.","Each of the participants have submitted their form."],ans:2,type:"Verbal"},
-  {q:"Find the word that does NOT belong: Simile · Metaphor · Alliteration · Hypothesis",opts:["Simile","Metaphor","Alliteration","Hypothesis"],ans:3,type:"Verbal"},
-  {q:"'Verbose' is to 'concise' as 'transparent' is to:",opts:["Clear","Honest","Opaque","Visible"],ans:2,type:"Verbal"},
+  {q:"Which sentence is grammatically and logically correct?",opts:["She insisted that he leaves immediately.","The data suggests the hypothesis are wrong.","Each of the participants have submitted their form.","Neither the manager nor the staff were informed."],ans:3,type:"Verbal"},
+  {q:"Find the word that does NOT belong: Simile · Metaphor · Alliteration · Hypothesis",opts:["Hypothesis","Simile","Metaphor","Alliteration"],ans:0,type:"Verbal"},
+  {q:"'Verbose' is to 'concise' as 'transparent' is to:",opts:["Clear","Visible","Opaque","Honest"],ans:2,type:"Verbal"},
 
-  // ── ANALOGIES (6) ──
-  {q:"PAINTER : CANVAS :: SCULPTOR : ___",opts:["Paint","Museum","Clay","Brush"],ans:2,type:"Analogy"},
-  {q:"LIBRARY : BOOK :: GALLERY : ___",opts:["Artist","Frame","Painting","Wall"],ans:2,type:"Analogy"},
-  {q:"DOCTOR : DIAGNOSIS :: JUDGE : ___",opts:["Prison","Verdict","Lawyer","Court"],ans:1,type:"Analogy"},
-  {q:"IGNORANCE : EDUCATION :: DISORDER : ___",opts:["Chaos","Structure","Confusion","Rules"],ans:1,type:"Analogy"},
-  {q:"SEED : TREE :: IDEA : ___",opts:["Thought","Dream","Innovation","Mind"],ans:2,type:"Analogy"},
-  {q:"RESILIENT : COLLAPSE :: IMPERVIOUS : ___",opts:["Strength","Penetration","Resistance","Barrier"],ans:1,type:"Analogy"},
+  // ── ANALOGIES (6) ── correct: C, A, D, B, C, A
+  {q:"PAINTER : CANVAS :: SCULPTOR : ___",opts:["Paint","Brush","Clay","Museum"],ans:2,type:"Analogy"},
+  {q:"LIBRARY : BOOK :: GALLERY : ___",opts:["Painting","Frame","Artist","Wall"],ans:0,type:"Analogy"},
+  {q:"DOCTOR : DIAGNOSIS :: JUDGE : ___",opts:["Prison","Lawyer","Court","Verdict"],ans:3,type:"Analogy"},
+  {q:"IGNORANCE : EDUCATION :: DISORDER : ___",opts:["Chaos","Structure","Rules","Confusion"],ans:1,type:"Analogy"},
+  {q:"SEED : TREE :: IDEA : ___",opts:["Dream","Mind","Innovation","Thought"],ans:2,type:"Analogy"},
+  {q:"RESILIENT : COLLAPSE :: IMPERVIOUS : ___",opts:["Penetration","Resistance","Barrier","Strength"],ans:0,type:"Analogy"},
 
-  // ── LOGICAL DEDUCTION (6) ──
+  // ── LOGICAL DEDUCTION (6) ── correct: B, D, A, C, D, B
   {q:"All Morks are Zorbs. Some Zorbs are Plinks. Which MUST be true?",opts:["All Morks are Plinks","Some Morks may be Plinks","No Morks are Plinks","All Plinks are Morks"],ans:1,type:"Logic"},
   {q:"No painters are sculptors. All sculptors are artists. Which MUST be true?",opts:["No painters are artists","Some painters are artists","All artists are sculptors","Some artists are not painters"],ans:3,type:"Logic"},
-  {q:"If it rains the match is cancelled. The match was NOT cancelled. Therefore:",opts:["It rained","It did not rain","We cannot tell","The match was postponed"],ans:1,type:"Logic"},
-  {q:"Sarah is taller than Tom. Tom is taller than Uma. Uma is taller than Vera. Who is shortest?",opts:["Sarah","Tom","Uma","Vera"],ans:3,type:"Logic"},
-  {q:"In a race: Alice beats Bob. Carol beats Alice. Dan finishes after Bob but before Alice. Who finishes LAST?",opts:["Alice","Bob","Carol","Dan"],ans:1,type:"Logic"},
-  {q:"All squares are rectangles. This shape is NOT a rectangle. Therefore this shape:",opts:["Is a square","May be a square","Is definitely not a square","Could be a rectangle"],ans:2,type:"Logic"},
+  {q:"If it rains the match is cancelled. The match was NOT cancelled. Therefore:",opts:["It did not rain","It rained","The match was postponed","We cannot tell"],ans:0,type:"Logic"},
+  {q:"Sarah is taller than Tom. Tom is taller than Uma. Uma is taller than Vera. Who is shortest?",opts:["Sarah","Tom","Vera","Uma"],ans:2,type:"Logic"},
+  {q:"In a race: Alice beats Bob. Carol beats Alice. Dan finishes after Bob but before Alice. Who finishes LAST?",opts:["Carol","Dan","Bob","Alice"],ans:3,type:"Logic"},
+  {q:"All squares are rectangles. This shape is NOT a rectangle. Therefore this shape:",opts:["May be a square","Is definitely not a square","Is a square","Could be a rectangle"],ans:1,type:"Logic"},
 
-  // ── PATTERN RECOGNITION (6) ──
-  {q:"What comes next? 2, 6, 18, 54, ___",opts:["108","162","216","72"],ans:1,type:"Pattern"},
-  {q:"What comes next? 1, 4, 9, 16, 25, ___",opts:["30","34","36","40"],ans:2,type:"Pattern"},
-  {q:"What comes next? 3, 5, 8, 13, 21, ___",opts:["29","33","34","35"],ans:2,type:"Pattern"},
-  {q:"Which number continues the sequence? 144, 121, 100, 81, ___",opts:["64","66","70","72"],ans:0,type:"Pattern"},
-  {q:"What comes next? A, C, F, J, O, ___",opts:["S","T","U","V"],ans:2,type:"Pattern"},
-  {q:"What comes next? 1, 1, 2, 3, 5, 8, 13, ___",opts:["18","20","21","24"],ans:2,type:"Pattern"},
+  // ── PATTERN RECOGNITION (6) ── correct: B, C, A, D, B, C
+  {q:"What comes next? 2, 6, 18, 54, ___",opts:["108","162","72","216"],ans:1,type:"Pattern"},
+  {q:"What comes next? 1, 4, 9, 16, 25, ___",opts:["34","30","36","40"],ans:2,type:"Pattern"},
+  {q:"What comes next? 3, 5, 8, 13, 21, ___",opts:["34","29","33","35"],ans:0,type:"Pattern"},
+  {q:"Which number continues the sequence? 144, 121, 100, 81, ___",opts:["66","70","72","64"],ans:3,type:"Pattern"},
+  {q:"What comes next? A, C, F, J, O, ___",opts:["S","U","T","V"],ans:1,type:"Pattern"},
+  {q:"What comes next? 1, 1, 2, 3, 5, 8, 13, ___",opts:["21","18","24","20"],ans:0,type:"Pattern"},
 
-  // ── SPATIAL & ABSTRACT REASONING (6) ──
+  // ── SPATIAL & ABSTRACT REASONING (6) ── correct: C, A, D, B, C, D
   {q:"A cube is painted on all 6 faces, then cut into 27 equal smaller cubes. How many smaller cubes have paint on exactly 2 faces?",opts:["6","8","12","24"],ans:2,type:"Spatial"},
-  {q:"If you fold a square piece of paper in half twice, then cut off one corner, how many holes appear when you unfold it?",opts:["1","2","3","4"],ans:3,type:"Spatial"},
-  {q:"◆◆◆ = 9 and ◆● = 5. What does ●●● equal?",opts:["2","3","6","9"],ans:2,type:"Abstract"},
-  {q:"★+★+★ = 15. ★+● = 9. ●+▲ = 7. What is ▲?",opts:["1","2","3","4"],ans:1,type:"Abstract"},
-  {q:"Which shape completes the pattern? Circle, Triangle, Circle, Triangle, Square, ___",opts:["Triangle","Circle","Square","Pentagon"],ans:1,type:"Abstract"},
-  {q:"A shape has 4 equal sides and 4 equal angles. It is rotated 45 degrees. What is it?",opts:["A rectangle","A diamond (rhombus)","A trapezoid","An irregular quadrilateral"],ans:1,type:"Spatial"},
+  {q:"If you fold a square piece of paper in half twice, then cut off one corner, how many holes appear when you unfold it?",opts:["4","1","2","3"],ans:0,type:"Spatial"},
+  {q:"◆◆◆ = 9 and ◆● = 5. What does ●●● equal?",opts:["2","9","3","6"],ans:3,type:"Abstract"},
+  {q:"★+★+★ = 15. ★+● = 9. ●+▲ = 7. What is ▲?",opts:["3","2","4","1"],ans:1,type:"Abstract"},
+  {q:"Which shape completes the pattern? Circle, Triangle, Circle, Triangle, Square, ___",opts:["Circle","Pentagon","Triangle","Square"],ans:2,type:"Abstract"},
+  {q:"A shape has 4 equal sides and 4 equal angles. It is rotated 45 degrees. What is it?",opts:["A trapezoid","An irregular quadrilateral","A rectangle","A diamond (rhombus)"],ans:3,type:"Spatial"},
 ]
 
 const TYPING_TEXTS=[
