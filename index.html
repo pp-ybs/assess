@@ -767,12 +767,12 @@ body.candidate-mode .topbar { display:none!important; }
   if(isCandidate){
     document.documentElement.classList.add('candidate-link');
   }
-  // If no credentials stored yet, clear any stale auth token so login always shows
-  var hasCreds=false;
-  try{hasCreds=!!localStorage.getItem('ybs_admin_creds');}catch(e){}
-  if(!hasCreds){try{localStorage.removeItem('vettiq_auth');}catch(e){}}
+  // hasCreds: true if stored OR defaults apply (credentials always exist conceptually)
+  var hasCreds=true;
   var authed=false;
   try{authed=localStorage.getItem('vettiq_auth')==='1';}catch(e){}
+  // On new browser with no auth, clear stale auth just in case
+  if(!authed){try{localStorage.removeItem('vettiq_auth');}catch(e){}}
   // Hide login only for already-authenticated admin or candidate links
   if(isCandidate||(authed&&hasCreds)){
     document.addEventListener('DOMContentLoaded',function(){
@@ -1485,15 +1485,31 @@ function loadApiKeyIntoSettings(){
 // Simple non-reversible hash for credential storage
 // Credentials are never stored in source — only a derived hash
 function _ybsHash(s){
-  // Simple, deterministic, consistent everywhere
   return btoa(encodeURIComponent(('vqs::'+s).toLowerCase()));
 }
+const _YBS_DEFAULT_U='dnFzJTNBJTNBYWRtaW4=';
+const _YBS_DEFAULT_P='dnFzJTNBJTNBYXNzZXNzJTQwMjAyNQ==';
+const _YBS_CRED_FORMAT='v6';
+// Wipe stale credentials from ANY previous version on first load
+(function(){
+  try{
+    if(localStorage.getItem('ybs_cred_format')!==_YBS_CRED_FORMAT){
+      localStorage.removeItem('ybs_admin_creds');
+      localStorage.removeItem('vettiq_auth');
+      localStorage.setItem('ybs_cred_format',_YBS_CRED_FORMAT);
+    }
+  }catch(e){}
+})();
+function _ybsDefaultCreds(){return{u:_YBS_DEFAULT_U,p:_YBS_DEFAULT_P};}
 function _ybsGetCreds(){
-  try{const r=localStorage.getItem('ybs_admin_creds');if(r)return JSON.parse(r);}catch(e){}
+  try{
+    const r=localStorage.getItem('ybs_admin_creds');
+    if(!r)return null;
+    const c=JSON.parse(r);
+    if(c&&c.u&&c.p&&c.u.startsWith('dnFz')&&c.p.startsWith('dnFz'))return c;
+    localStorage.removeItem('ybs_admin_creds');
+  }catch(e){}
   return null;
-}
-function _ybsDefaultCreds(){
-  return{u:_ybsHash('admin'),p:_ybsHash('Assess@2025')};
 }
 function _ybsGetCreds(){
   try{
@@ -1511,8 +1527,8 @@ function doLogin(){
   if(!username||!pass){if(err)err.textContent='Please enter username and password.';return;}
   const now=Date.now();
   if(_loginLockedUntil>now){if(err)err.textContent=`Too many attempts. Wait ${Math.ceil((_loginLockedUntil-now)/1000)}s.`;return;}
-  const stored=_ybsGetCreds()||_ybsDefaultCreds();
-  if(_ybsHash(username)===stored.u&&_ybsHash(pass)===stored.p){
+  const creds=_ybsGetCreds()||_ybsDefaultCreds();
+  if(_ybsHash(username)===creds.u&&_ybsHash(pass)===creds.p){
     _loginAttempts=0;
     document.getElementById('login-screen').classList.add('hidden');
     const shell=document.getElementById('admin-shell');if(shell)shell.style.display='flex';
@@ -2190,6 +2206,9 @@ function downloadReport(id){
 }
 function goToAssessments(){const el=document.querySelector('[data-page="assessments"]');showPage('assessments',el);}
 function renderDash(){
+  // Don't render if admin shell isn't active (e.g. candidate view or not logged in)
+  const shell=document.getElementById('admin-shell');
+  if(!shell||shell.style.display==='none')return;
   const isDash=document.getElementById('page-dashboard')?.style.display!=='none';
   const isAssess=document.getElementById('page-assessments')?.style.display!=='none';
 
@@ -2468,7 +2487,7 @@ function cvEffectiveStatus(c){
 }
 function openImportModal(){
   document.getElementById('importPasteArea').value='';
-  document.getElementById('importMsg').textContent='';
+  const _im=document.getElementById('importMsg');if(_im)_im.textContent='';
   document.getElementById('importFileInput').value='';
   document.getElementById('importModal').classList.add('open');
 }
@@ -7030,7 +7049,8 @@ function saveCredentials(){
   if(!newPass&&!newUser){showMsg('Enter a new username or password.',false);return;}
   if(newPass&&newPass.length<6){showMsg('Password must be at least 6 characters.',false);return;}
   if(newPass&&newPass!==confirmPass){showMsg('Passwords do not match.',false);return;}
-  const existing=_ybsGetCreds()||_ybsDefaultCreds();
+  const rawStored=_ybsGetCreds();
+  const existing=(rawStored&&rawStored.u&&rawStored.u.startsWith('dnFz'))?rawStored:_ybsDefaultCreds();
   const credObj={
     u:newUser?_ybsHash(newUser):existing.u,
     p:newPass?_ybsHash(newPass):existing.p
@@ -7092,10 +7112,23 @@ async function syncLoadAllConfig(){
       interviewProfiles=intProf;
       try{localStorage.setItem('ybs_int_profiles',JSON.stringify(interviewProfiles));}catch(e){}
     }
-    // Load admin credentials from Supabase (overrides local default)
-    const adminCreds=await syncLoadConfig('admin_creds');
-    if(adminCreds&&adminCreds.u&&adminCreds.p){
-      try{localStorage.setItem('ybs_admin_creds',JSON.stringify(adminCreds));}catch(e){}
+    // Load admin credentials — only apply if remote version is newer than local
+    const remoteCreds=await syncLoadConfig('admin_creds');
+    const remoteVer=await syncLoadConfig('creds_ver');
+    const localVer=localStorage.getItem('ybs_creds_ver')||'0';
+    if(remoteCreds&&remoteCreds.u&&remoteCreds.u.startsWith('dnFz')&&remoteVer&&remoteVer>localVer){
+      try{localStorage.setItem('ybs_admin_creds',JSON.stringify(remoteCreds));}catch(e){}
+      try{localStorage.setItem('ybs_creds_ver',remoteVer);}catch(e){}
+      // Force re-login if credentials changed remotely while this session was active
+      if(localStorage.getItem('vettiq_auth')==='1'){
+        try{localStorage.removeItem('vettiq_auth');}catch(e){}
+        const shell=document.getElementById('admin-shell');
+        if(shell)shell.style.display='none';
+        const ls=document.getElementById('login-screen');
+        if(ls)ls.classList.remove('hidden');
+        const loginErr=document.getElementById('login-err');
+        if(loginErr)loginErr.textContent='Credentials updated. Please log in again.';
+      }
     }
     if(company){const el=document.getElementById('set-company');if(el)el.value=company;}
     // Load HR email
