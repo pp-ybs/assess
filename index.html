@@ -2441,8 +2441,16 @@ function deleteCandidate(id){
   });
   renderDash();
 }
-function persistCandidates(){
+function persistCandidates(changedCand){
   try{localStorage.setItem('vettiq_candidates',JSON.stringify(candidates));}catch(e){}
+  if(!syncEnabled())return;
+  if(changedCand){
+    // Push only the changed candidate
+    if(changedCand._token)syncPushCandidate(changedCand).catch(()=>{});
+  }else{
+    // Push all (bulk ops like import, delete-selected)
+    candidates.forEach(c=>{if(c._token)syncPushCandidate(c).catch(()=>{});});
+  }
 }
 function persistPositions(){
   try{localStorage.setItem('ybs_positions',JSON.stringify(positions));localStorage.setItem('ybs_next_pos_id',String(nextPosId));}catch(e){}
@@ -3668,7 +3676,7 @@ function openReport(id){
           <div><label style="font-size:12px;color:var(--text-3);font-weight:600;margin-bottom:4px;display:block;">Modules</label><div style="padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;background:var(--surface-2);">${modsStr(c.modules)||'—'}</div></div>
         </div>
         <div><label style="font-size:12px;color:var(--text-3);font-weight:500;margin-bottom:6px;display:block;">Notes</label>
-          <textarea id="profile-notes-${c.id}" rows="3" placeholder="Add a note..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;resize:vertical;box-sizing:border-box;" oninput="const cand=candidates.find(x=>x.id===${c.id});if(cand)cand.notes=this.value;persistCandidates();">${c.notes||''}</textarea>
+          <textarea id="profile-notes-${c.id}" rows="3" placeholder="Add a note..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;resize:vertical;box-sizing:border-box;" oninput="const cand=candidates.find(x=>x.id===${c.id});if(cand){cand.notes=this.value;cand._localUpdated=Date.now();persistCandidates(cand);}">${c.notes||''}</textarea>
         </div>
       </div>
       <!-- RIGHT sidebar -->
@@ -7370,11 +7378,7 @@ window.addEventListener('beforeunload',function(){
 const isCandidateView=initCandidateView();
 if(!isCandidateView){
   let authed=false;try{authed=localStorage.getItem('vettiq_auth')==='1';}catch(e){}
-  // Show first-run hint if no credentials stored yet
-  setTimeout(_ybsUpdateLoginHint,100);
-  // Belt-and-suspenders: if not authed OR no creds, show login
-  const _hasCreds2=!!_ybsGetCreds();
-  if(!authed||!_hasCreds2){
+  if(!authed){
     try{localStorage.removeItem('vettiq_auth');}catch(e){}
     const ls=document.getElementById('login-screen');
     if(ls){ls.classList.remove('hidden');}
@@ -7466,8 +7470,17 @@ if(!isCandidateView){
     // Pull latest candidates from cloud on startup
     if(syncEnabled()){syncPullCandidates().then(function(ok){if(ok)renderDash();}).catch(function(){});}
   } else {
-    // Not logged in — show login
-    document.getElementById('login-screen').style.removeProperty('display');document.getElementById('login-screen').classList.remove('hidden');
+    // Not logged in — pull users from Supabase first so new browser can authenticate
+    document.getElementById('login-screen').style.removeProperty('display');
+    document.getElementById('login-screen').classList.remove('hidden');
+    // Pre-fetch users from Supabase so added team members can log in on fresh browsers
+    if(syncEnabled()){
+      syncLoadConfig('users').then(function(remoteUsers){
+        if(remoteUsers&&Array.isArray(remoteUsers)&&remoteUsers.length){
+          try{localStorage.setItem('ybs_users',JSON.stringify(remoteUsers));}catch(e){}
+        }
+      }).catch(function(){});
+    }
   }
 }
 </script>
@@ -7557,7 +7570,19 @@ function _getUsers(){
     const r=localStorage.getItem('ybs_users');
     if(r){const u=JSON.parse(r);if(Array.isArray(u)&&u.length)return u;}
   }catch(e){}
-  // Default: single admin
+  // No users in localStorage — check if old single-admin creds exist and migrate
+  const oldCreds=localStorage.getItem('ybs_admin_creds');
+  if(oldCreds){
+    try{
+      const c=JSON.parse(oldCreds);
+      if(c&&c.u&&c.p){
+        const users=[{id:'admin',u:c.u,p:c.p,name:'Admin'}];
+        localStorage.setItem('ybs_users',JSON.stringify(users));
+        return users;
+      }
+    }catch(e){}
+  }
+  // Default: single admin with hardcoded defaults
   return[{id:'admin',u:_YBS_DEFAULT_U,p:_YBS_DEFAULT_P,name:'Admin'}];
 }
 function _saveUsers(users){
@@ -7588,10 +7613,22 @@ function doLogin(){
     try{localStorage.setItem('vettiq_auth','1');localStorage.setItem('vettiq_user_id',matched.id);}catch(e){}
     document.getElementById('login-screen').classList.add('hidden');
     const shell=document.getElementById('admin-shell');if(shell)shell.style.display='flex';
-    // Show username in topnav
     const ul=document.getElementById('topnav-user-label');if(ul)ul.textContent=matched.name||matched.id;
     const rp=localStorage.getItem('ybs_page')||'assessments';
     showPage(['dashboard','assessments','interview','stats','settings'].includes(rp)?rp:'assessments',null);
+    // Pull all data from Supabase so new browser gets existing candidates immediately
+    Promise.all([
+      syncPullCandidates(),
+      syncLoadAllConfig(),
+      syncLoadUsers()
+    ]).then(function(){renderDash();}).catch(function(){renderDash();});
+    // Start 30s auto-refresh
+    if(!window._syncInterval){
+      window._syncInterval=setInterval(function(){
+        if(syncEnabled()){syncPullCandidates().then(function(ok){if(ok)renderDash();}).catch(()=>{});}
+        syncLoadUsers();
+      },30000);
+    }
   }else{
     _loginAttempts++;
     if(_loginAttempts>=5){_loginLockedUntil=Date.now()+30000;_loginAttempts=0;if(err)err.textContent='Too many attempts. Locked 30s.';}
@@ -7679,11 +7716,14 @@ async function syncLoadUsers(){
     const remoteUsers=await syncLoadConfig('users');
     const remoteVer=await syncLoadConfig('creds_ver');
     const localVer=localStorage.getItem('ybs_creds_ver')||'0';
-    if(remoteUsers&&Array.isArray(remoteUsers)&&remoteUsers.length&&remoteVer&&remoteVer>localVer){
-      localStorage.setItem('ybs_users',JSON.stringify(remoteUsers));
-      localStorage.setItem('ybs_creds_ver',remoteVer);
-      // Force re-login if credentials changed
-      if(localStorage.getItem('vettiq_auth')==='1'){
+    if(remoteUsers&&Array.isArray(remoteUsers)&&remoteUsers.length){
+      // Always write remote users to localStorage so login works on fresh browser
+      if(!remoteVer||remoteVer>=localVer){
+        localStorage.setItem('ybs_users',JSON.stringify(remoteUsers));
+        if(remoteVer)localStorage.setItem('ybs_creds_ver',remoteVer);
+      }
+      // Force re-login if credentials changed and this session is active
+      if(remoteVer&&remoteVer>localVer&&localStorage.getItem('vettiq_auth')==='1'){
         const uid=localStorage.getItem('vettiq_user_id');
         const stillValid=remoteUsers.find(u=>u.id===uid);
         if(!stillValid){
