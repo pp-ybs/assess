@@ -3627,7 +3627,13 @@ function openReport(id){
           const hasB5mod=mods.length===0||mods.includes('big5');
           const hasCogMod=mods.length===0||mods.includes('cognitive');
           const hasTypMod=mods.length===0||mods.includes('typing');
-          const hasB5data=hasB5mod&&s.big5&&Object.values(s.big5).some(v=>v!==null&&v!==undefined&&typeof v==='number'&&!isNaN(v));
+          // Apply legacy rescoring for old submissions (corrects question design bias)
+          let _b5rescore=s.big5||{};
+          if(c.rawAnswers&&Object.keys(c.rawAnswers).length>0){
+            const _legFix=rescoreWithLegacyQuestions(c.rawAnswers,_b5rescore);
+            if(_legFix&&Object.keys(_legFix).length>0)_b5rescore={..._b5rescore,..._legFix};
+          }
+          const hasB5data=hasB5mod&&_b5rescore&&Object.values(_b5rescore).some(v=>v!==null&&v!==undefined&&typeof v==='number'&&!isNaN(v));
           const hasCogData=hasCogMod&&s.cognitive!=null&&s.cognitive>=0;
           const hasTypData=hasTypMod&&s.typing&&(s.typing.wpm>0||s.typing.accuracy>0);
           let html='';
@@ -3665,7 +3671,7 @@ function openReport(id){
 
           // ── PERSONALITY RESULTS ──────────────────────────────
           if(hasB5data){
-            const insights2=computeB5Insights(s.big5,c.role,c.rawAnswers||null);
+            const insights2=computeB5Insights(_b5rescore,c.role,c.rawAnswers||null);
             const TLBL={Openness:'Openness',Conscientiousness:'Conscientiousness',Extraversion:'Extraversion',Agreeableness:'Agreeableness',Neuroticism:'Emotional Stability'};
             const WLBL={Collaboration:'Collaboration',Accountability:'Accountability',Adaptability:'Adaptability',ConflictStyle:'Conflict style',StressResilience:'Stress resilience',FeedbackReceptivity:'Feedback receptivity'};
             const JLBL={ProblemSolving:'Problem solving',LongTermCommitment:'Long-term commitment',DataDriven:'Data-driven',Initiative:'Initiative',CommunicationQuality:'Communication quality'};
@@ -3673,7 +3679,7 @@ function openReport(id){
             const sep=(hasCogData||hasTypData)?'padding-top:14px;border-top:1px solid var(--border);':'';
 
             // Neutral banner
-            const tn=s.big5._totalNeutrals||0;const ta=s.big5._totalAnswered||90;
+            const tn=_b5rescore._totalNeutrals||0;const ta=_b5rescore._totalAnswered||90;
             const neutralPct=ta>0?Math.round(tn/ta*100):0;
             let neutralBanner='';
             if(neutralPct>20){
@@ -3689,9 +3695,9 @@ function openReport(id){
 
             // Big Five bars
             html+=TRAITS.map((t,ti)=>{
-              const raw=t==='Neuroticism'?(s.big5[t]!==null&&s.big5[t]!==undefined?100-s.big5[t]:null):s.big5[t];
+              const raw=t==='Neuroticism'?(_b5rescore[t]!==null&&_b5rescore[t]!==undefined?100-_b5rescore[t]:null):_b5rescore[t];
               const noData=raw===null||raw===undefined;
-              const rel=getScoreReliability(s.big5,t);
+              const rel=getScoreReliability(_b5rescore,t);
               const lowRel=!noData&&rel<60;
               const displayV=noData?null:(rel<30?null:raw);
               const col=TRAIT_COLORS[ti];
@@ -3711,7 +3717,7 @@ function openReport(id){
             html+='<div style="padding-top:14px;border-top:1px solid var(--border);margin-top:6px;margin-bottom:14px;">'
               +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">Workplace behaviour</div>'
               +WB_TRAITS.map(t=>{
-                const v=s.big5[t];const noData=v===null||v===undefined;
+                const v=_b5rescore[t];const noData=v===null||v===undefined;
                 const col=noData?'var(--text-3)':v>=70?'var(--green)':v>=45?'var(--text-2)':'var(--red)';
                 const notes=noData?{}:{Collaboration:v>=70?'Energised by shared work.':v>=45?'Collaborative when structure is clear.':'Prefers solo work; may create silos.',Accountability:v>=70?'Strong ownership mindset.':v>=45?'Generally reliable.':'Tendency to externalise blame.',Adaptability:v>=70?'Thrives through change.':v>=45?'Adapts adequately.':'Prefers stability; low change readiness.',ConflictStyle:v>=70?'Addresses disagreement directly.':v>=45?'Manages most conflicts.':'Conflict avoidant.',StressResilience:v>=70?'Consistent under pressure.':v>=45?'Handles moderate stress well.':'Elevated sensitivity.',FeedbackReceptivity:v>=70?'Actively seeks feedback.':v>=45?'Generally receptive.':'Signs of defensiveness.'};
                 return'<div style="margin-bottom:10px;">'
@@ -3729,7 +3735,7 @@ function openReport(id){
             html+='<div style="padding-top:14px;border-top:1px solid var(--border);margin-bottom:14px;">'
               +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">Job-fit dimensions</div>'
               +JOB_TRAITS.map(t=>{
-                const v=s.big5[t];const noData=v===null||v===undefined;const vd=noData?0:v;
+                const v=_b5rescore[t];const noData=v===null||v===undefined;const vd=noData?0:v;
                 const col=vd>=70?'var(--green)':vd>=45?'var(--text-2)':'var(--red)';
                 return'<div style="margin-bottom:10px;">'
                   +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;">'
@@ -3842,7 +3848,7 @@ function renderResults(){
       <div style="display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;">
         <div style="display:flex;align-items:center;gap:10px;"><div style="width:40px;height:40px;border-radius:50%;background:${avColor(i)};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;">${ini(c.name)}</div><div><div style="font-weight:600;font-size:14px;">${c.name}</div><div style="font-size:12px;color:var(--text-3);">${c.role}</div></div></div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;">
-          ${TRAITS.map((t,ti)=>`<div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:${TRAIT_COLORS[ti]};">${s.big5[t]}</div><div style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;">${t.slice(0,3).toUpperCase()}</div></div>`).join('')}
+          ${TRAITS.map((t,ti)=>`<div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:${TRAIT_COLORS[ti]};">${_b5rescore[t]}</div><div style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;">${t.slice(0,3).toUpperCase()}</div></div>`).join('')}
           <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:var(--purple);">${s.cognitive}</div><div style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;">COG</div></div>
           <div style="text-align:center;"><div style="font-size:16px;font-weight:700;color:var(--green);">${s.typing.wpm}</div><div style="font-size:11px;color:var(--text-3);font-family:'Geist',sans-serif;">WPM</div></div>
         </div>
