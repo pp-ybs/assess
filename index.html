@@ -2150,7 +2150,8 @@ function downloadReport(id){
     ?'<div class="score-box"><div class="score-val" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="score-lbl">Situations</div></div>'
     :'';
 
-  _aiFlagsPromise.then(aiResult=>{
+  // Ensure download fires even if AI flag generation fails
+  const _doDownload=(aiResult)=>{
     const aiSection=aiResult?`
       <div class="section">
         <div class="section-title ai-title">🤖 AI Analysis</div>
@@ -2204,8 +2205,55 @@ function downloadReport(id){
     _a.download='Report_'+(c.name||'candidate').replace(/[^a-zA-Z0-9_\-]/g,'_')+'.html';
     document.body.appendChild(_a);_a.click();
     setTimeout(()=>{document.body.removeChild(_a);URL.revokeObjectURL(_a.href);},1000);
-  });
+  };
+  _aiFlagsPromise.then(_doDownload).catch(()=>_doDownload(null));
 }
+function regenerateScores(id){
+  const c=candidates.find(x=>String(x.id)===String(id));
+  if(!c||!c.rawAnswers||Object.keys(c.rawAnswers).length===0){
+    alert('No raw answers stored for this candidate.');return;
+  }
+  if(!confirm('Recalculate all scores from this candidate\'s raw answers?\nThis overwrites the stored scores and syncs to Supabase.'))return;
+  const newScores=rescoreWithLegacyQuestions(c.rawAnswers);
+  if(!newScores){alert('Could not rescore — insufficient answer data.');return;}
+  // Preserve cognitive, typing, sjt — only update big5
+  c.score=c.score||{};
+  c.score.big5={...newScores};
+  c.score._rescored=true;
+  c.score._rescoredAt=new Date().toISOString();
+  persistCandidates(c);
+  alert('Scores regenerated and saved.');
+  // Reopen report to show new scores
+  openReport(id);
+}
+
+function toggleScoreOverride(id){
+  const el=document.getElementById('score-override-'+id);
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function saveScoreOverrides(id){
+  const c=candidates.find(x=>String(x.id)===String(id));
+  if(!c||!c.score||!c.score.big5)return;
+  const msg=document.getElementById('ovr-msg-'+id);
+  let changed=0;
+  [...WB_TRAITS,...JOB_TRAITS].forEach(t=>{
+    const inp=document.getElementById('ovr-'+id+'-'+t);
+    if(!inp)return;
+    const val=inp.value.trim();
+    if(val===''){return;}
+    const n=parseInt(val);
+    if(isNaN(n)||n<0||n>100){return;}
+    if(c.score.big5[t]!==n){c.score.big5[t]=n;changed++;}
+  });
+  if(changed===0){if(msg){msg.textContent='No changes.';msg.style.color='var(--text-3)';}return;}
+  c.score._manualOverride=true;
+  c.score._overrideAt=new Date().toISOString();
+  persistCandidates(c);
+  if(msg){msg.textContent=changed+' score'+(changed===1?'':'s')+' saved ✓';msg.style.color='var(--green)';}
+  setTimeout(()=>openReport(id),600);
+}
+
 function goToAssessments(){const el=document.querySelector('[data-page="assessments"]');showPage('assessments',el);}
 function renderDash(){
   // Don't render if admin shell isn't active (e.g. candidate view or not logged in)
@@ -2641,16 +2689,16 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I tend to give people the benefit of the doubt.",trait:"Agreeableness",rev:false},
   {type:'agree',q:"I find it hard to be patient with people who work more slowly than me.",trait:"Agreeableness",rev:true},
   {type:'agree',q:"I try to see the other person's point of view before I respond.",trait:"Agreeableness",rev:false},
-  {type:'agree',q:"I sometimes hold a grudge longer than I probably should.",trait:"Agreeableness",rev:true},
+  {type:'agree',q:"I find it genuinely difficult to move past situations where a colleague has let me down.",trait:"Agreeableness",rev:true},
   {type:'agree',q:"When someone is going through a hard time, I feel a genuine urge to support them.",trait:"Agreeableness",rev:false},
   {type:'agree',q:"I would rather be respected for my results than liked for my personality.",trait:"Agreeableness",rev:true},
   {type:'agree',q:"I usually plan my work before I start.",trait:"Conscientiousness",rev:false},
-  {type:'agree',q:"I sometimes begin tasks without thinking through the consequences first.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I regularly start work without a clear plan of how to complete it.",trait:"Conscientiousness",rev:true},
   {type:'agree',q:"I finish what I start, even when I have lost interest in it.",trait:"Conscientiousness",rev:false},
-  {type:'agree',q:"I tend to leave things until the deadline is very close.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I frequently miss self-imposed deadlines because I misjudge how long tasks take.",trait:"Conscientiousness",rev:true},
   {type:'agree',q:"I check my work carefully before calling it done.",trait:"Conscientiousness",rev:false},
   {type:'agree',q:"I keep my workspace organised without being reminded.",trait:"Conscientiousness",rev:false},
-  {type:'agree',q:"I find it hard to maintain a routine for more than a few weeks.",trait:"Conscientiousness",rev:true},
+  {type:'agree',q:"I struggle to sustain organised working habits consistently over extended periods.",trait:"Conscientiousness",rev:true},
   {type:'agree',q:"I follow through on commitments even when circumstances make it inconvenient.",trait:"Conscientiousness",rev:false},
   {type:'agree',q:"I enjoy thinking about ideas that have no immediate practical use.",trait:"Openness",rev:false},
   {type:'agree',q:"I prefer tried and tested methods over new and experimental ones.",trait:"Openness",rev:true},
@@ -2677,7 +2725,7 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I can switch priorities mid-task without losing focus.",trait:"Adaptability",rev:false},
   {type:'agree',q:"I find it genuinely difficult to work effectively in environments with constant change.",trait:"Adaptability",rev:true},
   {type:'agree',q:"I see unexpected changes at work as a chance to find a better approach.",trait:"Adaptability",rev:false},
-  {type:'agree',q:"I tend to resist new processes even when the old ones are clearly not working.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I actively push back against process changes even when the current approach is failing.",trait:"Adaptability",rev:true},
   {type:'agree',q:"If I disagree with a decision at work, I say so directly.",trait:"ConflictStyle",rev:false},
   {type:'agree',q:"I consistently avoid difficult conversations at work even when they are needed.",trait:"ConflictStyle",rev:true},
   {type:'agree',q:"I address problems with colleagues directly rather than going around them.",trait:"ConflictStyle",rev:false},
@@ -2697,7 +2745,7 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I treat critical feedback as useful information rather than a personal attack.",trait:"FeedbackReceptivity",rev:false},
   {type:'agree',q:"I ask clarifying questions to make sure I have understood feedback before acting on it.",trait:"FeedbackReceptivity",rev:false},
   {type:'agree',q:"When I face a hard problem, I break it into smaller steps.",trait:"ProblemSolving",rev:false},
-  {type:'agree',q:"I tend to stick with the first solution that seems to work.",trait:"ProblemSolving",rev:true},
+  {type:'agree',q:"I rarely explore alternative approaches once I have found one that seems to work.",trait:"ProblemSolving",rev:true},
   {type:'agree',q:"I look for the real cause of a problem, not just the obvious one.",trait:"ProblemSolving",rev:false},
   {type:'agree',q:"I find it energising to work on a problem that has no clear answer.",trait:"ProblemSolving",rev:false},
   {type:'agree',q:"I think of several possible solutions before choosing one.",trait:"ProblemSolving",rev:false},
@@ -2722,7 +2770,7 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I track my own results to understand where I can improve.",trait:"DataDriven",rev:false},
   {type:'agree',q:"I find it tedious to analyse data when experience can give the answer faster.",trait:"DataDriven",rev:true},
   {type:'agree',q:"My effort and quality stay the same whether my manager is nearby or not.",trait:"DarkSide",rev:false},
-  {type:'agree',q:"When I am very busy, my attention to quality sometimes drops.",trait:"DarkSide",rev:true},
+  {type:'agree',q:"Under heavy workload my standards noticeably decline even when quality matters most.",trait:"DarkSide",rev:true},
   {type:'agree',q:"I have taken a shortcut at work when I knew no one would check.",trait:"DarkSide",rev:true},
   {type:'agree',q:"I behave consistently whether or not I think I am being evaluated.",trait:"DarkSide",rev:false},
 
@@ -3542,6 +3590,22 @@ function openReport(id){
           <textarea id="rni-${c.id}" placeholder="Add a note..." style="font-size:12px;flex:1;min-height:64px;resize:none;" oninput="autosaveNote(${c.id})">${c.notes||''}</textarea>
         </div>
         <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;" onclick="downloadReport(${c.id})">Download PDF</button>
+        ${c.rawAnswers&&Object.keys(c.rawAnswers).length>0?`
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:6px;" onclick="regenerateScores(${c.id})">↻ Regenerate scores from answers</button>`:''}
+        ${hasScore?`
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px;font-size:11px;color:var(--text-3);" onclick="toggleScoreOverride(${c.id})">⚙ Manual score override</button>
+        <div id="score-override-${c.id}" style="display:none;margin-top:8px;border:1px solid var(--border);border-radius:var(--r);padding:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:8px;">Override individual scores (0–100)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            ${[...WB_TRAITS,...JOB_TRAITS].map(t=>`
+            <div>
+              <label style="font-size:10px;color:var(--text-3);">${t.replace(/([A-Z])/g,' $1').trim()}</label>
+              <input type="number" min="0" max="100" id="ovr-${c.id}-${t}" value="${s.big5&&s.big5[t]!=null?s.big5[t]:''}" placeholder="—" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;box-sizing:border-box;"/>
+            </div>`).join('')}
+          </div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:8px;justify-content:center;" onclick="saveScoreOverrides(${c.id})">Save overrides</button>
+          <div id="ovr-msg-${c.id}" style="font-size:11px;margin-top:4px;text-align:center;"></div>
+        </div>`:''}
       </div>
 
       <!-- RIGHT: single scrollable analysis -->
@@ -3559,6 +3623,9 @@ function openReport(id){
             const _legFix=rescoreWithLegacyQuestions(c.rawAnswers);
             if(_legFix&&Object.keys(_legFix).length>0)_b5rescore={..._b5rescore,..._legFix};
           }
+          // Speed flag warning
+          const _speedWarn=s._speedFlag?`<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#856404;"><strong>⚡ Speed alert:</strong> Personality section completed in ${s._personalitySecs?Math.floor(s._personalitySecs/60)+'m '+String(s._personalitySecs%60).padStart(2,'0')+'s':'unknown'} for 113 questions. Treat results with caution — answers may not reflect genuine responses.</div>`:'';
+          if(_speedWarn)html+=_speedWarn;
           const hasB5data=hasB5mod&&_b5rescore&&Object.values(_b5rescore).some(v=>v!==null&&v!==undefined&&typeof v==='number'&&!isNaN(v));
           const hasCogData=hasCogMod&&s.cognitive!=null&&s.cognitive>=0;
           const hasTypData=hasTypMod&&s.typing&&(s.typing.wpm>0||s.typing.accuracy>0);
@@ -4588,10 +4655,17 @@ async function getAISuggestion(questionText,qIdx){
 ═══════════════════════════════════════════ */
 // Generate shuffled question order — seeded by token for consistency on resume
 function getB5Order(token){
-  // Questions are pre-interleaved in B5_QUESTIONS array by trait group
-  // No shuffle needed — return sequential order
-  // This avoids any potential infinite loop in trait-separation logic
-  return [...Array(B5_QUESTIONS.length).keys()];
+  // Token-seeded Fisher-Yates shuffle — same candidate always sees same order,
+  // different candidates see completely different orders. Prevents memorisation.
+  const seed=token.split('').reduce((a,c)=>Math.imul(a,31)+c.charCodeAt(0)|0,0x9e3779b9);
+  const indices=[...Array(B5_QUESTIONS.length).keys()];
+  let s=Math.abs(seed)|1;
+  for(let i=indices.length-1;i>0;i--){
+    s=Math.imul(s,1664525)+1013904223|0;
+    const j=Math.abs(s)%(i+1);
+    [indices[i],indices[j]]=[indices[j],indices[i]];
+  }
+  return indices;
 }
 
 function renderB5Question(containerId,idx,total,answers,prefix){
@@ -4809,8 +4883,25 @@ function fcBack(prefix,idx){
 
 // IQ timer
 let _iqTimer=null;
+function _shuffleCogOpts(qi, token){
+  // Deterministic shuffle of answer options using token+question as seed
+  // Returns {opts: shuffled options array, ansIdx: new position of correct answer}
+  const q=COG_QUESTIONS[qi];
+  const seed=token.split('').reduce((a,c)=>Math.imul(a,31)+c.charCodeAt(0)|0, qi*7919+0x1234);
+  let s=Math.abs(seed)|1;
+  const perm=[0,1,2,3];
+  for(let i=3;i>0;i--){s=Math.imul(s,1664525)+1013904223|0;const j=Math.abs(s)%(i+1);[perm[i],perm[j]]=[perm[j],perm[i]];}
+  const shuffledOpts=perm.map(i=>q.opts[i]);
+  const newAns=perm.indexOf(q.ans);
+  return{opts:shuffledOpts,ansIdx:newAns,perm};
+}
+
 function renderCogQuestion(containerId,qi,total,onSelect,onNext,onTimeout){
   const q=COG_QUESTIONS[qi];
+  const token=(typeof cvState!=='undefined'&&cvState.token)||'demo';
+  const {opts,ansIdx,perm}=_shuffleCogOpts(qi,token);
+  // Store mapping so iqSel can record original answer index
+  window._cogPerm=perm;
   window._iqOnSelect=onSelect;window._iqOnNext=onNext;window._iqSel=null;
   clearInterval(_iqTimer);let secs=60;
   const el=document.getElementById(containerId);if(!el)return;
@@ -4826,14 +4917,17 @@ function renderCogQuestion(containerId,qi,total,onSelect,onNext,onTimeout){
     <div style="height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:18px;"><div id="iq-tb" style="height:100%;background:var(--green);border-radius:99px;width:100%;transition:width 1s linear;"></div></div>
     <div style="font-size:14px;font-weight:400;line-height:1.7;margin-bottom:24px;">${q.q}</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
-      ${q.opts.map((opt,oi)=>`<div id="iqo-${oi}" onclick="iqSel(${qi},${oi})" style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:14px;transition:all .13s;background:#fff;"><div style="width:26px;height:26px;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:var(--text-3);">${['A','B','C','D'][oi]}</div>${opt}</div>`).join('')}
+      ${opts.map((opt,oi)=>`<div id="iqo-${oi}" onclick="iqSel(${qi},${oi})" style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:14px;transition:all .13s;background:#fff;"><div style="width:26px;height:26px;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:var(--text-3);">${['A','B','C','D'][oi]}</div>${opt}</div>`).join('')}
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:14px;"><button class="btn btn-gold" id="iq-nb" onclick="iqConfirm()" disabled style="padding:0 24px;height:40px;">Next →</button></div>
   </div>`;
   _iqTimer=setInterval(()=>{secs--;const tv=document.getElementById('iq-tv'),tb=document.getElementById('iq-tb');if(tv)tv.textContent=secs;if(tv&&secs<=10)tv.style.color='var(--red)';if(tb)tb.style.width=(secs/60*100)+'%';if(tb&&secs<=10)tb.style.background='var(--red)';if(secs<=0){clearInterval(_iqTimer);onTimeout();}},1000);
 }
 function iqSel(qi,oi){
-  window._iqSel=oi;window._iqOnSelect(qi,oi);
+  // oi is the shuffled display position — convert to original answer index for scoring
+  const origIdx=window._cogPerm?window._cogPerm[oi]:oi;
+  window._iqSel=origIdx;
+  window._iqOnSelect(qi,origIdx);
   document.querySelectorAll('[id^="iqo-"]').forEach(el=>{el.style.borderColor='var(--border)';el.style.background='#fff';const d=el.querySelector('div');if(d){d.style.background='var(--surface-2)';d.style.color='var(--text-3)';}});
   const sel=document.getElementById('iqo-'+oi);
   if(sel){sel.style.borderColor='var(--accent)';sel.style.background='var(--accent-s)';const d=sel.querySelector('div');if(d){d.style.background='var(--accent)';d.style.color='#fff';}}
@@ -5168,6 +5262,22 @@ function initCandidateView(){
       const _sc=JSON.parse(localStorage.getItem('vettiq_candidates')||'null');
       if(_sc!==null)candidates=_sc;
     }catch(e){}
+    // Check if this token was already submitted — block retaking
+    const _existingCand=candidates.find(x=>x._token===assessToken);
+    if(_existingCand&&_existingCand.status==='Completed'){
+      const cv2=document.getElementById('candidate-view');
+      if(cv2)cv2.style.display='block';
+      const cvBody=document.getElementById('cv-body');
+      if(cvBody)cvBody.innerHTML='<div style="max-width:540px;margin:60px auto;text-align:center;padding:40px 32px;background:#fff;border-radius:16px;border:1px solid #e5e7eb;">'
+        +'<div style="font-size:40px;margin-bottom:16px;">✅</div>'
+        +'<div style="font-size:20px;font-weight:700;color:#111;margin-bottom:8px;">Already submitted</div>'
+        +'<div style="font-size:14px;color:#6b7280;line-height:1.6;">Your assessment has already been received.<br>Please contact HR if you believe this is an error.</div>'
+        +'</div>';
+      const cvStepper=document.getElementById('cv-stepper');
+      if(cvStepper)cvStepper.innerHTML='';
+      return true;
+    }
+
     // Push "Link Opened" status immediately when candidate opens URL
     cvPushStatus(assessToken,'Link Opened');
     // Supabase config is pre-loaded at startup for all devices
@@ -6175,6 +6285,20 @@ function cvDone(){
     typing:{wpm:cvState.typingWpm||0,accuracy:cvState.typingAcc||0},
     sjt:_sjtScore
   };
+  // Speed integrity check — 113 personality questions in under 4 min = < 2.1s per question
+  try{
+    const t=cvState.timing||{};
+    const m=t.personality?t.personality.match(/(\d+)m\s*(\d+)s/):null;
+    if(m){
+      const personalitySecs=parseInt(m[1])*60+parseInt(m[2]);
+      const minExpected=113*4; // 4 seconds minimum per question = 452 seconds
+      if(personalitySecs<minExpected){
+        scoreData._speedFlag=true;
+        scoreData._personalitySecs=personalitySecs;
+        scoreData.big5._speedWarning=`Personality section completed in ${t.personality} — unusually fast for ${113} questions. Results may be unreliable.`;
+      }
+    }
+  }catch(e){}
   const hadB5=Object.keys(cvState.b5Answers||{}).length>0;
   const hadCog=Object.keys((cvState.cogAnswers||{})).length>0;
   const hadTyp=(cvState.typingWpm||0)>0||(cvState.typingAcc||0)>0;
