@@ -2083,21 +2083,26 @@ function downloadReport(id){
   // Score colour helper
   function sc(v){return v>=70?'#1a7a4a':v>=45?'#354764':'#c0362b';}
 
-  // Trait bar
-  function bar(label,v){const w=v||0;return '<div style="margin-bottom:8px;">'
-    +'<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
-    +'<span style="font-size:11px;color:#444;">'+label+'</span>'
-    +'<span style="font-size:11px;font-weight:700;color:'+sc(w)+';">'+w+'%</span></div>'
-    +'<div style="height:5px;background:#eee;border-radius:3px;"><div style="width:'+w+'%;height:100%;background:'+sc(w)+';border-radius:3px;"></div></div>'
-    +'</div>';}
+  // Trait bar — shows dash for null/missing scores instead of 0%
+  function bar(label,v){
+    if(v===null||v===undefined)return '<div style="margin-bottom:8px;display:flex;justify-content:space-between;">'
+      +'<span style="font-size:11px;color:#444;">'+label+'</span>'
+      +'<span style="font-size:11px;color:#aaa;">not assessed</span></div>';
+    const w=Math.round(v);
+    return '<div style="margin-bottom:8px;">'
+      +'<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
+      +'<span style="font-size:11px;color:#444;">'+label+'</span>'
+      +'<span style="font-size:11px;font-weight:700;color:'+sc(w)+';">'+w+'%</span></div>'
+      +'<div style="height:5px;background:#eee;border-radius:3px;"><div style="width:'+w+'%;height:100%;background:'+sc(w)+';border-radius:3px;"></div></div>'
+      +'</div>';
+  }
 
-  // All trait rows
-  const traitLabels={HonestyHumility:'Integrity (H-H)',Neuroticism:'Emotionality',Extraversion:'Extraversion',Agreeableness:'Agreeableness',Conscientiousness:'Conscientiousness',Openness:'Openness',DISCDominance:'DISC: Dominance',DISCSteadiness:'DISC: Steadiness',DarkSide:'Dark Side Risk'};
-  const b5Rows=TRAITS.map(t=>bar(traitLabels[t]||t, t==='Neuroticism'?b5[t]:b5[t]||0)).join('');
-  const wbRows=WB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]||0)).join('');
-  const jobRows=JOB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]||0)).join('');
-  const discRows=DISC_TRAITS.map(t=>bar(traitLabels[t]||t,b5[t]||0)).join('');
-  const darkRow=DARK_TRAITS.map(t=>bar('Under-Pressure Consistency',b5[t]||0)).join('');
+  // All trait rows — pass raw value (null if not scored), bar handles it
+  const b5Rows=TRAITS.map(t=>bar(traitLabels[t]||t, t==='Neuroticism'?b5[t]:b5[t]??null)).join('');
+  const wbRows=WB_TRAITS.map(t=>bar(lmap[t]||t, b5[t]??null)).join('');
+  const jobRows=JOB_TRAITS.map(t=>bar(lmap[t]||t, b5[t]??null)).join('');
+  const discRows=DISC_TRAITS.map(t=>bar(traitLabels[t]||t, b5[t]??null)).join('');
+  const darkRow=DARK_TRAITS.map(t=>bar('Under-Pressure Consistency', b5[t]??null)).join('');
 
   // Red flags — prominently displayed
   const redFlags=(insights.itemFlags||[]).filter(f=>f.severity==='red');
@@ -3110,18 +3115,18 @@ function computeB5Insights(b5Scores,role,rawAnswers){
   const Conf=_v('ConflictStyle'),Stress=_v('StressResilience'),Feed=_v('FeedbackReceptivity');
   function pct(v){return v+'%';}
   const traitNarrative={
-    Openness:O>=75?`High (${pct(O)}) — gravitates toward novel problems, abstract thinking, and creative solutions. Likely to innovate beyond instructions. Can become restless in rigid, highly structured environments.`:O>=50?`Moderate (${pct(O)}) — balances pragmatism with curiosity. Comfortable with both established methods and new approaches.`:`Low (${pct(O)}) — strongly prefers familiar methods and clear-cut tasks. Excellent for process adherence; may resist unsolicited change. Not a negative in compliance-heavy or execution-focused roles.`,
-    Conscientiousness:C>=75?`High (${pct(C)}) — self-directed, organised, and reliable. Will proactively manage timelines and flag risks. Strong predictor of long-term performance across most roles.`:C>=50?`Moderate (${pct(C)}) — generally dependable when given clear structure and expectations.`:`Low (${pct(C)}) — responses suggest difficulty with self-organisation and sustained follow-through. Risk in autonomous roles. May perform better under active management with clear milestones.`,
-    Extraversion:E>=75?`High (${pct(E)}) — energised by people, comfortable in the spotlight, and naturally assertive in group settings. Excellent for leadership, sales, or client-facing roles.`:E>=50?`Moderate (${pct(E)}) — ambivert; adapts effectively to both collaborative and solo work modes.`:`Low (${pct(E)}) — prefers depth over breadth, written over verbal, independent over collaborative. A strong signal for analytical or specialist roles. Monitor for isolation in team environments.`,
-    Agreeableness:A>=75?`High (${pct(A)}) — prioritises harmony, empathy, and others' needs. Excellent team contributor and trusted colleague. Potential risk: may avoid necessary confrontation or struggle to advocate for self.`:A>=50?`Moderate (${pct(A)}) — cooperative but can assert views when required.`:`Low (${pct(A)}) — direct, competitive, results-first. Can add productive challenge to teams but may create interpersonal friction. Assess carefully in roles requiring close collaboration.`,
-    Neuroticism:N<=30?`Low (${pct(N)}) — emotionally resilient, calm under pressure, unlikely to be destabilised by setbacks. Strong signal for high-stakes or high-ambiguity roles.`:N<=55?`Moderate (${pct(N)}) — some emotional sensitivity; manageable with clear expectations and psychological safety.`:`High (${pct(N)}) — responses suggest significant emotional reactivity, anxiety, and difficulty recovering from negative events. Not disqualifying, but warrants honest conversation about workload, stress support, and management approach.`,
+    Openness:O===null?null:O>=75?`High (${pct(O)}) — gravitates toward novel problems, abstract thinking, and creative solutions. Likely to innovate beyond instructions. Can become restless in rigid, highly structured environments.`:O>=50?`Moderate (${pct(O)}) — balances pragmatism with curiosity. Comfortable with both established methods and new approaches.`:`Low (${pct(O)}) — strongly prefers familiar methods and clear-cut tasks. Excellent for process adherence; may resist unsolicited change. Not a negative in compliance-heavy or execution-focused roles.`,
+    Conscientiousness:C===null?null:C>=75?`High (${pct(C)}) — self-directed, organised, and reliable. Will proactively manage timelines and flag risks. Strong predictor of long-term performance across most roles.`:C>=50?`Moderate (${pct(C)}) — generally dependable when given clear structure and expectations.`:`Low (${pct(C)}) — responses suggest difficulty with self-organisation and sustained follow-through. Risk in autonomous roles. May perform better under active management with clear milestones.`,
+    Extraversion:E===null?null:E>=75?`High (${pct(E)}) — energised by people, comfortable in the spotlight, and naturally assertive in group settings. Excellent for leadership, sales, or client-facing roles.`:E>=50?`Moderate (${pct(E)}) — ambivert; adapts effectively to both collaborative and solo work modes.`:`Low (${pct(E)}) — prefers depth over breadth, written over verbal, independent over collaborative. A strong signal for analytical or specialist roles. Monitor for isolation in team environments.`,
+    Agreeableness:A===null?null:A>=75?`High (${pct(A)}) — prioritises harmony, empathy, and others' needs. Excellent team contributor and trusted colleague. Potential risk: may avoid necessary confrontation or struggle to advocate for self.`:A>=50?`Moderate (${pct(A)}) — cooperative but can assert views when required.`:`Low (${pct(A)}) — direct, competitive, results-first. Can add productive challenge to teams but may create interpersonal friction. Assess carefully in roles requiring close collaboration.`,
+    Neuroticism:N===null?null:N<=30?`Low (${pct(N)}) — emotionally resilient, calm under pressure, unlikely to be destabilised by setbacks. Strong signal for high-stakes or high-ambiguity roles.`:N<=55?`Moderate (${pct(N)}) — some emotional sensitivity; manageable with clear expectations and psychological safety.`:`High (${pct(N)}) — responses suggest significant emotional reactivity, anxiety, and difficulty recovering from negative events. Not disqualifying, but warrants honest conversation about workload, stress support, and management approach.`,
   };
   const roleFlags=[];const rl=(role||'').toLowerCase();
   if(rl.includes('engineer')||rl.includes('developer')||rl.includes('analyst')){
-    if(C>=70)roleFlags.push({t:'teal',m:'Conscientiousness aligns with engineering precision and self-managed delivery.'});
-    else roleFlags.push({t:'gold',m:'Conscientiousness below 70 — recommended threshold for technical roles. Structured onboarding advised.'});
-    if(N>65)roleFlags.push({t:'rose',m:'Elevated neuroticism in a deadline-heavy technical role warrants active support.'});
-    if(O>=70)roleFlags.push({t:'teal',m:'High openness suggests capacity for technical problem-solving and architectural thinking.'});
+    if(C!==null&&C>=70)roleFlags.push({t:'teal',m:'Conscientiousness aligns with engineering precision and self-managed delivery.'});
+    else if(C!==null)roleFlags.push({t:'gold',m:'Conscientiousness below 70 — recommended threshold for technical roles. Structured onboarding advised.'});
+    if(N!==null&&N>65)roleFlags.push({t:'rose',m:'Elevated neuroticism in a deadline-heavy technical role warrants active support.'});
+    if(O!==null&&O>=70)roleFlags.push({t:'teal',m:'High openness suggests capacity for technical problem-solving and architectural thinking.'});
   }
   if(rl.includes('manager')||rl.includes('lead')||rl.includes('director')){
     if(E>=65&&A>=60)roleFlags.push({t:'teal',m:'Extraversion + agreeableness combination is predictive of high-trust leadership.'});
@@ -3138,17 +3143,16 @@ function computeB5Insights(b5Scores,role,rawAnswers){
     if(C<55)roleFlags.push({t:'gold',m:'Low conscientiousness in a client-delivery design role may create delivery risk. PM pairing advised.'});
   }
   // Workplace behaviour signals
-  if(Collab<45)roleFlags.push({t:'rose',m:'Low collaboration score — may create silos or resist team working norms.'});
-  if(Stress<40)roleFlags.push({t:'rose',m:'Low stress resilience — proactive workload support needed from day one.'});
-  if(N>70)roleFlags.push({t:'rose',m:'High neuroticism is the single strongest predictor of workplace stress response — plan for structured 1:1s.'});
-  if(Acct>=80)roleFlags.push({t:'teal',m:'Accountability score in top range — strong ownership mentality.'});
-  if(Feed>=75)roleFlags.push({t:'teal',m:'High feedback receptivity — will develop rapidly with a coaching manager.'});
-  // Archetype — derived from actual strongest and weakest dimensions
-  // Finds the 2-3 most distinctive scores (highest and lowest) and builds a specific profile
+  if(Collab!==null&&Collab<45)roleFlags.push({t:'rose',m:'Low collaboration score — may create silos or resist team working norms.'});
+  if(Stress!==null&&Stress<40)roleFlags.push({t:'rose',m:'Low stress resilience — proactive workload support needed from day one.'});
+  if(N!==null&&N>70)roleFlags.push({t:'rose',m:'High neuroticism is the single strongest predictor of workplace stress response — plan for structured 1:1s.'});
+  if(Acct!==null&&Acct>=80)roleFlags.push({t:'teal',m:'Accountability score in top range — strong ownership mentality.'});
+  if(Feed!==null&&Feed>=75)roleFlags.push({t:'teal',m:'High feedback receptivity — will develop rapidly with a coaching manager.'});
+  // Archetype — derived from actual strongest and weakest dimensions (exclude nulls)
   const _allDims={Openness:O,Conscientiousness:C,Extraversion:E,Agreeableness:A,
     Neuroticism:N,Collaboration:Collab,Accountability:Acct,Adaptability:Adapt,
     ConflictStyle:Conf,StressResilience:Stress,FeedbackReceptivity:Feed};
-  const _sorted=Object.entries(_allDims).sort((a,b)=>b[1]-a[1]);
+  const _sorted=Object.entries(_allDims).filter(([,v])=>v!==null&&v!==undefined).sort((a,b)=>b[1]-a[1]);
   const _top=_sorted.slice(0,3).map(x=>x[0]);
   const _bot=_sorted.slice(-3).map(x=>x[0]);
   const _has=(t)=>_top.includes(t);
@@ -3176,25 +3180,25 @@ function computeB5Insights(b5Scores,role,rawAnswers){
     archetype='Individual Profile — strongest dimension: '+_topName+' ('+_topVal+'). Lowest dimension: '+_lowName+' ('+_lowVal+'). Role fit should be assessed based on specific job requirements.';
   }
   // Job-fit trait narratives
-  const PS=b5Scores.ProblemSolving||50,LTC=b5Scores.LongTermCommitment||50;
-  const DD=b5Scores.DataDriven||50,INI=b5Scores.Initiative||50,CQ=b5Scores.CommunicationQuality||50;
+  const PS=b5Scores.ProblemSolving??null,LTC=b5Scores.LongTermCommitment??null;
+  const DD=b5Scores.DataDriven??null,INI=b5Scores.Initiative??null,CQ=b5Scores.CommunicationQuality??null;
   const jobNarrative={
-    ProblemSolving: PS>=75?`High (${PS}) — approaches obstacles analytically, generates multiple solutions, handles ambiguity well. Strong fit for complex or ill-defined problems.`:PS>=50?`Moderate (${PS}) — solves standard problems effectively; may need support with novel or highly ambiguous challenges.`:`Below average (${PS}) — responses suggest difficulty breaking down complex problems. Consider pairing with stronger problem-solvers or providing structured frameworks.`,
-    LongTermCommitment: LTC>=75?`High (${LTC}) — shows genuine investment in sustained contribution. Signals lower flight-risk and willingness to develop within the role.`:LTC>=50?`Moderate (${LTC}) — mixed signals on long-term commitment. May benefit from a strong onboarding narrative and career path clarity.`:`Below average (${LTC}) — responses suggest lower orientation toward sustained tenure. Probe motivations directly in interview.`,
-    DataDriven: DD>=75?`High (${DD}) — comfortable using data to guide decisions, reviews outcomes quantitatively, and trusts evidence over intuition. Strong for analytical or technical roles.`:DD>=50?`Moderate (${DD}) — uses data when available but may rely on experience or intuition under time pressure.`:`Below average (${DD}) — responses suggest intuition-first decision-making. May struggle in data-heavy or KPI-driven roles without structured data habits support.`,
-    Initiative: INI>=75?`High (${INI}) — identifies and acts on opportunities proactively, without prompting. Drives improvement beyond assigned responsibilities.`:INI>=50?`Moderate (${INI}) — takes initiative within defined scope; unlikely to overreach but may need encouragement to step beyond brief.`:`Below average (${INI}) — responses suggest reactive rather than proactive orientation. Works best with active direction and clearly assigned ownership.`,
-    CommunicationQuality: CQ>=75?`High (${CQ}) — adapts style to audience, writes concisely, explains complexity well. Strong signal for cross-functional or client-facing roles.`:CQ>=50?`Moderate (${CQ}) — communicates adequately in familiar contexts; may need support with high-stakes or cross-functional communication.`:`Below average (${CQ}) — feedback risk in writing and verbal explanation. Consider structured communication training or role design that minimises dense communication requirements.`,
+    ProblemSolving: PS===null?null:PS>=75?`High (${PS}) — approaches obstacles analytically, generates multiple solutions, handles ambiguity well. Strong fit for complex or ill-defined problems.`:PS>=50?`Moderate (${PS}) — solves standard problems effectively; may need support with novel or highly ambiguous challenges.`:`Below average (${PS}) — responses suggest difficulty breaking down complex problems. Consider pairing with stronger problem-solvers or providing structured frameworks.`,
+    LongTermCommitment: LTC===null?null:LTC>=75?`High (${LTC}) — shows genuine investment in sustained contribution. Signals lower flight-risk and willingness to develop within the role.`:LTC>=50?`Moderate (${LTC}) — mixed signals on long-term commitment. May benefit from a strong onboarding narrative and career path clarity.`:`Below average (${LTC}) — responses suggest lower orientation toward sustained tenure. Probe motivations directly in interview.`,
+    DataDriven: DD===null?null:DD>=75?`High (${DD}) — comfortable using data to guide decisions, reviews outcomes quantitatively, and trusts evidence over intuition. Strong for analytical or technical roles.`:DD>=50?`Moderate (${DD}) — uses data when available but may rely on experience or intuition under time pressure.`:`Below average (${DD}) — responses suggest intuition-first decision-making. May struggle in data-heavy or KPI-driven roles without structured data habits support.`,
+    Initiative: INI===null?null:INI>=75?`High (${INI}) — identifies and acts on opportunities proactively, without prompting. Drives improvement beyond assigned responsibilities.`:INI>=50?`Moderate (${INI}) — takes initiative within defined scope; unlikely to overreach but may need encouragement to step beyond brief.`:`Below average (${INI}) — responses suggest reactive rather than proactive orientation. Works best with active direction and clearly assigned ownership.`,
+    CommunicationQuality: CQ===null?null:CQ>=75?`High (${CQ}) — adapts style to audience, writes concisely, explains complexity well. Strong signal for cross-functional or client-facing roles.`:CQ>=50?`Moderate (${CQ}) — communicates adequately in familiar contexts; may need support with high-stakes or cross-functional communication.`:`Below average (${CQ}) — feedback risk in writing and verbal explanation. Consider structured communication training or role design that minimises dense communication requirements.`,
   };
-  // Job fit role signals
-  if(PS>=70)roleFlags.push({t:'teal',m:`Problem solving (${PS}) — analytical capacity confirmed. Handles complex challenges well.`});
-  else if(PS<50)roleFlags.push({t:'rose',m:`Low problem solving (${PS}) — may need structured frameworks for complex tasks.`});
-  if(DD>=75)roleFlags.push({t:'teal',m:`Data-driven mindset (${DD}) — quantitative decision-making confirmed.`});
-  else if(DD<50&&(rl.includes('analyst')||rl.includes('engineer')))roleFlags.push({t:'rose',m:`Low data orientation (${DD}) in a data-heavy role. Significant gap.`});
-  if(LTC>=75)roleFlags.push({t:'teal',m:`Long-term commitment (${LTC}) — low flight-risk signal. Invests in role depth.`});
-  else if(LTC<45)roleFlags.push({t:'gold',m:`Commitment orientation low (${LTC}). Probe motivations and career expectations.`});
-  if(INI>=75)roleFlags.push({t:'teal',m:`Initiative (${INI}) — self-starter confirmed. Will drive improvement without prompting.`});
-  if(CQ>=75)roleFlags.push({t:'teal',m:`Communication quality (${CQ}) — articulate and audience-aware. Asset in any role.`});
-  else if(CQ<45)roleFlags.push({t:'gold',m:`Communication quality below threshold (${CQ}). May need coaching for clarity and stakeholder management.`});
+  // Job fit role signals (skip if null)
+  if(PS!==null&&PS>=70)roleFlags.push({t:'teal',m:`Problem solving (${PS}) — analytical capacity confirmed. Handles complex challenges well.`});
+  else if(PS!==null&&PS<50)roleFlags.push({t:'rose',m:`Low problem solving (${PS}) — may need structured frameworks for complex tasks.`});
+  if(DD!==null&&DD>=75)roleFlags.push({t:'teal',m:`Data-driven mindset (${DD}) — quantitative decision-making confirmed.`});
+  else if(DD!==null&&DD<50&&(rl.includes('analyst')||rl.includes('engineer')))roleFlags.push({t:'rose',m:`Low data orientation (${DD}) in a data-heavy role. Significant gap.`});
+  if(LTC!==null&&LTC>=75)roleFlags.push({t:'teal',m:`Long-term commitment (${LTC}) — low flight-risk signal. Invests in role depth.`});
+  else if(LTC!==null&&LTC<45)roleFlags.push({t:'gold',m:`Commitment orientation low (${LTC}). Probe motivations and career expectations.`});
+  if(INI!==null&&INI>=75)roleFlags.push({t:'teal',m:`Initiative (${INI}) — self-starter confirmed. Will drive improvement without prompting.`});
+  if(CQ!==null&&CQ>=75)roleFlags.push({t:'teal',m:`Communication quality (${CQ}) — articulate and audience-aware. Asset in any role.`});
+  else if(CQ!==null&&CQ<45)roleFlags.push({t:'gold',m:`Communication quality below threshold (${CQ}). May need coaching for clarity and stakeholder management.`});
   const itemFlags=rawAnswers?analyseRedFlags(rawAnswers):[];
   // HonestyHumility role signals
   const HH=b5Scores.HonestyHumility||50;
@@ -3583,7 +3587,7 @@ function openReport(id){
               +WB_TRAITS.map(t=>{
                 const v=s.big5[t];const noData=v===null||v===undefined;
                 const col=noData?'var(--text-3)':v>=70?'var(--green)':v>=45?'var(--text-2)':'var(--red)';
-                const notes={Collaboration:v>=70?'Energised by shared work.':v>=45?'Collaborative when structure is clear.':'Prefers solo work; may create silos.',Accountability:v>=70?'Strong ownership mindset.':v>=45?'Generally reliable.':'Tendency to externalise blame.',Adaptability:v>=70?'Thrives through change.':v>=45?'Adapts adequately.':'Prefers stability; low change readiness.',ConflictStyle:v>=70?'Addresses disagreement directly.':v>=45?'Manages most conflicts.':'Conflict avoidant.',StressResilience:v>=70?'Consistent under pressure.':v>=45?'Handles moderate stress well.':'Elevated sensitivity.',FeedbackReceptivity:v>=70?'Actively seeks feedback.':v>=45?'Generally receptive.':'Signs of defensiveness.'};
+                const notes=noData?{}:{Collaboration:v>=70?'Energised by shared work.':v>=45?'Collaborative when structure is clear.':'Prefers solo work; may create silos.',Accountability:v>=70?'Strong ownership mindset.':v>=45?'Generally reliable.':'Tendency to externalise blame.',Adaptability:v>=70?'Thrives through change.':v>=45?'Adapts adequately.':'Prefers stability; low change readiness.',ConflictStyle:v>=70?'Addresses disagreement directly.':v>=45?'Manages most conflicts.':'Conflict avoidant.',StressResilience:v>=70?'Consistent under pressure.':v>=45?'Handles moderate stress well.':'Elevated sensitivity.',FeedbackReceptivity:v>=70?'Actively seeks feedback.':v>=45?'Generally receptive.':'Signs of defensiveness.'};
                 return'<div style="margin-bottom:10px;">'
                   +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;">'
                   +'<span style="font-size:12px;font-weight:500;color:var(--text);">'+(WLBL[t]||t)+'</span>'
