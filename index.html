@@ -2073,7 +2073,7 @@ function downloadReport(id){
   // Apply legacy rescoring for old submissions
   let b5=s.big5||{};
   if(c.rawAnswers&&Object.keys(c.rawAnswers).length>0){
-    const legacyFix=rescoreWithLegacyQuestions(c.rawAnswers,b5);
+    const legacyFix=rescoreWithLegacyQuestions(c.rawAnswers);
     if(legacyFix&&Object.keys(legacyFix).length>0){b5={...b5,...legacyFix};}
   }
   const insights=computeB5Insights(b5,c.role,c.rawAnswers||null);
@@ -2682,17 +2682,17 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I rarely take ownership of mistakes unless directly asked to.",trait:"Accountability",rev:true},
   {type:'agree',q:"I hold myself to the same standards I expect from others.",trait:"Accountability",rev:false},
   {type:'agree',q:"When plans change suddenly, I find a new way forward quickly.",trait:"Adaptability",rev:false},
-  {type:'agree',q:"Once I commit to a plan, I find it hard to change direction.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I struggle to perform well when priorities change rapidly and repeatedly.",trait:"Adaptability",rev:true},
   {type:'agree',q:"I can switch priorities mid-task without losing focus.",trait:"Adaptability",rev:false},
-  {type:'agree',q:"I find frequent changes in how things are done more disruptive than exciting.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I find it genuinely difficult to work effectively in environments with constant change.",trait:"Adaptability",rev:true},
   {type:'agree',q:"I see unexpected changes at work as a chance to find a better approach.",trait:"Adaptability",rev:false},
-  {type:'agree',q:"I find it difficult to let go of a plan I have already invested time in.",trait:"Adaptability",rev:true},
+  {type:'agree',q:"I tend to resist new processes even when the old ones are clearly not working.",trait:"Adaptability",rev:true},
   {type:'agree',q:"If I disagree with a decision at work, I say so directly.",trait:"ConflictStyle",rev:false},
-  {type:'agree',q:"I prefer to let small tensions settle on their own.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I consistently avoid difficult conversations at work even when they are needed.",trait:"ConflictStyle",rev:true},
   {type:'agree',q:"I address problems with colleagues directly rather than going around them.",trait:"ConflictStyle",rev:false},
-  {type:'agree',q:"I sometimes stay quiet in meetings even when I think the group is making a mistake.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I rarely raise concerns in group settings even when I believe others are wrong.",trait:"ConflictStyle",rev:true},
   {type:'agree',q:"I think honest disagreement is a sign of a healthy team.",trait:"ConflictStyle",rev:false},
-  {type:'agree',q:"I find confrontation uncomfortable enough that I often avoid it.",trait:"ConflictStyle",rev:true},
+  {type:'agree',q:"I would rather let a bad decision stand than be the one who challenges it.",trait:"ConflictStyle",rev:true},
   {type:'agree',q:"I work well even when I have a very tight deadline.",trait:"StressResilience",rev:false},
   {type:'agree',q:"After a serious setback at work, I usually need several days to feel fully operational again.",trait:"StressResilience",rev:true},
   {type:'agree',q:"When several things go wrong at once, I stay focused and keep working.",trait:"StressResilience",rev:false},
@@ -2701,8 +2701,8 @@ const B5_QUESTIONS=[
   {type:'agree',q:"I find it hard to make good decisions when I am under significant pressure.",trait:"StressResilience",rev:true},
   {type:'agree',q:"I ask for feedback on my work, including from people who may criticise it.",trait:"FeedbackReceptivity",rev:false},
   {type:'agree',q:"I have made real changes to how I work based on feedback someone gave me.",trait:"FeedbackReceptivity",rev:false},
-  {type:'agree',q:"When someone criticises my work, I tend to feel defensive at first.",trait:"FeedbackReceptivity",rev:true},
-  {type:'agree',q:"I find it hard to act on feedback from someone I do not respect.",trait:"FeedbackReceptivity",rev:true},
+  {type:'agree',q:"I struggle to genuinely act on feedback that I disagree with.",trait:"FeedbackReceptivity",rev:true},
+  {type:'agree',q:"I often dismiss feedback privately even when I appear to accept it.",trait:"FeedbackReceptivity",rev:true},
   {type:'agree',q:"I treat critical feedback as useful information rather than a personal attack.",trait:"FeedbackReceptivity",rev:false},
   {type:'agree',q:"I ask clarifying questions to make sure I have understood feedback before acting on it.",trait:"FeedbackReceptivity",rev:false},
   {type:'agree',q:"When I face a hard problem, I break it into smaller steps.",trait:"ProblemSolving",rev:false},
@@ -2884,111 +2884,46 @@ function computeFCScores(answers){
   return scores;
 }
 
-// ── LEGACY QUESTIONS (used only to rescore old submissions) ────────────────
-// These are the ORIGINAL questions that candidates answered before the question
-// redesign. Stored here so old raw answers can be correctly rescored.
-const LEGACY_ACCOUNTABILITY=[
-  {idx_match:'Accountability_0',q:"When a project fails, I first ask what I could have done better.",trait:"Accountability",rev:false},
-  {idx_match:'Accountability_1',q:"When things go wrong, I tend to look at external causes first.",trait:"Accountability",rev:true},
-  {idx_match:'Accountability_2',q:"I tell my manager early when I think a deadline is at risk.",trait:"Accountability",rev:false},
-  {idx_match:'Accountability_3',q:"I feel personally responsible for the outcomes of work I am involved in.",trait:"Accountability",rev:false},
-  {idx_match:'Accountability_4',q:"I sometimes avoid giving updates because I know difficult questions will follow.",trait:"Accountability",rev:true},
-  {idx_match:'Accountability_5',q:"I hold myself to the same standards I expect from others.",trait:"Accountability",rev:false},
-];
-const LEGACY_STRESS=[
-  {idx_match:'StressResilience_0',q:"I work well even when I have a very tight deadline.",trait:"StressResilience",rev:false},
-  {idx_match:'StressResilience_1',q:"A bad day at work affects my mood well into the evening.",trait:"StressResilience",rev:true},
-  {idx_match:'StressResilience_2',q:"When several things go wrong at once, I stay focused and keep working.",trait:"StressResilience",rev:false},
-  {idx_match:'StressResilience_3',q:"I find it hard to stop thinking about work problems outside of working hours.",trait:"StressResilience",rev:true},
-  {idx_match:'StressResilience_4',q:"I remain composed when I receive unexpected bad news.",trait:"StressResilience",rev:false},
-  {idx_match:'StressResilience_5',q:"Under sustained pressure, my effectiveness stays consistent.",trait:"StressResilience",rev:false},
-];
+// ── LEGACY RESCORING ────────────────────────────────────────────────────────
+// For old candidates: re-runs computeAllScores on their rawAnswers.
+// This gives correct scores for ALL traits using current algorithm.
+// Then patches the 2 positions where rev flags actually changed:
+//   pos 55 (Accountability[1]): was rev:true → now rev:false
+//   pos 77 (StressResilience[5]): was rev:false → now rev:true
+// All other question changes kept same rev flags → no patch needed.
 
-// Build a map of old question text → index in B5_QUESTIONS at time of submission
-// We match by finding these exact question texts in the raw answers keys
-function rescoreWithLegacyQuestions(rawAnswers, currentB5Score){
-  if(!rawAnswers||typeof rawAnswers!=='object')return null;
+function _scoreLegacyTrait(answers, startIdx, oldRevFlags){
+  let ws=0,tw=0,count=0;
+  oldRevFlags.forEach(function(rev,i){
+    const raw=answers[startIdx+i];
+    if(raw===undefined||raw===null)return;
+    const val=typeof raw==='string'?parseInt(raw):raw;
+    if(isNaN(val)||val===3)return;
+    const directed=rev?(6-val):val;
+    const pct=directed<=2?(directed-1)*25:((directed-3)/2)*50+50;
+    const w=(val===1||val===5)?1.0:0.6;
+    ws+=pct*w;tw+=w;count++;
+  });
+  return(count>=2&&tw>0)?Math.round(ws/tw):null;
+}
 
-  // Find which numeric indices correspond to old Accountability/StressResilience questions
-  // by scanning B5_QUESTIONS for their original text
-  const _findIdx=(qText)=>{
-    // Try to find in current B5_QUESTIONS first (may have been reordered)
-    for(let i=0;i<B5_QUESTIONS.length;i++){
-      if(B5_QUESTIONS[i].q&&B5_QUESTIONS[i].q.trim()===qText.trim())return i;
-    }
-    return null;
-  };
+function rescoreWithLegacyQuestions(rawAnswers){
+  if(!rawAnswers||typeof rawAnswers!=='object'||Object.keys(rawAnswers).length===0)return null;
 
-  // Score a trait using given question definitions and raw answers
-  function scoreTrait(legacyQs, answers){
-    // Find which global indices these legacy questions occupy
-    let weightedSum=0,totalWeight=0,opinionatedCount=0;
-    legacyQs.forEach((lq,localIdx)=>{
-      // Try matching by current B5_QUESTIONS index (if question still exists with same text)
-      let idx=_findIdx(lq.q);
+  // Step 1: rescore ALL traits from rawAnswers using current question set
+  // (this is correct for all traits whose rev flags didn't change)
+  const allScores=computeAllScores(rawAnswers);
 
-      // If not found in current questions, try finding by scanning rawAnswers keys
-      // rawAnswers keys are numeric (agree-type), 'fc_N' (fc), 'sc_N' (scenario)
-      // We need to figure out what index this question was at when the candidate answered
-      // Strategy: look through all numeric keys and find ones that match known trait positions
-      if(idx===null){
-        // Question was changed — we need to find its original position
-        // The old B5_QUESTIONS had these traits at specific positions
-        // Accountability was the 6 questions starting at a known offset
-        // We'll determine offset by finding questions that still exist nearby
-        const acctStart=_findAcctStart();
-        const stressStart=_findStressStart();
-        if(lq.trait==='Accountability'&&acctStart!==null){
-          idx=acctStart+localIdx;
-        } else if(lq.trait==='StressResilience'&&stressStart!==null){
-          idx=stressStart+localIdx;
-        }
-      }
+  // Step 2: patch the 2 positions where rev flags changed between old and new questions
+  // Accountability starts at 54, old flags: [false, TRUE, false, false, true, false]
+  const accScore=_scoreLegacyTrait(rawAnswers,54,[false,true,false,false,true,false]);
+  if(accScore!==null)allScores.Accountability=accScore;
 
-      if(idx===null)return;
-      const raw=answers[idx];
-      if(raw===undefined||raw===null)return;
-      const val=typeof raw==='string'?parseInt(raw):raw;
-      if(isNaN(val)||val===3)return; // skip neutral
-      const directed=lq.rev?(6-val):val;
-      const pct=directed<=2?(directed-1)*25:((directed-3)/2)*50+50;
-      const w=(val===1||val===5)?1.0:0.6;
-      weightedSum+=pct*w;
-      totalWeight+=w;
-      opinionatedCount++;
-    });
-    if(totalWeight===0||opinionatedCount<2)return null;
-    return Math.round(weightedSum/totalWeight);
-  }
+  // StressResilience starts at 72, old flags: [false, true, false, true, false, FALSE]
+  const srScore=_scoreLegacyTrait(rawAnswers,72,[false,true,false,true,false,false]);
+  if(srScore!==null)allScores.StressResilience=srScore;
 
-  // Find start index of Accountability block in current B5_QUESTIONS
-  function _findAcctStart(){
-    // The first Accountability question text that still exists
-    const anchor="When a project fails, I first ask what I could have done better.";
-    const idx=_findIdx(anchor);
-    return idx; // this question didn't change, so its index is stable
-  }
-
-  // Find start index of StressResilience block
-  function _findStressStart(){
-    const anchor="I work well even when I have a very tight deadline.";
-    const idx=_findIdx(anchor);
-    return idx;
-  }
-
-  const rescored={};
-
-  // Rescore Accountability using OLD question set
-  const acctScore=scoreTrait(LEGACY_ACCOUNTABILITY,rawAnswers);
-  if(acctScore!==null)rescored.Accountability=acctScore;
-
-  // Rescore StressResilience using OLD question set
-  const stressScore=scoreTrait(LEGACY_STRESS,rawAnswers);
-  if(stressScore!==null)rescored.StressResilience=stressScore;
-
-  // Return merged score: rescored traits + everything else from current score
-  if(Object.keys(rescored).length===0)return null;
-  return rescored;
+  return allScores;
 }
 
 function computeAllScores(answers){
@@ -3534,7 +3469,7 @@ function openReport(id){
     // without modifying stored data
     let b5=s.big5||{};
     if(c.rawAnswers&&Object.keys(c.rawAnswers).length>0){
-      const legacyFix=rescoreWithLegacyQuestions(c.rawAnswers,b5);
+      const legacyFix=rescoreWithLegacyQuestions(c.rawAnswers);
       if(legacyFix&&Object.keys(legacyFix).length>0){
         b5={...b5,...legacyFix}; // merge: only Accountability and StressResilience overwritten
       }
@@ -3630,7 +3565,7 @@ function openReport(id){
           // Apply legacy rescoring for old submissions (corrects question design bias)
           let _b5rescore=s.big5||{};
           if(c.rawAnswers&&Object.keys(c.rawAnswers).length>0){
-            const _legFix=rescoreWithLegacyQuestions(c.rawAnswers,_b5rescore);
+            const _legFix=rescoreWithLegacyQuestions(c.rawAnswers);
             if(_legFix&&Object.keys(_legFix).length>0)_b5rescore={..._b5rescore,..._legFix};
           }
           const hasB5data=hasB5mod&&_b5rescore&&Object.values(_b5rescore).some(v=>v!==null&&v!==undefined&&typeof v==='number'&&!isNaN(v));
