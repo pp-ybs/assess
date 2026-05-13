@@ -2070,11 +2070,10 @@ function downloadReport(id){
   const c=candidates.find(x=>x.id===id||String(x.id)===String(id));
   if(!c||!c.score){alert('No assessment data to download.');return;}
   const s=c.score;
-  // Apply legacy rescoring for old submissions
   let b5=s.big5||{};
   if(c.rawAnswers&&Object.keys(c.rawAnswers).length>0){
-    const legacyFix=rescoreWithLegacyQuestions(c.rawAnswers);
-    if(legacyFix&&Object.keys(legacyFix).length>0){b5={...b5,...legacyFix};}
+    const lf=rescoreWithLegacyQuestions(c.rawAnswers);
+    if(lf&&Object.keys(lf).length>0)b5={...lf};
   }
   const insights=computeB5Insights(b5,c.role,c.rawAnswers||null);
   const overall=overallScore(s);
@@ -2085,39 +2084,23 @@ function downloadReport(id){
   const vc=VERDICT_CFG[c.verdict]||VERDICT_CFG['Pending'];
   const co=document.getElementById('set-company')?.value||'Assess YBS';
   const lmap={ProblemSolving:'Problem solving',LongTermCommitment:'Long-term commitment',DataDriven:'Data-driven',Initiative:'Initiative',CommunicationQuality:'Communication quality'};
-
-  // Score colour helper
   function sc(v){return v>=70?'#1a7a4a':v>=45?'#354764':'#c0362b';}
-
-  // Trait bar — shows dash for null/missing scores instead of 0%
   function bar(label,v){
-    if(v===null||v===undefined)return '<div style="margin-bottom:8px;display:flex;justify-content:space-between;">'
-      +'<span style="font-size:11px;color:#444;">'+label+'</span>'
-      +'<span style="font-size:11px;color:#aaa;">not assessed</span></div>';
+    if(v===null||v===undefined)return '<div style="margin-bottom:8px;display:flex;justify-content:space-between;"><span style="font-size:11px;color:#444;">'+label+'</span><span style="font-size:11px;color:#aaa;">not assessed</span></div>';
     const w=Math.round(v);
-    return '<div style="margin-bottom:8px;">'
-      +'<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
-      +'<span style="font-size:11px;color:#444;">'+label+'</span>'
-      +'<span style="font-size:11px;font-weight:700;color:'+sc(w)+';">'+w+'%</span></div>'
-      +'<div style="height:5px;background:#eee;border-radius:3px;"><div style="width:'+w+'%;height:100%;background:'+sc(w)+';border-radius:3px;"></div></div>'
-      +'</div>';
+    return '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#444;">'+label+'</span><span style="font-size:11px;font-weight:700;color:'+sc(w)+';">'+w+'%</span></div><div style="height:5px;background:#eee;border-radius:3px;"><div style="width:'+w+'%;height:100%;background:'+sc(w)+';border-radius:3px;"></div></div></div>';
   }
-
-  // All trait rows — pass raw value (null if not scored), bar handles it
-  const b5Rows=TRAITS.map(t=>bar(traitLabels[t]||t, t==='Neuroticism'?b5[t]:b5[t]??null)).join('');
-  const wbRows=WB_TRAITS.map(t=>bar(lmap[t]||t, b5[t]??null)).join('');
-  const jobRows=JOB_TRAITS.map(t=>bar(lmap[t]||t, b5[t]??null)).join('');
-  const discRows=DISC_TRAITS.map(t=>bar(traitLabels[t]||t, b5[t]??null)).join('');
-  const darkRow=DARK_TRAITS.map(t=>bar('Under-Pressure Consistency', b5[t]??null)).join('');
-
-  // Red flags — prominently displayed
+  const traitLabels={HonestyHumility:'Integrity (H-H)',Neuroticism:'Emotionality',Extraversion:'Extraversion',Agreeableness:'Agreeableness',Conscientiousness:'Conscientiousness',Openness:'Openness'};
+  const b5Rows=TRAITS.map(t=>bar(traitLabels[t]||t,t==='Neuroticism'?b5[t]:b5[t]??null)).join('');
+  const wbRows=WB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]??null)).join('');
+  const jobRows=JOB_TRAITS.map(t=>bar(lmap[t]||t,b5[t]??null)).join('');
+  const darkRow=DARK_TRAITS.map(t=>bar('Under-Pressure Consistency',b5[t]??null)).join('');
   const redFlags=(insights.itemFlags||[]).filter(f=>f.severity==='red');
   const amberFlags=(insights.itemFlags||[]).filter(f=>f.severity==='amber');
   const greenFlags=(insights.itemFlags||[]).filter(f=>f.severity==='green');
-  const roleFlags=(insights.roleFlags||[]);
-
+  const roleFlags=insights.roleFlags||[];
   function flagBlock(f){
-    const isRed=f.severity==='red';const isGreen=f.severity==='green';
+    const isRed=f.severity==='red',isGreen=f.severity==='green';
     const bg=isRed?'#fff0f0':isGreen?'#f0fff4':'#fffbeb';
     const border=isRed?'#e53e3e':isGreen?'#38a169':'#d69e2e';
     const label=isRed?'⚠ RED FLAG':isGreen?'✓ STRENGTH':'△ WATCH';
@@ -2125,133 +2108,34 @@ function downloadReport(id){
     return '<div style="margin-bottom:8px;padding:8px 10px;background:'+bg+';border-left:3px solid '+border+';border-radius:0 4px 4px 0;">'
       +'<div style="font-size:10px;font-weight:700;color:'+col+';letter-spacing:.05em;margin-bottom:3px;">'+label+' · '+f.category+'</div>'
       +'<div style="font-size:11px;font-weight:600;color:#1a202c;margin-bottom:3px;">'+f.title+'</div>'
-      +'<div style="font-size:11px;color:#4a5568;line-height:1.5;">'+f.detail+'</div>'
-      +'</div>';
+      +'<div style="font-size:11px;color:#4a5568;line-height:1.5;">'+f.detail+'</div></div>';
   }
-
-  // Full trait narratives for portrait section
-  const traitNarLines=Object.entries(insights.traitNarrative||{}).map(([t,txt])=>{
-    const isRed=txt.includes('RED FLAG');
-    return '<div style="margin-bottom:9px;padding:8px 10px;background:'+(isRed?'#fff5f5':'#f9fafb')+';border-left:3px solid '+(isRed?'#e53e3e':'#e2e8f0')+';border-radius:0 4px 4px 0;">'
-      +'<span style="font-size:11px;color:#1a202c;line-height:1.6;">'+txt+'</span></div>';
-  }).join('');
-  const jobNarLines=Object.entries(insights.jobNarrative||{}).map(([t,txt])=>'<div style="margin-bottom:6px;"><strong style="font-size:11px;color:#2d3748;">'+(lmap[t]||t)+':</strong> <span style="font-size:11px;color:#4a5568;">'+txt+'</span></div>').join('');
-
+  const traitNarLines=Object.entries(insights.traitNarrative||{}).filter(([,t])=>t).map(([,txt])=>'<div style="margin-bottom:9px;padding:8px 10px;background:#f9fafb;border-left:3px solid #e2e8f0;border-radius:0 4px 4px 0;"><span style="font-size:11px;color:#1a202c;line-height:1.6;">'+txt+'</span></div>').join('');
+  const jobNarLines=Object.entries(insights.jobNarrative||{}).filter(([,t])=>t).map(([t,txt])=>'<div style="margin-bottom:6px;"><strong style="font-size:11px;color:#2d3748;">'+(lmap[t]||t)+':</strong> <span style="font-size:11px;color:#4a5568;">'+txt+'</span></div>').join('');
   const allFlags=[...redFlags,...amberFlags,...greenFlags].map(flagBlock).join('');
   const roleFlagLines=roleFlags.map(f=>'<div style="display:flex;gap:7px;margin-bottom:5px;align-items:flex-start;"><span style="width:7px;height:7px;border-radius:50%;margin-top:3px;flex-shrink:0;background:'+(f.t==='teal'?'#38a169':f.t==='rose'?'#e53e3e':'#d69e2e')+';"></span><span style="font-size:11px;color:#4a5568;line-height:1.5;">'+f.m+'</span></div>').join('');
-
   const hasFlags=allFlags||roleFlagLines;
-  const vcColor=vc.dot||'#333';const vcBg=vc.bg||'#f7f7f7';
-
-  // Generate AI flags for the report
-  const _aiFlagsPromise=generateAIFlags(c);
-  
-  const sjtScoreHtml=s.sjt!==null&&s.sjt!==undefined
-    ?'<div class="score-box"><div class="score-val" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="score-lbl">Situations</div></div>'
-    :'';
-
-  // Ensure download fires even if AI flag generation fails
-  const _doDownload=(aiResult)=>{
-    const aiSection=aiResult?`
-      <div class="section">
-        <div class="section-title ai-title">🤖 AI Analysis</div>
-        ${aiResult.summary?`<div style="background:#f0f4ff;border-left:3px solid #4f46e5;padding:10px 12px;border-radius:0 6px 6px 0;margin-bottom:12px;font-size:11px;color:#2d3748;line-height:1.6;"><strong>Summary:</strong> ${aiResult.summary}</div>`:''}
-        ${(aiResult.flags||[]).map(f=>{
-          const col=f.severity==='red'?'#dc2626':f.severity==='green'?'#16a34a':'#d97706';
-          const bg=f.severity==='red'?'#fef2f2':f.severity==='green'?'#f0fdf4':'#fffbeb';
-          const label=f.severity==='red'?'🔴 Red flag':f.severity==='green'?'🟢 Strength':'🟡 Watch point';
-          return `<div style="padding:9px 11px;background:${bg};border-left:3px solid ${col};border-radius:0 5px 5px 0;margin-bottom:7px;">
-            <div style="font-size:10px;font-weight:700;color:${col};margin-bottom:2px;">${label} · ${f.category}</div>
-            <div style="font-size:11px;font-weight:600;color:#1a202c;margin-bottom:3px;">${f.title}</div>
-            <div style="font-size:11px;color:#4a5568;line-height:1.55;">${f.detail}</div>
-          </div>`;
-        }).join('')}
-      </div>`:'<div class="section"><div class="section-title ai-title">🤖 AI Analysis</div><div style="font-size:11px;color:#a0aec0;">Set your Anthropic API key in Settings to enable AI analysis.</div></div>';
-
-    const reportCSS='*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Segoe UI",system-ui,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.5;}@media print{@page{margin:16mm;size:A4;}}.header{background:#f7f8fa;border-bottom:2px solid #222;padding:28px 36px 24px;display:flex;justify-content:space-between;align-items:flex-start;}.h-company{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#888;margin-bottom:6px;}.h-name{font-size:26px;font-weight:700;letter-spacing:-.5px;color:#111;margin-bottom:4px;}.h-meta{font-size:11.5px;color:#555;line-height:1.8;}.h-right{text-align:right;flex-shrink:0;padding-left:20px;}.overall-num{font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1;}.overall-lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}.strip{display:flex;border-bottom:1px solid #eee;}.strip-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid #eee;}.strip-item:last-child{border-right:none;}.s-num{font-size:20px;font-weight:700;margin-bottom:3px;}.s-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#999;}.body{padding:28px 36px;}.section{margin-bottom:24px;}.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#999;border-bottom:1.5px solid #f0f0f0;padding-bottom:6px;margin-bottom:12px;}.section-title.red{border-color:#fca5a5;color:#dc2626;}.section-title.green{border-color:#86efac;color:#16a34a;}.section-title.blue{border-color:#93c5fd;color:#1d4ed8;}.cols2{display:grid;grid-template-columns:1fr 1fr;gap:28px;}.archetype{background:#f8f8f8;border-left:4px solid #111;padding:12px 16px;font-size:13px;font-weight:600;line-height:1.6;margin-bottom:14px;border-radius:0 5px 5px 0;}.nar{margin-bottom:8px;padding:9px 12px;border-radius:0 5px 5px 0;border-left:3px solid #e5e5e5;background:#fafafa;font-size:12px;color:#333;line-height:1.6;}.nar.bad{border-color:#ef4444;background:#fff5f5;}.nar.good{border-color:#22c55e;background:#f0fdf4;}.bar{display:flex;align-items:center;gap:8px;margin-bottom:7px;}.bar-name{font-size:11px;color:#444;width:160px;flex-shrink:0;}.bar-track{flex:1;height:6px;background:#f0f0f0;border-radius:99px;overflow:hidden;}.bar-fill{height:100%;border-radius:99px;}.bar-val{font-size:11px;font-weight:700;width:34px;text-align:right;color:#111;flex-shrink:0;}.flag{padding:10px 12px;border-radius:0 5px 5px 0;margin-bottom:7px;border-left:4px solid;}.flag-red{background:#fff5f5;border-color:#ef4444;}.flag-amber{background:#fffbeb;border-color:#f59e0b;}.flag-green{background:#f0fdf4;border-color:#22c55e;}.flag-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}.flag-title{font-size:12.5px;font-weight:700;margin-bottom:3px;}.flag-detail{font-size:11.5px;color:#444;line-height:1.55;}.ai-box{background:#f0f4ff;border-left:4px solid #4f46e5;padding:12px 14px;font-size:12px;color:#2d3a6b;line-height:1.65;margin-bottom:12px;border-radius:0 5px 5px 0;}.footer{margin-top:32px;padding-top:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:10px;color:#bbb;}';
-
-    // Build score strip — only modules actually taken
-    let _stripItems='';
-    if(hasCog&&iqPts)_stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.cognitive||50)+';">'+iqPts+'</div><div class="s-lbl">Est. IQ</div></div>';
-    if(s.sjt!=null)_stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="s-lbl">Situations</div></div>';
-    if(hasTypingDl&&s.typing&&s.typing.wpm)_stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.wpm+'</div><div class="s-lbl">Typing WPM</div></div>';
-    if(hasTypingDl&&s.typing&&s.typing.accuracy)_stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.accuracy+'%</div><div class="s-lbl">Typing Acc.</div></div>';
-    const _strip=_stripItems?'<div class="strip">'+_stripItems+'</div>':'';
-
-    // Score bars — no DISC
-    const _barColor=(v)=>v>=70?'#22c55e':v>=45?'#94a3b8':'#ef4444';
-    const _bar=(label,val)=>val===null||val===undefined?'':'<div class="bar"><div class="bar-name">'+label+'</div><div class="bar-track"><div class="bar-fill" style="width:'+val+'%;background:'+_barColor(val)+';"></div></div><div class="bar-val">'+val+'</div></div>';
-    const _hexacoRows=_bar('Honesty & Integrity',b5&&b5.HonestyHumility)+_bar('Emotional Stability',b5&&b5.Neuroticism?100-b5.Neuroticism:null)+_bar('Extraversion',b5&&b5.Extraversion)+_bar('Agreeableness',b5&&b5.Agreeableness)+_bar('Conscientiousness',b5&&b5.Conscientiousness)+_bar('Openness',b5&&b5.Openness);
-    const _workRows=_bar('Collaboration',b5&&b5.Collaboration)+_bar('Accountability',b5&&b5.Accountability)+_bar('Adaptability',b5&&b5.Adaptability)+_bar('Conflict Style',b5&&b5.ConflictStyle)+_bar('Stress Resilience',b5&&b5.StressResilience)+_bar('Feedback Receptivity',b5&&b5.FeedbackReceptivity);
-    const _jobRows=_bar('Problem Solving',b5&&b5.ProblemSolving)+_bar('Initiative',b5&&b5.Initiative)+_bar('Communication',b5&&b5.CommunicationQuality)+_bar('Long-term Commitment',b5&&b5.LongTermCommitment)+_bar('Data-Driven',b5&&b5.DataDriven);
-    const _darkRow=_bar('Consistency Under Pressure',b5&&b5.DarkSide);
-
-    const _meta=[c.role,c.email,c.gender,c.age?c.age+' yrs':null,c.country].filter(Boolean).join(' &middot; ');
-    const _hdr='<div class="header"><div><div class="h-company">'+co+' &mdash; Candidate Assessment Report</div><div class="h-name">'+c.name+'</div><div class="h-meta">'+_meta+'<br>Assessed: '+(c.invited||'&mdash;')+'</div></div><div class="h-right"><div class="overall-num" style="color:'+sc(overall)+';">'+overall+'%</div><div class="overall-lbl">Overall score</div><div style="font-size:11px;color:#888;margin-top:3px;">'+(overall>=70?'Strong profile':overall>=50?'Moderate profile':'Needs attention')+'</div></div></div>';
-    const _profile='<div class="section"><div class="section-title accent">Candidate Profile</div><div class="archetype">'+insights.archetype+'</div>'+traitNarLines+'</div>';
-    const _scores='<div class="cols"><div><div class="section"><div class="section-title">HEXACO Personality</div>'+b5Rows+'</div><div class="section"><div class="section-title">Workplace Behaviour</div>'+wbRows+'</div></div><div><div class="section"><div class="section-title">Job-Fit Dimensions</div>'+jobRows+'</div><div class="section"><div class="section-title">DISC &amp; Under Pressure</div>'+discRows+darkRow+'</div></div></div>';
-    const _jobfit='<div class="section"><div class="section-title">Job-Fit Analysis</div>'+jobNarLines+'</div>';
-    const _flags=hasFlags?'<div class="section"><div class="section-title danger">Risk Signals &amp; Strengths</div>'+allFlags+'<div style="margin-top:6px;">'+roleFlagLines+'</div></div>':'';
-    const _footer='<div class="footer"><span>'+co+' &mdash; Confidential. For internal HR use only.</span><span>'+fmtDateShort()+'</span></div>';
-
-    const fullHtml='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Report '+c.name+'</title><style>'+reportCSS+'</style></head><body>'
-      +_hdr+_strip+'<div class="body">'+aiSection+_profile+_scores+_jobfit+_flags+_footer+'</div>'
-      +'<script>window.onload=function(){window.print();};<\/script></body></html>';
-
-    // Always use blob download — popup is blocked by default on GitHub Pages and file://
-    const _blob=new Blob([fullHtml],{type:'text/html'});
-    const _a=document.createElement('a');
-    _a.href=URL.createObjectURL(_blob);
-    _a.download='Report_'+(c.name||'candidate').replace(/[^a-zA-Z0-9_\-]/g,'_')+'.html';
-    document.body.appendChild(_a);_a.click();
-    setTimeout(()=>{document.body.removeChild(_a);URL.revokeObjectURL(_a.href);},1000);
-  };
-  _aiFlagsPromise.then(_doDownload).catch(()=>_doDownload(null));
-}
-function regenerateScores(id){
-  const c=candidates.find(x=>String(x.id)===String(id));
-  if(!c||!c.rawAnswers||Object.keys(c.rawAnswers).length===0){
-    alert('No raw answers stored for this candidate.');return;
-  }
-  if(!confirm('Recalculate all scores from this candidate\'s raw answers?\nThis overwrites the stored scores and syncs to Supabase.'))return;
-  const newScores=rescoreWithLegacyQuestions(c.rawAnswers);
-  if(!newScores){alert('Could not rescore — insufficient answer data.');return;}
-  // Preserve cognitive, typing, sjt — only update big5
-  c.score=c.score||{};
-  c.score.big5={...newScores};
-  c.score._rescored=true;
-  c.score._rescoredAt=new Date().toISOString();
-  persistCandidates(c);
-  alert('Scores regenerated and saved.');
-  // Reopen report to show new scores
-  openReport(id);
-}
-
-function toggleScoreOverride(id){
-  const el=document.getElementById('score-override-'+id);
-  if(el)el.style.display=el.style.display==='none'?'block':'none';
-}
-
-function saveScoreOverrides(id){
-  const c=candidates.find(x=>String(x.id)===String(id));
-  if(!c||!c.score||!c.score.big5)return;
-  const msg=document.getElementById('ovr-msg-'+id);
-  let changed=0;
-  [...WB_TRAITS,...JOB_TRAITS].forEach(t=>{
-    const inp=document.getElementById('ovr-'+id+'-'+t);
-    if(!inp)return;
-    const val=inp.value.trim();
-    if(val===''){return;}
-    const n=parseInt(val);
-    if(isNaN(n)||n<0||n>100){return;}
-    if(c.score.big5[t]!==n){c.score.big5[t]=n;changed++;}
-  });
-  if(changed===0){if(msg){msg.textContent='No changes.';msg.style.color='var(--text-3)';}return;}
-  c.score._manualOverride=true;
-  c.score._overrideAt=new Date().toISOString();
-  persistCandidates(c);
-  if(msg){msg.textContent=changed+' score'+(changed===1?'':'s')+' saved ✓';msg.style.color='var(--green)';}
-  setTimeout(()=>openReport(id),600);
+  const CSS='*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Segoe UI",system-ui,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.5;}@media print{@page{margin:16mm;size:A4;}}.header{background:#f7f8fa;border-bottom:2px solid #222;padding:28px 36px 24px;display:flex;justify-content:space-between;align-items:flex-start;}.h-company{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#888;margin-bottom:6px;}.h-name{font-size:26px;font-weight:700;letter-spacing:-.5px;color:#111;margin-bottom:4px;}.h-meta{font-size:11.5px;color:#555;line-height:1.8;}.h-right{text-align:right;flex-shrink:0;padding-left:20px;}.overall-num{font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1;}.overall-lbl{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}.strip{display:flex;border-bottom:1px solid #eee;}.strip-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid #eee;}.strip-item:last-child{border-right:none;}.s-num{font-size:20px;font-weight:700;margin-bottom:3px;}.s-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#999;}.body{padding:28px 36px;}.section{margin-bottom:24px;}.section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#999;border-bottom:1.5px solid #f0f0f0;padding-bottom:6px;margin-bottom:12px;}.cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;}.archetype{background:#f8f8f8;border-left:4px solid #111;padding:12px 16px;font-size:13px;font-weight:600;line-height:1.6;margin-bottom:14px;border-radius:0 5px 5px 0;}.bar{display:flex;align-items:center;gap:8px;margin-bottom:7px;}.bar-name{font-size:11px;color:#444;width:160px;flex-shrink:0;}.bar-track{flex:1;height:6px;background:#f0f0f0;border-radius:99px;overflow:hidden;}.bar-fill{height:100%;border-radius:99px;}.bar-val{font-size:11px;font-weight:700;width:34px;text-align:right;color:#111;flex-shrink:0;}.footer{margin-top:32px;padding-top:10px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:10px;color:#bbb;}';
+  let stripItems='';
+  if(hasCog&&iqPts)stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.cognitive||50)+';">'+iqPts+'</div><div class="s-lbl">Est. IQ</div></div>';
+  if(s.sjt!=null)stripItems+='<div class="strip-item"><div class="s-num" style="color:'+sc(s.sjt)+';">'+s.sjt+'%</div><div class="s-lbl">Situations</div></div>';
+  if(hasTypingDl&&s.typing&&s.typing.wpm)stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.wpm+'</div><div class="s-lbl">Typing WPM</div></div>';
+  if(hasTypingDl&&s.typing&&s.typing.accuracy)stripItems+='<div class="strip-item"><div class="s-num">'+s.typing.accuracy+'%</div><div class="s-lbl">Typing Acc.</div></div>';
+  const strip=stripItems?'<div class="strip">'+stripItems+'</div>':'';
+  const meta=[c.role,c.email,c.gender,c.age?c.age+' yrs':null,c.country].filter(Boolean).join(' &middot; ');
+  const hdr='<div class="header"><div><div class="h-company">'+co+' &mdash; Candidate Assessment Report</div><div class="h-name">'+c.name+'</div><div class="h-meta">'+meta+'<br>Assessed: '+(c.invited||'&mdash;')+'</div></div><div class="h-right"><div class="overall-num" style="color:'+sc(overall)+';">'+overall+'%</div><div class="overall-lbl">Overall score</div><div style="font-size:11px;color:#888;margin-top:3px;">'+(overall>=70?'Strong profile':overall>=50?'Moderate profile':'Needs attention')+'</div></div></div>';
+  const profile='<div class="section"><div class="section-title">Candidate Profile</div><div class="archetype">'+(insights.archetype||'')+'</div>'+traitNarLines+'</div>';
+  const scores='<div class="cols"><div><div class="section"><div class="section-title">HEXACO Personality</div>'+b5Rows+'</div><div class="section"><div class="section-title">Workplace Behaviour</div>'+wbRows+'</div></div><div><div class="section"><div class="section-title">Job-Fit Dimensions</div>'+jobRows+'</div><div class="section"><div class="section-title">Under Pressure</div>'+darkRow+'</div></div></div>';
+  const jobfit='<div class="section"><div class="section-title">Job-Fit Analysis</div>'+jobNarLines+'</div>';
+  const flags=hasFlags?'<div class="section"><div class="section-title">Risk Signals &amp; Strengths</div>'+allFlags+'<div style="margin-top:6px;">'+roleFlagLines+'</div></div>':'';
+  const footer='<div class="footer"><span>'+co+' &mdash; Confidential. For internal HR use only.</span><span>'+fmtDateShort()+'</span></div>';
+  const html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Report '+c.name+'</title><style>'+CSS+'</style></head><body>'+hdr+strip+'<div class="body">'+profile+scores+jobfit+flags+footer+'</div><script>window.onload=function(){window.print();};<\/script></body></html>';
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Report_'+(c.name||'candidate').replace(/[^a-zA-Z0-9_\-]/g,'_')+'.html';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(a.href);},1000);
 }
 
 function goToAssessments(){const el=document.querySelector('[data-page="assessments"]');showPage('assessments',el);}
@@ -3590,22 +3474,6 @@ function openReport(id){
           <textarea id="rni-${c.id}" placeholder="Add a note..." style="font-size:12px;flex:1;min-height:64px;resize:none;" oninput="autosaveNote(${c.id})">${c.notes||''}</textarea>
         </div>
         <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;" onclick="downloadReport(${c.id})">Download PDF</button>
-        ${c.rawAnswers&&Object.keys(c.rawAnswers).length>0?`
-        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:6px;" onclick="regenerateScores(${c.id})">↻ Regenerate scores from answers</button>`:''}
-        ${hasScore?`
-        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:4px;font-size:11px;color:var(--text-3);" onclick="toggleScoreOverride(${c.id})">⚙ Manual score override</button>
-        <div id="score-override-${c.id}" style="display:none;margin-top:8px;border:1px solid var(--border);border-radius:var(--r);padding:12px;">
-          <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:8px;">Override individual scores (0–100)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            ${[...WB_TRAITS,...JOB_TRAITS].map(t=>`
-            <div>
-              <label style="font-size:10px;color:var(--text-3);">${t.replace(/([A-Z])/g,' $1').trim()}</label>
-              <input type="number" min="0" max="100" id="ovr-${c.id}-${t}" value="${s.big5&&s.big5[t]!=null?s.big5[t]:''}" placeholder="—" style="width:100%;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;box-sizing:border-box;"/>
-            </div>`).join('')}
-          </div>
-          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:8px;justify-content:center;" onclick="saveScoreOverrides(${c.id})">Save overrides</button>
-          <div id="ovr-msg-${c.id}" style="font-size:11px;margin-top:4px;text-align:center;"></div>
-        </div>`:''}
       </div>
 
       <!-- RIGHT: single scrollable analysis -->
