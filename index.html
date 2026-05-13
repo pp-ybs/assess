@@ -2197,22 +2197,13 @@ function downloadReport(id){
       +_hdr+_strip+'<div class="body">'+aiSection+_profile+_scores+_jobfit+_flags+_footer+'</div>'
       +'<script>window.onload=function(){window.print();};<\/script></body></html>';
 
-    // Try popup first, fall back to blob download if blocked
-    try{
-      const win=window.open('','_blank','width=920,height=900');
-      if(win&&!win.closed){
-        win.document.write(fullHtml);
-        win.document.close();
-        return;
-      }
-    }catch(e){}
-    // Fallback: download as HTML file (opens in browser, user can print to PDF)
-    const blob=new Blob([fullHtml],{type:'text/html'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='Report_'+(c.name||'candidate').replace(/\s+/g,'_')+'.html';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
+    // Always use blob download — popup is blocked by default on GitHub Pages and file://
+    const _blob=new Blob([fullHtml],{type:'text/html'});
+    const _a=document.createElement('a');
+    _a.href=URL.createObjectURL(_blob);
+    _a.download='Report_'+(c.name||'candidate').replace(/[^a-zA-Z0-9_\-]/g,'_')+'.html';
+    document.body.appendChild(_a);_a.click();
+    setTimeout(()=>{document.body.removeChild(_a);URL.revokeObjectURL(_a.href);},1000);
   });
 }
 function goToAssessments(){const el=document.querySelector('[data-page="assessments"]');showPage('assessments',el);}
