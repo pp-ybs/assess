@@ -2066,7 +2066,7 @@ function sendInvite(){
     if(key&&el.style.background&&el.style.background.includes('var(--text)'))selMods.push(key);
   });
   const hasVid=invModuleState.video===true;
-  const newCand={id:Date.now(),name,email,role,status:'Invited',invited:invitedAt,score:null,verdict:'Pending',notes:'',_token:tok,modules:selMods};
+  const newCand={id:Date.now(),name,email,role,status:'Invited',invited:invitedAt,score:null,verdict:'Pending',notes:'',_token:tok,_fullLink:link,modules:{big5:_mods.big5!==false,scenario:_mods.scenario===true,cognitive:_mods.cognitive!==false,typing:_mods.typing!==false,video:!!_mods.video}};
   candidates.push(newCand);
   invites.push({name,email,role,status:'Invited',date:invitedAt});
   persistCandidates();
@@ -4102,15 +4102,18 @@ function openReport(id){
   if(!c){console.warn('openReport: not found',id,'available:',candidates.map(x=>String(x.id)));return;}
 
   const baseUrl=window.location.href.split('?')[0].split('#')[0];
+  const _ma=modsArray(c.modules);
+  const _mHas=k=>Array.isArray(c.modules)?_ma.includes(k):(c.modules&&c.modules[k]===true);
   const _pModCode=c.modules?(
-    (modsArray(c.modules).includes('big5')?'b':'')
-    +(modsArray(c.modules).includes('cognitive')?'c':'')
-    +(modsArray(c.modules).includes('typing')?'t':'')
-    +(modsArray(c.modules).includes('video')?'v':'')
+    (_mHas('big5')?'b':'')
+    +(_mHas('scenario')?'s':'')
+    +(_mHas('cognitive')?'c':'')
+    +(_mHas('typing')?'t':'')
+    +(_mHas('video')?'v':'')
   ):'bct';
   // Determine if we need to shorten the link
   // Build clean assess link
-  const assessLink=c._token?(c._fullLink||buildAssessLink(c._token,_pModCode)):'';
+  const assessLink=c._token?(c._fullLink||buildAssessLink(c._token,_pModCode,c.role||'')):'';
   // Only show video section if video was explicitly chosen for this candidate
   const intProfile=c._interviewToken
     ?interviewProfiles.find(p=>p.token===c._interviewToken)
@@ -6204,14 +6207,12 @@ function initCandidateView(){
     }
     // Role: always prefer URL param (canonical source), fall back to localStorage
     const _urlRole=params.get('role')||'';
-    // Also try localStorage for saved progress and modules
+    // Try localStorage first
     try{
       const sv=JSON.parse(localStorage.getItem('vettiq_candidates')||'[]');
       const cr=sv.find(x=>x._token===assessToken);
       if(cr){
-        // URL param takes precedence — it's always set by the invite link
         cvState.role=_urlRole||cr.role||'';
-        // Only use localStorage modules if URL had no module param
         if(!_modParam){
           const mArr=modsArray(cr.modules);
           const allActive=!cr.modules||mArr.length===0;
@@ -6224,11 +6225,32 @@ function initCandidateView(){
           };
         }
       } else {
-        // No localStorage record (different device) — role and modules come entirely from URL
+        // No localStorage — try to load from Supabase so other devices work with old links
         cvState.role=_urlRole;
-        // If no ?m= param either, default to personality only
         if(!_modParam){
-          cvState.modules={big5:true,scenario:false,cognitive:false,typing:false};
+          // Fetch candidate record from Supabase
+          fetch(_EMBEDDED_SUPA.url+'/rest/v1/candidates?token=eq.'+encodeURIComponent(assessToken)+'&select=data',{
+            headers:{'apikey':_EMBEDDED_SUPA.key,'Authorization':'Bearer '+_EMBEDDED_SUPA.key}
+          }).then(r=>r.json()).then(function(rows){
+            if(!rows||!rows.length)return;
+            let rec=rows[0].data;
+            if(typeof rec==='string'){try{rec=JSON.parse(rec);}catch(e){return;}}
+            // Apply role from Supabase if not in URL
+            if(!_urlRole&&rec.role&&rec.role!=='General')cvState.role=rec.role;
+            // Apply modules from Supabase record
+            if(rec.modules&&typeof rec.modules==='object'){
+              cvState.modules=Object.assign({big5:true,scenario:false,cognitive:false,typing:false},rec.modules);
+            } else {
+              // Very old record with no modules — default to big5+cognitive+typing (old default)
+              cvState.modules={big5:true,scenario:false,cognitive:true,typing:true};
+            }
+            cvSave();
+            cvRender(); // Re-render with correct modules
+          }).catch(function(){
+            // Supabase fetch failed — safe fallback: big5 only
+            cvState.modules={big5:true,scenario:false,cognitive:false,typing:false};
+            cvRender();
+          });
         }
       }
     }catch(e){cvState.role=_urlRole;}
