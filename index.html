@@ -6034,7 +6034,7 @@ function submitTyping(){demoState.step=4;renderDemo();}
 /* ═══════════════════════════════════════════
    CANDIDATE VIEW
 ═══════════════════════════════════════════ */
-let cvState={token:'',step:0,name:'',email:'',role:'',b5Answers:{},scnAnswers:{},cogAnswers:{},cogIdx:0,typingWpm:0,typingAcc:0,_typingErrors:{},sectionStart:null,timing:{},modules:{big5:true,scenario:false,cognitive:true,typing:true}};
+let cvState={token:'',step:0,name:'',email:'',role:'',b5Answers:{},scnAnswers:{},cogAnswers:{},cogIdx:0,typingWpm:0,typingAcc:0,_typingErrors:{},sectionStart:null,timing:{},modules:{big5:true,scenario:false,cognitive:false,typing:false}};
 
 function cvSave(){
   try{
@@ -6099,13 +6099,16 @@ const CV_STEPS=['Welcome','Personality','Cognitive','Typing','Done','Scenario'];
 // Returns the ordered list of step indices this candidate needs to complete
 // based on their modules. Step 0 (Welcome) and step 4 (Done) always present.
 function cvGetActiveSteps(){
-  const m=cvState.modules||{big5:true,scenario:false,cognitive:false,typing:false};
+  const m=cvState.modules||{big5:true};
   const steps=[0];
+  // Always include big5 unless explicitly false
   if(m.big5!==false)steps.push(1);
-  if(m.scenario===true)steps.push(5); // Scenario step
+  if(m.scenario===true)steps.push(5);
   if(m.cognitive===true)steps.push(2);
   if(m.typing===true)steps.push(3);
   steps.push(4);
+  // Safety: if only step 0 and 4 (no modules somehow), force big5
+  if(steps.length===2){steps.splice(1,0,1);}
   return steps;
 }
 // Returns next step index after current, skipping disabled modules
@@ -6221,8 +6224,12 @@ function initCandidateView(){
           };
         }
       } else {
-        // No localStorage record (different device) — role comes entirely from URL
+        // No localStorage record (different device) — role and modules come entirely from URL
         cvState.role=_urlRole;
+        // If no ?m= param either, default to personality only
+        if(!_modParam){
+          cvState.modules={big5:true,scenario:false,cognitive:false,typing:false};
+        }
       }
     }catch(e){cvState.role=_urlRole;}
     const td=document.getElementById('cv-token-display');
