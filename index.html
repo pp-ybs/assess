@@ -6037,6 +6037,7 @@ function submitTyping(){demoState.step=4;renderDemo();}
 /* ═══════════════════════════════════════════
    CANDIDATE VIEW
 ═══════════════════════════════════════════ */
+let _urlRole='';
 let cvState={token:'',step:0,name:'',email:'',role:'',b5Answers:{},scnAnswers:{},cogAnswers:{},cogIdx:0,typingWpm:0,typingAcc:0,_typingErrors:{},sectionStart:null,timing:{},modules:{big5:true,scenario:false,cognitive:false,typing:false}};
 
 function cvSave(){
@@ -6206,7 +6207,7 @@ function initCandidateView(){
       };
     }
     // Role: always prefer URL param (canonical source), fall back to localStorage
-    const _urlRole=params.get('role')||'';
+    _urlRole=params.get('role')||'';
     // Try localStorage first
     try{
       const sv=JSON.parse(localStorage.getItem('vettiq_candidates')||'[]');
@@ -6829,47 +6830,17 @@ function cvWelcome(){
 }
 // Validates email format and blocks obvious fake/disposable domains
 function isEmailLegit(email){
-  // Basic format check
   const fmt=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if(!fmt.test(email))return{ok:false,reason:'Invalid email format.'};
   const domain=email.split('@')[1].toLowerCase();
-  // Block single-character or suspiciously short domains
   const tld=domain.split('.').pop();
   if(tld.length<2)return{ok:false,reason:'Invalid email domain.'};
-  // Block known disposable / temp email domains
-  const disposable=['mailinator','guerrillamail','10minutemail','tempmail','throwaway',
-    'yopmail','sharklasers','guerrillamailblock','grr.la','spam4.me','trashmail',
-    'dispostable','fakeinbox','mailnull','spamgourmet','spamgourmet','maildrop',
-    'getairmail','discard.email','mailnesia','spambog','trashmail','mytemp',
-    'tempinbox','throwam','spamherelots','no-spam','antispam','spamfree',
-    'notmailinator','spamdecoy','spamex','spamoff','spamtrash','mailcatch',
-    'binkmail','bobmail','clrmail','dfgh.tk','disbox','disposableemailaddresses',
-    'dsiposable','dump-email','e4ward','emailias','emailsensei','fakemailgenerator',
-    'filzmail','fleckens','fudgerub','goemailgo','gowikibooks','hulapla','icx.ro',
-    'imgof','inoutmail','iwi.net','jetable','jnxjn','junk1','kasmail','kulturbetrieb',
-    'kurzepost','link2mail','lol.ovpn','lortemail','mail.mezimages','mailzilla',
-    'meltmail','messagebeamer','mierdamail','mintemail','moncourrier','mt2015',
-    'mycleaninbox','nospamfor','nurfuerspam','objectmail','oneoffemail','onewaymail',
-    'owlpic','pepbot','pookmail','proxymail','putthisinyourspamdatabase','qq.com',
-    'recode.me','regbypass','rejectmail','rmqkr','s0ny','safersignup','sendspamhere',
-    'shortmail','skeefmail','slopsbox','smashmail','smellfear','spamavert',
-    'spambot','spambob','spamcorpse','spamfree24','spamgrap','spamhereplease',
-    'spamhole','spamify','spaminator','spamkill','spaml.de','spammotel','spamnot',
-    'spamoff.de','spamrok','spamspot','spamslicer','spamstack','spamthisplease',
-    'spamtrap','stuffmail','supergreatmail','supermailer','suremail','sweetxxx',
-    'tempalias','tempe-mail','tempemail','tempmailer','temporaryemail','temporaryforwarding',
-    'thisisnotmyrealemail','throwam','throwemail','trash-amil','trash2009','trashdevil',
-    'trashmail','trashmailer','trashmails','treppensilo','trickmail','trillianpro',
-    'turual','twinmail','tyldd','uggsrock','uroid','veryrealemail','viditag',
-    'viroleni','vpn.st','webemail24','webm4il','wegwerfmail','wetrainbayarea',
-    'whatpaas','wifi-free','willselfdestruct','wilemail','wmail.cf','wronghead',
-    'x-mule','xagloo','xemaps','xents','xmaily','xoxy.net','xyzfree','yep.it',
-    'yomail.info','yopmail','yourdomain','yuurok','zehnminuten','zippymail','zoemail'];
-  if(disposable.some(d=>domain.includes(d)))return{ok:false,reason:'Disposable email addresses are not accepted.'};
-  // Block obviously fake patterns: all same char, random-looking (too many consecutive consonants)
-  const local=email.split('@')[0].toLowerCase();
-  if(/^(.){4,}$/.test(local))return{ok:false,reason:'Please use a real email address.'};
-  if(/^[bcdfghjklmnpqrstvwxyz]{7,}$/.test(local))return{ok:false,reason:'Please use a real email address.'};
+  // Block known disposable domains — exact match only (not substring)
+  const disposable=['mailinator.com','guerrillamail.com','10minutemail.com','tempmail.com',
+    'yopmail.com','throwaway.email','trashmail.com','maildrop.cc','mailnull.com',
+    'spamgourmet.com','discard.email','getnada.com','sharklasers.com','spam4.me'];
+  if(disposable.some(d=>domain===d||domain.endsWith('.'+d)))
+    return{ok:false,reason:'Disposable email addresses are not accepted.'};
   return{ok:true};
 }
 
